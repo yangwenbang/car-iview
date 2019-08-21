@@ -1,0 +1,43 @@
+.right-fixed {
+    position: fixed;
+    right: 0;
+    bottom: 100px;
+    z-index: 88;
+    transition: all ease 0.5s;
+    .right-btn {
+        position: absolute;
+        left: -50px;
+        bottom: 0;
+        background: #1890ff;
+        width: 50px;
+        height: 50px;
+        text-align: center;
+        color: #fff;
+        cursor: pointer;
+        i {
+            padding-top: 11px;
+        }
+    }
+    .content {
+       
+        width: 160px;
+        display: inline-block;
+        background: #fff;
+        box-shadow: 2px 1px 15px #adadad;
+        a {
+            display: block;
+            padding: 3px 20px;
+            line-height: 2;
+            color: #666;
+            font-size: 14px;
+            border-bottom: 1px solid #ddd;
+            &:last-child{
+              border-bottom: 0;
+            }
+            // &:hover{
+            //   background: #1890ff;
+            //   color: #fff;
+            // }
+        }
+    }
+}
