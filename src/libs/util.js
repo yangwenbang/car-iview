@@ -3,7 +3,7 @@ import Cookies from 'js-cookie'
 import config from '@/config'
 import { forEach, hasOneOf, objEqual } from '@/libs/tools'
 
-export const TOKEN_KEY = 'warehouseInfo'
+export const TOKEN_KEY = 'userInfo'
 
 export const setToken = (token) => {
   Cookies.set(TOKEN_KEY, token, { expires: config.cookieExpires || 1 })
@@ -402,7 +402,7 @@ export const formatPrice = (price) => {
 /**
  * 毫秒数转化为年月日时分秒格式
  */
-export const formatSeconds = (value) => { 
+export const formatSeconds = (value) => {
   if(value && (value != "-") && (value != "0")){
     var date = new Date(value);
     var seperator1 = "-";
@@ -467,7 +467,7 @@ export const isAcrobatPluginInstall = () => {
         flag = true;
     }
   }
-  // 下面代码都是处理IE浏览器的情况 
+  // 下面代码都是处理IE浏览器的情况
   else if (window.ActiveXObject) {
     for (let x = 2; x < 10; x++) {
       try {
@@ -512,7 +512,7 @@ export const isAcrobatPluginInstall = () => {
 /**
  * input输入限制,maxInt整数部分限制位数，maxDecimal小数部分限制位数
  */
-export const decimalInput = (value,maxInt,maxDecimal) => { 
+export const decimalInput = (value,maxInt,maxDecimal) => {
   if(value){
     value = String(value);
     if(maxDecimal == "4"){

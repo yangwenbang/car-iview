@@ -732,5 +732,5 @@ export default [
       }
     ]
   },
-  
+
 ]

@@ -4,18 +4,15 @@
     <div class="custom-content-con pull-right">
       <slot></slot>
     </div>
-    <change-platform></change-platform>
   </div>
 </template>
 <script>
 import siderTrigger from './sider-trigger'
-import ChangePlatform from './ChangePlatform'
 import './header-bar.less'
 export default {
   name: 'HeaderBar',
   components: {
-    siderTrigger,
-    ChangePlatform
+    siderTrigger
   },
   props: {
     collapsed: Boolean

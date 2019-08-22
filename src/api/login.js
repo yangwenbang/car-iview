@@ -1,10 +1,9 @@
 import axios from '@/libs/api.request'
 
-export const pwmsLogin = ({ userName, password,type }) => {
+export const carLogin = ({ userName, password}) => {
   const data = {
     userName,
-    password,
-    type
+    password
   }
   return axios.request({
     url: '/sys/admin/login',
@@ -47,7 +46,7 @@ export const updatePassword = (params) => {
 
 export const loginOut = (params) => {
   return axios.request({
-    url: '/pwms/user/loginOut',
+    url: '/sys/admin/logout',
     params: params,
     method: 'get'
   })

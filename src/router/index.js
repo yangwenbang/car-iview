@@ -1,22 +1,14 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import routes from './routers'
-import routesManager from './routers_manager'
 import store from '@/store'
 import iView from 'iview'
 import { setToken, getToken, canTurnTo,closeNowTag } from '@/libs/util'
 import config from '@/config'
 const { homeName } = config
 Vue.use(Router)
-const employeeId = store.state.user.employeeId;
-let routersNew;
-if(employeeId == "1"){
-  routersNew = routesManager
-}else{
-  routersNew = routes
-}
 const router = new Router({
-  routes:routersNew,
+  routes:routes
   //mode: 'history'
 })
 const LOGIN_PAGE_NAME = 'login'
@@ -58,7 +50,7 @@ if(process.env.NODE_ENV != 'development') {
           name: 'login'
         })
       }
-      
+
     }
   })
 }

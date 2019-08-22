@@ -7,7 +7,7 @@
                 <div class="logo-con">
                     <a href="javascript:;" v-show="!collapsed">
                         <img :src="Logo" key="logo">
-                        <h1>仓储加工系统</h1>
+                        <h1>车两系统</h1>
                     </a>
                     <a href="javascript:;" v-show="collapsed">
                         <img :src="Logo" key="logo" />
@@ -54,7 +54,7 @@ import Language from "./components/language";
 import ErrorStore from "./components/error-store";
 import { mapMutations, mapActions, mapGetters } from "vuex";
 import { getNewTagList, getNextRoute, routeEqual } from "@/libs/util";
-import Logo from "@/assets/images/logo.png";
+import Logo from "@/assets/images/car-logo.png";
 import "./main.less";
 export default {
     name: "Main",
