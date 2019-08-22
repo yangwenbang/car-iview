@@ -8,57 +8,6 @@
         </infor-card>
       </i-col>
     </Row>
-    <!-- <Row :gutter="20" style="margin-top: 10px;">
-      <i-col :md="24" :lg="24" style="margin-bottom: 20px;">
-        <Card shadow style="min-height:150px;">
-          <p slot="title">入库管理</p>
-          <Steps :current="4" style="margin-top:20px;">
-                <Step icon="ios-clock" title="预约入库"></Step>
-                <Step icon="md-clipboard" title="入库登记"></Step>
-                <Step icon="md-checkmark-circle" title="入库审核"></Step>
-                <Step icon="md-log-in" title="库存更新"></Step>
-          </Steps>
-        </Card>
-      </i-col>
-      <i-col :md="24" :lg="24" style="margin-bottom: 20px;">
-        <Card shadow style="min-height:150px;">
-          <p slot="title">出库管理</p>
-          <Steps :current="6" style="margin-top:20px;">
-                <Step icon="md-calculator" title="出库结算"></Step>
-                <Step icon="md-list-box" title="生成提货单"></Step>
-                <Step icon="logo-yen" title="缴费开票"></Step>
-                <Step icon="md-cube" title="仓库提货"></Step>
-                <Step icon="ios-create" title="确认出库"></Step>
-                <Step icon="md-log-out" title="库存更新"></Step>
-          </Steps>
-        </Card>
-      </i-col>
-      <i-col :md="24" :lg="24" style="margin-bottom: 20px;">
-        <Card shadow style="min-height:150px;">
-          <p slot="title">加工管理</p>
-          <Steps :current="6" style="margin-top:20px;">
-                <Step icon="md-clipboard" title="下加工单"></Step>
-                <Step icon="md-checkmark-circle" title="审核加工单"></Step>
-                <Step icon="md-desktop" title="智能排单"></Step>
-                <Step icon="md-cog" title="生产加工"></Step>
-                <Step icon="logo-codepen" title="成品打包过磅"></Step>
-                <Step icon="ios-hammer" title="加工成品管理"></Step>
-          </Steps>
-        </Card>
-      </i-col>
-    </Row> -->
-    <!-- <Row :gutter="20">
-      <i-col :md="24" :lg="8" style="margin-bottom: 20px;">
-        <Card shadow style="min-height:200px;">
-          <p slot="title">库存管理</p>
-        </Card>
-      </i-col>
-      <i-col :md="24" :lg="8" style="margin-bottom: 20px;">
-        <Card shadow style="min-height:200px;">
-          <p slot="title">客商管理</p>
-        </Card>
-      </i-col>
-    </Row> -->
   </div>
 </template>
 

@@ -140,6 +140,8 @@ export default {
     changePswFun() {
       this.$refs["formPswValidate"].validate(valid => {
         if (valid) {
+          debugger
+          var user = this.$store.state.user.user;
           getUserId().then(res => {
             if (res.data.code == "200") {
               this.formPswValidate.userId = res.data.data;
