@@ -4,7 +4,7 @@
             <div style="display: inline-block;height: 118px;vertical-align: middle;">
                 <img src="../../assets/images/v2_pvwezc.png" width="118px" height="118px" />
             </div>
-            <span class="header-item">&nbsp;&nbsp;商家版</span>
+            <span class="header-item">&nbsp;•&nbsp;商家版</span>
         </div>
         <div class="header-logo">
             <img src="../../assets/images/v2_pvwxm2.png" width="484px" height="488px" />
