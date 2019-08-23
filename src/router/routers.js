@@ -689,6 +689,26 @@ export default [
     ]
   },
   {
+    path: '/commodity',
+    name: 'commodity',
+    meta: {
+      icon: 'ios-car',
+      title: '商品管理'
+    },
+    component: Main,
+    children: [
+        {
+            path: 'CommodityAdd',
+            name: 'CommodityAdd',
+            meta: {
+              title: '发布商品',
+              pageTitle: '发布商品'
+            },
+            component: () => import('@/view/commodity/Publish.vue')
+          }
+    ]
+  },
+  {
     path: '/error_401',
     name: 'error_401',
     component: Main,
