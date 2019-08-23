@@ -35,9 +35,6 @@ if(process.env.NODE_ENV != 'development') {
       })
     } else {
       if(token){
-        const tokenJson = eval('(' + token + ')');
-        //const tokenJson = {"warehouse":{"warehouseId":1,"warehouseName":"上海城南库"}}
-        store.commit("setWarehouse",tokenJson.warehouse);
         if(to.name == "error_401"){
           closeNowTag(store.state.app, from);
           next();
@@ -46,7 +43,7 @@ if(process.env.NODE_ENV != 'development') {
         }
       }else{
         next({
-          name: 'login'
+          name: LOGIN_PAGE_NAME
         })
       }
 
