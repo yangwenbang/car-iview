@@ -1,4 +1,5 @@
 const path = require('path')
+const webpack = require('webpack')
 
 const resolve = dir => {
   return path.join(__dirname, dir)
@@ -33,6 +34,14 @@ module.exports = {
       .set('@', resolve('src')) // key,value自行定义，比如.set('@@', resolve('src/components'))
       .set('_c', resolve('src/components'))
   },
+  configureWebpack: {
+    plugins: [
+      new webpack.ProvidePlugin({
+        jQuery: 'jquery',
+        $: 'jquery'
+      })
+    ]
+  },
   // 打包时不生成.map文件
   productionSourceMap: false,
   // 这里写你调用接口的基础路径，来解决跨域，如果设置了代理，那你本地开发环境的axios的baseUrl要写为 '' ，即空字符串
@@ -48,31 +57,7 @@ module.exports = {
         pathRewrite: {
           '^/api': '/api'
         }
-      },
-      // '/pwms': {
-      //   target: 'http://jgxt.banksteel.com/api/',
-      //   //target:'http://192.168.40.57:8081/api/',
-      //   changeOrigin: true, // 开启代理：在本地会创建一个虚拟服务端，然后发送请求的数据，并同时接收请求的数据，这样服务端和服务端进行数据的交互就不会有跨域问题
-      //   pathRewrite: {
-      //     '^/pwms': '/pwms'
-      //   }
-      // },
-      // '/customter': {
-      //   target: 'http://api.jgxt.banksteel.com/pwms/customter',
-      //   //target:'http://192.168.40.57:8082/pwms/customter',
-      //   changeOrigin: true, // 开启代理：在本地会创建一个虚拟服务端，然后发送请求的数据，并同时接收请求的数据，这样服务端和服务端进行数据的交互就不会有跨域问题
-      //   pathRewrite: {
-      //     '^/customter': ''
-      //   }
-      // },
-      // '/user': {
-      //   target: 'http://api.jgxt.banksteel.com/pwms/user',
-      //   //target:'http://192.168.40.57:8083/pwms/user',
-      //   changeOrigin: true, // 开启代理：在本地会创建一个虚拟服务端，然后发送请求的数据，并同时接收请求的数据，这样服务端和服务端进行数据的交互就不会有跨域问题
-      //   pathRewrite: {
-      //     '^/user': ''
-      //   }
-      // }
+      }
     }
   }
 }
