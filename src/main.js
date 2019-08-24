@@ -10,6 +10,7 @@ import importDirective from '@/directive'
 import installPlugin from '@/plugin'
 import iviewArea from 'iview-area';
 
+import '@/libs/jquery-1.9.1.min.js'
 import 'iview/dist/styles/iview.css'
 import '@/assets/styles/common.less'
 import '@/assets/icons/iconfont.css'

@@ -24,7 +24,6 @@
           <Col :sm="12" :xs="24">
             <FormItem label="客户类型:" prop="companyType">
               <Select v-model="formValidate.companyType">
-                <!-- <Option v-for="item in usetatusList" :value="item.value" :key="item.value">{{ item.label }}</Option> -->
                 <Option value="0">企业</Option>
                 <Option value="1">个人</Option>
               </Select>

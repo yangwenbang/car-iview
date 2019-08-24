@@ -10,46 +10,35 @@
       <img src="../../assets/images/v2_pvwxm2.png" width="484px" height="488px">
     </div>
     <div class="content">
-       <Form :label-width="200" class="search-form" ref="commodityform" :model="formValidate" :rules="ruleValidate">
-        <div class="table-title">基本信息</div>
+      <Form
+        :label-width="200"
+        class="search-form"
+        ref="commodityform"
+        :model="commodity"
+        :rules="ruleValidate"
+      >
+        <div class="table-title">发布商品</div>
         <hr class="line">
         <Row type="flex" justify="space-between">
           <Col :sm="12" :xs="24">
-            <FormItem label="客户类型:" prop="companyType">
-              <Select v-model="formValidate.companyType">
-                <Option value="0">企业</Option>
-                <Option value="1">个人</Option>
-              </Select>
+            <FormItem label="订单编号:" prop="commodityCode">
+              <Input v-model="commodity.commodityCode" :maxlength="30"></Input>
             </FormItem>
           </Col>
           <Col :sm="12" :xs="24">
-            <FormItem label="客户名称:" prop="customerName">
-              <Input v-model="formValidate.customerName" :maxlength="30"></Input>
+            <FormItem label="商品标题:" prop="commodityName">
+              <Input v-model="commodity.commodityName" :maxlength="30"></Input>
             </FormItem>
           </Col>
-          <Col :sm="12" :xs="24">
-            <FormItem label="客户简称:" prop="customerShortName">
-              <Input v-model="formValidate.customerShortName" :maxlength="20"></Input>
-            </FormItem>
-          </Col>
-          <Col :sm="12" :xs="24">
-            <FormItem label="协议起止时间:">
-              <DatePicker
-                v-model="formValidate.protocolStartDate"
-                type="daterange"
-                placement="bottom-end"
-              ></DatePicker>
-            </FormItem>
-          </Col>
-          <Col :sm="12" :xs="24">
-            <FormItem label="公司成立日期:">
-              <DatePicker
-                v-model="formValidate.foundDate"
-                type="date"
-                separator="/"
-                placement="bottom-end"
-              ></DatePicker>
-            </FormItem>
+          <Col :span="24">
+            <div class="clearfix" style="height: 120px;">
+              <div class="tl">
+                <span>图片上传：</span>
+              </div>
+              <div class="tr">
+                <imgUpload ref="imgUpload" :imgPath="commodity.commodityPicture" @change="upload"></imgUpload>
+              </div>
+            </div>
           </Col>
         </Row>
         <div class="text-center margin-top-10">
@@ -61,130 +50,32 @@
   </div>
 </template>
 <script>
+  import imgUpload from "@/components/img/imgUpload";
+
 export default {
   name: "Publish",
-  components: {},
+  components: {
+    imgUpload
+  },
   data() {
     return {
-      formValidate: {
-        customerName: "",
-        customerShortName: "",
-        creditCode: "",
-        foundDate: "", //公司成立日期
-        registLocal: [], //公司注册所在地
-        registerAddress: "", //公司注册详细地址
-        local: [], //公司地址
-        protocolStartDate: [], //协议起止时间
-        address: "", //公司详细地址
-        phone: "", //公司电话
-        fax: "", //公司传真
-        companyType: "0", //客户类型
-        openBank: "", //开户银行
-        openBankAddress: [], //开户行所在地
-        openBankPoint: "", //开户行网点名称
-        openBankAccount: "", //银行账号
-        taxPayType: "", //纳税人类型
-        taxPayNumber: "", //纳税人识别号
-        ticketAddress: [], //开票地址
-        invocieAddress: "", //开票详细地址
-        corporate: "", //法人姓名
-        corporateCard: "", //法人身份证号码
-        corporatePhone: "", //法人联系电话
-        contract: "", //业务联系人
-        contractPhone: "", //业务联系人手机
-        contractCallAreaNumber: "", //业务联系人座机区号
-        contractCallNumber: "", //业务联系人座机号
-        contractCornette: "", //业务联系人短号
-        contractQQ: "", //联系人QQ
-        financeContract: "", //财务联系人
-        financeContractPhone: "", //财务联系人手机
-        financeContractCallAreaNumber: "", //财务联系人座机区号
-        financeContractCallNumber: "", //财务联系人座机号
-        financeContractCornette: "", //财务联系人短号
-        financeContractQQ: "", //财务联系人QQ
-        sendAddress: [], //开票邮寄地址
-        invocieSendAddress: "", //开票邮寄详细地址
-        isMonthSettle: ""
+      commodity: {
+        commodityCode: "",
+        commodityName: "",
+        commodityPicture: ""
       },
       ruleValidate: {
-        isMonthSettle: [
+        commodityCode: [
           {
-            required: true,
             message: "请选择是否支持月结",
             trigger: "change",
             type: "number"
           }
         ],
-        customerName: [
+        commodityName: [
           {
             required: true,
-            message: "请填写公司名称",
-            trigger: "change"
-          }
-        ],
-        customerShortName: [
-          {
-            required: true,
-            message: "请填写公司简称",
-            trigger: "change"
-          }
-        ],
-        creditCode: [
-          {
-            required: true,
-            message: "请填写统一社会信用代码号",
-            trigger: "change"
-          }
-        ],
-        companyType: [
-          {
-            required: true,
-            message: "请选择企业属性",
-            trigger: "change"
-          }
-        ],
-        contract: [
-          {
-            required: true,
-            message: "请填写联系人姓名",
-            trigger: "change"
-          }
-        ],
-        contractPhone: [
-          {
-            required: true,
-            message: "请填写联系人手机",
-            trigger: "change"
-          }
-        ]
-      },
-      personruleValidate: {
-        isMonthSettle: [
-          {
-            required: true,
-            message: "请选择是否支持月结",
-            trigger: "change",
-            type: "number"
-          }
-        ],
-        userType: [
-          {
-            required: true,
-            message: "请选择客户类型",
-            trigger: "change"
-          }
-        ],
-        customerName: [
-          {
-            required: true,
-            message: "请填写客户姓名",
-            trigger: "change"
-          }
-        ],
-        corporateCard: [
-          {
-            required: true,
-            message: "请填写身份证号码",
+            message: "请输入商品标题",
             trigger: "change"
           }
         ]
@@ -193,10 +84,32 @@ export default {
   },
   created() {},
   mounted() {},
-  methods: {}
+  methods: {
+    upload(imgs) {
+      var that = this;
+      // var datas = that.$refs.imgUpload.$data.datas;
+      if (imgs != null && imgs.length > 0) {
+        var urls = "";
+        for (var i = 0; i < imgs.length; i++) {
+          if (i != imgs.length - 1) {
+            urls += imgs[i].urlPath + ",";
+          } else {
+            urls += imgs[i].urlPath;
+          }
+        }
+        that.commodity.commodityPicture = urls;
+      }
+    }
+  }
 };
 </script>
 <style lang="less" scoped>
+.table-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #000;
+}
 .panel .tr {
   position: relative;
 }
