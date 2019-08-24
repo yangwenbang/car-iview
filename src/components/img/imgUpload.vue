@@ -132,7 +132,6 @@ export default {
       }
     },
     setId() {
-      debugger
       this.htmlid = guid();
     },
     addpic() {
