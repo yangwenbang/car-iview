@@ -178,14 +178,15 @@ export default {
       uploadImg(param).then(response => {
         var rdata = response.data;
         if (rdata.code == 200) {
-          item.urlPath = rdata.data;
+          if(rdata.data.indexOf("http://") > -1) {
+              item.urlPath = rdata.data;
+          }else {
+              item.urlPath = "http://" + rdata.data;
+          }
           that.$emit("change", that.datas);
-          this.$message({
-            message: "图片上传成功",
-            type: "success"
-          });
+          this.$Message.success("图片上传成功");
         } else {
-          this.$message.error("图片上传失败" + rdata.msg);
+          this.$Message.error("图片上传失败" + rdata.msg);
         }
       });
     },
@@ -197,7 +198,7 @@ export default {
         var url = read.result; // 拿到读取结果;
         var img = new Image();
         item.imgPath = url;
-        item.imgPath = url;
+        item.urlPath = "";
       };
     }
   }
@@ -301,7 +302,7 @@ export default {
   color: #000;
 }
 
-.c .lh {
+.ct .lh {
   display: none;
 }
 
