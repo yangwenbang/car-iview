@@ -238,8 +238,8 @@ export default {
   height: 100px;
   left: -1px;
   text-align: center;
-  background: #ddd;
-  border: solid 1px #ddd;
+  background: #eee;
+  border: solid 1px #eee;
   border-radius: 3px;
 }
 .cfile .it .lb .pt button {
