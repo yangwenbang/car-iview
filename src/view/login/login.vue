@@ -54,7 +54,6 @@ export default {
         if (valid) {
           this.handleLogin(this.form).then(res => {
             const user = res;
-            debugger
             this.$store.commit("setUser", user);
             this.$store.commit('setToken', user);
             window.location.href = "/";
