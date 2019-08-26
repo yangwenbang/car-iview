@@ -156,7 +156,6 @@ export default {
   },
   methods: {
     handleView(item) {
-      debugger
       this.imgName = item.name;
       this.imgUrl = item.url;
       this.visible = true;
@@ -166,7 +165,6 @@ export default {
       this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
     },
     handleSuccess(res, file) {
-      debugger
       if (res.code == "200") {
         file.url = "http://" + res.data;
       } else {
