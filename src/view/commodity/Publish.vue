@@ -107,6 +107,13 @@
               </RadioGroup>
             </FormItem>
           </Col>
+           <Col :sm="12" :xs="24" v-for="(categoryAttribute, index) in categoryAttributeList" :key="index">
+            <FormItem :label='categoryAttribute.attributeName + ":"'>
+                <Select>
+                  <Option v-for="attribute in categoryAttribute.childAttribute" :key="attribute.id" :value="attribute.id">{{attribute.attributeName}}</Option>
+              </Select>
+            </FormItem>
+           </Col>
         </Row>
         <div class="text-center margin-top-10">
           <Button type="primary" class="btn-common-width">保存</Button>
