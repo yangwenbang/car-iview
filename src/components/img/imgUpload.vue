@@ -8,7 +8,7 @@
           </div>
           <div :class="[ 'lb', {'lh': item.imgPath.length!=0}]">
             <div class="pt">
-              <button @click="selectFiles(item)">上传</button>
+              <button @click.stop="selectFiles(item)">上传</button>
             </div>
             <input
               class="sf"
@@ -19,7 +19,7 @@
           </div>
           <div :class="[ 'lo', {'lh': item.imgPath.length==0}]">
             <div class="pt">
-              <button @click="selectFiles(item)">重传</button>
+              <button @click.stop="selectFiles(item)">重传</button>
               <button v-if="item.index==0" @click="deleteFirst(item)">删除</button>
               <button v-if="item.index>0" @click="deleteItem(item)">删除</button>
             </div>
@@ -157,7 +157,7 @@ export default {
     selectFiles(item) {
       let that = this;
       let id = "#" + item.htmlid;
-      $(id).trigger("click");
+      $(id).click();
       $(id).on("change", function() {
         var file = $(id)[0].files[0];
         var reg = /(.*)\.(jpg|bmp|gif|ico|pcx|jpeg|tif|png|raw|tga)$/;
