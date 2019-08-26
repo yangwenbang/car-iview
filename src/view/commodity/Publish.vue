@@ -82,7 +82,7 @@
           </Col>
           <Col :span="24" style="margin-bottom: 10px;">
             <FormItem label="产品分类:">
-              <RadioGroup v-model="commodity.commodityCategoryId">
+              <RadioGroup v-model="commodity.commodityCategoryId" @on-change="categoryChange">
                 <Radio
                   v-for="(category,index) in categoryList"
                   :key="index"
@@ -94,16 +94,16 @@
           <Col :sm="12" :xs="24">
             <FormItem label="一口价:" prop="price">
               <div class="input-price">
-                <Input v-model="commodity.price"></Input>
+                <Input style="width: 200px;" v-model="commodity.price"></Input>
                 <span class="tr-span">￥</span>
               </div>
             </FormItem>
           </Col>
           <Col :sm="12" :xs="24">
             <FormItem label="原厂/非原厂:">
-              <RadioGroup v-model="commodity.commodityType">
-                <span style="margin-left: 10px" @click="typeChange(0)"><Radio :label="0">原厂</Radio></span>
-                <span style="margin-left: 10px" @click="typeChange(1)"><Radio :label="1">非原厂</Radio></span>
+              <RadioGroup v-model="commodity.commodityType" @on-change="typeChange">
+                <Radio :label="0">原厂</Radio>
+                <Radio :label="1">非原厂</Radio>
               </RadioGroup>
             </FormItem>
           </Col>
@@ -131,7 +131,8 @@ export default {
         commodityPicture: "",
         description: "",
         commodityCategoryId: "",
-        price: ""
+        price: "",
+        commidityAttributeDetail: []
       },
       categoryList: [],
       categoryAttributeList: [],
@@ -166,8 +167,7 @@ export default {
             trigger: "change"
           }
         ],
-        price: [
-         { required: true, message: "价格不能为空", trigger: "blur" }]
+        price: [{ required: true, message: "价格不能为空", trigger: "blur" }]
       }
     };
   },
@@ -261,18 +261,32 @@ export default {
       });
     },
 
-    typeChange(val) {
+    typeChange() {
       let that = this;
       let params = {
         id: that.commodity.commodityCategoryId,
-        attributeType: val
+        attributeType: that.commodity.commodityType
       };
       queryCategoryAttribute(params).then(response => {
-          var rdata = response.data;
-          if (rdata.code == 200) {
-            that.categoryAttributeList = rdata.data;
-          }
-        });
+        var rdata = response.data;
+        if (rdata.code == 200) {
+          that.categoryAttributeList = rdata.data;
+        }
+      });
+    },
+
+    categoryChange() {
+      let that = this;
+      let params = {
+        id: that.commodity.commodityCategoryId,
+        attributeType: that.commodity.commodityType
+      };
+      queryCategoryAttribute(params).then(response => {
+        var rdata = response.data;
+        if (rdata.code == 200) {
+          that.categoryAttributeList = rdata.data;
+        }
+      });
     }
   }
 };
