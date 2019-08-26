@@ -31,44 +31,44 @@
             </FormItem>
           </Col>
           <Col :span="24">
-          <FormItem label="上传图片 :">
-            <div class="clearfix">
-              <div class="demo-upload-list" v-for="item in uploadList">
-                <template v-if="item.status === 'finished'">
-                  <img :src="item.url">
-                  <div class="demo-upload-list-cover">
-                    <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
-                    <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
-                  </div>
-                </template>
-                <template v-else>
-                  <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
-                </template>
-              </div>
-              <Upload
-                ref="upload"
-                :show-upload-list="false"
-                :default-file-list="defaultList"
-                :on-success="handleSuccess"
-                :format="['jpg','jpeg','png']"
-                :max-size="2048"
-                :on-format-error="handleFormatError"
-                :on-exceeded-size="handleMaxSize"
-                :before-upload="handleBeforeUpload"
-                multiple
-                type="drag"
-                action="/car/qualityshop/uploadPicture"
-                style="display: inline-block;width:58px;"
-              >
-                <div style="width: 58px;height:58px;line-height: 58px;">
-                  <Icon type="ios-camera" size="20"></Icon>
+            <FormItem label="上传图片 :">
+              <div class="clearfix">
+                <div class="demo-upload-list" v-for="item in uploadList">
+                  <template v-if="item.status === 'finished'">
+                    <img :src="item.url">
+                    <div class="demo-upload-list-cover">
+                      <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                      <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+                    </div>
+                  </template>
+                  <template v-else>
+                    <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
+                  </template>
                 </div>
-              </Upload>
-              <Modal title="图片预览" v-model="visible">
-                <img :src="imgUrl" v-if="visible" style="width: 100%">
-              </Modal>
-            </div>
-          </FormItem>
+                <Upload
+                  ref="upload"
+                  :show-upload-list="false"
+                  :default-file-list="defaultList"
+                  :on-success="handleSuccess"
+                  :format="['jpg','jpeg','png']"
+                  :max-size="2048"
+                  :on-format-error="handleFormatError"
+                  :on-exceeded-size="handleMaxSize"
+                  :before-upload="handleBeforeUpload"
+                  multiple
+                  type="drag"
+                  action="/car/qualityshop/uploadPicture"
+                  style="display: inline-block;width:58px;"
+                >
+                  <div style="width: 58px;height:58px;line-height: 58px;">
+                    <Icon type="ios-camera" size="20"></Icon>
+                  </div>
+                </Upload>
+                <Modal title="图片预览" v-model="visible">
+                  <img :src="imgUrl" v-if="visible" style="width: 100%">
+                </Modal>
+              </div>
+            </FormItem>
           </Col>
           <Col :sm="12" :xs="24">
             <FormItem label="商品描述:">
@@ -83,7 +83,27 @@
           <Col :span="24" style="margin-bottom: 10px;">
             <FormItem label="产品分类:">
               <RadioGroup v-model="commodity.commodityCategoryId">
-                <Radio v-for="(category,index) in categoryList" :key="index" :label="category.id">{{category.categoryName}}</Radio>
+                <Radio
+                  v-for="(category,index) in categoryList"
+                  :key="index"
+                  :label="category.id"
+                >{{category.categoryName}}</Radio>
+              </RadioGroup>
+            </FormItem>
+          </Col>
+          <Col :sm="12" :xs="24">
+            <FormItem label="一口价:" prop="price">
+              <div class="input-price">
+                <Input v-model="commodity.price"></Input>
+                <span class="tr-span">￥</span>
+              </div>
+            </FormItem>
+          </Col>
+          <Col :sm="12" :xs="24">
+            <FormItem label="原厂/非原厂:">
+              <RadioGroup v-model="commodity.commodityType">
+                <span style="margin-left: 10px" @click="typeChange(0)"><Radio :label="0">原厂</Radio></span>
+                <span style="margin-left: 10px" @click="typeChange(1)"><Radio :label="1">非原厂</Radio></span>
               </RadioGroup>
             </FormItem>
           </Col>
@@ -110,7 +130,8 @@ export default {
         commodityType: 1,
         commodityPicture: "",
         description: "",
-        commodityCategoryId: ""
+        commodityCategoryId: "",
+        price: ""
       },
       categoryList: [],
       categoryAttributeList: [],
@@ -144,7 +165,9 @@ export default {
             message: "请输入商品描述",
             trigger: "change"
           }
-        ]
+        ],
+        price: [
+         { required: true, message: "价格不能为空", trigger: "blur" }]
       }
     };
   },
@@ -208,6 +231,7 @@ export default {
       }
       return check;
     },
+
     getCategoryList() {
       var that = this;
       let params = {
@@ -235,6 +259,20 @@ export default {
           this.$Message.error("查询分类失败" + rdata.msg);
         }
       });
+    },
+
+    typeChange(val) {
+      let that = this;
+      let params = {
+        id: that.commodity.commodityCategoryId,
+        attributeType: val
+      };
+      queryCategoryAttribute(params).then(response => {
+          var rdata = response.data;
+          if (rdata.code == 200) {
+            that.categoryAttributeList = rdata.data;
+          }
+        });
     }
   }
 };
@@ -348,5 +386,16 @@ export default {
   font-size: 20px;
   cursor: pointer;
   margin: 0 2px;
+}
+
+.tr-span {
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  font-size: 16px;
+}
+
+.input-price /deep/ input {
+  padding: 5px 20px;
 }
 </style>
