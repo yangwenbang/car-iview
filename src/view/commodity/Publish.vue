@@ -105,7 +105,7 @@
                 <Radio :label="0">原厂</Radio>
                 <Radio :label="1">非原厂</Radio>
               </RadioGroup>
-              <Input style="width: 200px;" v-if="commodity.commodityType==0" v-model="attributeFirstWord" :maxlength="1" @blur="typeChange"/>
+              <Input style="width: 200px;" v-if="commodity.commodityType==0" v-model="attributeFirstWord" :maxlength="1" @input="typeChange"/>
             </FormItem>
           </Col>
            <Col :sm="12" :xs="24" v-for="(categoryAttribute, index) in categoryAttributeList" :key="index">
@@ -272,8 +272,8 @@ export default {
     },
 
     typeChange() {
-      debugger
       let that = this;
+      that.categoryAttributeList = [];
       let params = {};
       if(that.commodity.commodityType == 1) {
         params = {
