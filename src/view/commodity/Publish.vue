@@ -105,6 +105,7 @@
                 <Radio :label="0">原厂</Radio>
                 <Radio :label="1">非原厂</Radio>
               </RadioGroup>
+              <Input style="width: 200px;" v-if="commodity.commodityType==0" v-model="attributeFirstWord" :maxlength="1" @blur="typeChange"/>
             </FormItem>
           </Col>
            <Col :sm="12" :xs="24" v-for="(categoryAttribute, index) in categoryAttributeList" :key="index">
@@ -141,6 +142,8 @@ export default {
         price: "",
         commidityAttributeDetail: []
       },
+      // 原厂属性首字母
+      attributeFirstWord: "A",
       categoryList: [],
       categoryAttributeList: [],
       defaultList: [
@@ -269,11 +272,21 @@ export default {
     },
 
     typeChange() {
+      debugger
       let that = this;
-      let params = {
-        id: that.commodity.commodityCategoryId,
-        attributeType: that.commodity.commodityType
-      };
+      let params = {};
+      if(that.commodity.commodityType == 1) {
+        params = {
+          id: that.commodity.commodityCategoryId,
+          attributeType: that.commodity.commodityType
+        };
+      }else {
+         params = {
+          id: that.commodity.commodityCategoryId,
+          attributeType: that.commodity.commodityType,
+          attributeFirstWord: that.attributeFirstWord
+        };
+      }
       queryCategoryAttribute(params).then(response => {
         var rdata = response.data;
         if (rdata.code == 200) {
