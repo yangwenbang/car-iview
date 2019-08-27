@@ -195,8 +195,18 @@ export default {
       this.visible = true;
     },
     handleRemove(file) {
-      const fileList = this.$refs.upload.fileList;
-      this.$refs.upload.fileList.splice(fileList.indexOf(file), 1);
+      this.uploadList.splice(this.uploadList.indexOf(file), 1);
+       if (this.uploadList != null && this.uploadList.length > 0) {
+        var urls = "";
+        for (var i = 0; i < this.uploadList.length; i++) {
+          if (i != this.uploadList.length - 1) {
+            urls += this.uploadList[i].url + ",";
+          } else {
+            urls += this.uploadList[i].url;
+          }
+        }
+        this.commodity.commodityPicture = urls;
+      }
     },
     handleSuccess(res, file) {
       if (res.code == "200") {
@@ -205,7 +215,7 @@ export default {
         this.$Message.error(res.msg);
       }
       var that = this;
-      // var datas = that.$refs.imgUpload.$data.datas;
+      that.uploadList.push(file);
       if (that.uploadList != null && that.uploadList.length > 0) {
         var urls = "";
         for (var i = 0; i < that.uploadList.length; i++) {
@@ -311,18 +321,29 @@ export default {
     },
 
     queryCommodityCode() {
-      debugger
       let that = this;
-      let params = {
+      let params = {};
+      if(that.commodity.commodityType == 1) {
+        params = {
           id: that.commodity.commodityCategoryId,
-          attributeType: that.commodity.commodityType,
           commodityCode: that.commodity.commodityCode,
+          attributeType: that.commodity.commodityType
+        };
+      }else {
+         params = {
+          id: that.commodity.commodityCategoryId,
+          commodityCode: that.commodity.commodityCode,
+          attributeType: that.commodity.commodityType,
           attributeFirstWord: that.attributeFirstWord
-       };
-       queryCategoryAttribute(params).then(response => {
+        };
+      }
+      queryCategoryAttribute(params).then(response => {
         var rdata = response.data;
         if (rdata.code == 200) {
           that.categoryAttributeList = rdata.data.commidityAttributeDetail;
+          that.commodity.commodityName = rdata.data.commodityName;
+          that.commodity.description = rdata.data.description;
+          that.commodity.price = rdata.data.price;
           that.commodity.commodityPicture = rdata.data.commodityPicture;
           // 图片回显
           that.uploadList = [];
