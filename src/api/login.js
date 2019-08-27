@@ -38,9 +38,9 @@ export const getUserId = (params) => {
 
 export const updatePassword = (params) => {
   return axios.request({
-    url: '/pwms/user/updatePassword',
+    url: '/sys/admin/updatePassword',
     data: params,
-    method: 'put'
+    method: 'post'
   })
 }
 

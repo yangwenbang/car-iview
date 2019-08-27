@@ -92,7 +92,7 @@
             </FormItem>
           </Col>
           <Col :sm="12" :xs="24">
-            <FormItem label="一口价:" prop="price">
+            <FormItem label="一口价:">
               <div class="input-price">
                 <Input style="width: 200px;" v-model="commodity.price"></Input>
                 <span class="tr-span">￥</span>
@@ -192,7 +192,6 @@ export default {
             trigger: "change"
           }
         ],
-        price: [{ required: true, message: "价格不能为空", trigger: "change" }],
         additionalDescription: [
            {
             required: true,
@@ -402,7 +401,6 @@ export default {
         if (valid) {
           this.submitDisabled = true;
           this.categoryAttributeList.map(item => {
-            debugger
             if(item.selectId) {
               let selectItem = item.childAttribute.filter(attribute => {
                 return attribute.id == item.selectId;
@@ -411,7 +409,9 @@ export default {
                 attributeName: selectItem[0].attributeName,
                 attributeType: selectItem[0].attributeType,
                 isAuditType: selectItem[0].isAuditType,
-                parentAttributeId: item.id
+                parentAttributeId: item.id,
+                parentAttributeName: selectItem[0].parentAttributeName,
+                categoryAttributeId: selectItem[0].id
               };
               this.commodity.commidityAttributeDetail.push(attributeDetail);
             }

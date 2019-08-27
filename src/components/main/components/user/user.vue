@@ -22,8 +22,8 @@
           </FormItem>
           </Col>
           <Col :sm="24" :xs="24" style="margin-top:10px;">
-          <FormItem label="确认新密码:" prop="newPasswordCheck">
-            <Input v-model="formPswValidate.newPasswordCheck" type="password" :maxlength="16" />
+          <FormItem label="确认新密码:" prop="confirmPassword">
+            <Input v-model="formPswValidate.confirmPassword" type="password" :maxlength="16" />
           </FormItem>
           </Col>
         </Row>
@@ -67,12 +67,13 @@ export default {
       }
     };
     return {
+      userName: "",
       modalChangePsw: false,
       formPswValidate: {
         newPassword: "",
         oldPassword: "",
-        newPasswordCheck: "",
-        userId: ""
+        confirmPassword: "",
+        userName: ""
       },
       ruleValidatePsw: {
         oldPassword: [
@@ -101,7 +102,7 @@ export default {
             trigger: "blur"
           }
         ],
-        newPasswordCheck: [
+        confirmPassword: [
           { required: true, validator: validatePassCheck, trigger: "blur" }
         ]
       }
@@ -119,7 +120,7 @@ export default {
           this.formPswValidate = {
             newPassword: "",
             oldPassword: "",
-            userId: ""
+            userName: ""
           };
           this.$refs["formPswValidate"].resetFields();
           this.modalChangePsw = true;
@@ -141,27 +142,18 @@ export default {
       this.$refs["formPswValidate"].validate(valid => {
         if (valid) {
           debugger
-          var user = this.$store.state.user.user;
-          getUserId().then(res => {
+          var user = this.$store.state.user.token;
+          this.formPswValidate.userName = user.name;
+          updatePassword(this.formPswValidate).then(res => {
             if (res.data.code == "200") {
-              this.formPswValidate.userId = res.data.data;
-              updatePassword(this.formPswValidate).then(res => {
-                if (res.data.code == "200") {
-                  this.modalChangePsw = false;
-                  this.$Message.success({
-                    content: "密码修改成功！",
-                    duration: 1
-                  });
-                  setTimeout(() => {
-                    this.handleQuiteClick();
-                  }, 1000);
-                } else {
-                  this.$Message.error({
-                    content: res.data.msg,
-                    duration: 1
-                  });
-                }
+              this.modalChangePsw = false;
+              this.$Message.success({
+                content: "密码修改成功！",
+                duration: 1
               });
+              setTimeout(() => {
+                this.handleQuiteClick();
+              }, 1000);
             } else {
               this.$Message.error({
                 content: res.data.msg,
@@ -169,12 +161,13 @@ export default {
               });
             }
           });
+
         }
       });
     }
   },
   created(){
-
+    this.userName = this.$store.state.user.token.name;
   }
 };
 </script>
