@@ -22,7 +22,7 @@
         <Row type="flex" justify="space-between">
           <Col :sm="12" :xs="24">
             <FormItem label="订单编号:">
-              <Input v-model="commodity.commodityCode" :maxlength="30" @input="queryCommodityCode"></Input>
+              <Input type="text" v-model="commodity.commodityCode" :maxlength="30" @on-input-change="queryCommodityCode"></Input>
             </FormItem>
           </Col>
           <Col :sm="12" :xs="24">
@@ -128,7 +128,7 @@
           </Col>
         </Row>
         <div class="text-center margin-top-10">
-          <Button type="primary" class="btn-common-width" @click="save" :disabled="submitDisabled">保存</Button>
+          <Button type="primary" class="btn-common-width" @click="save('commodityform')" :disabled="submitDisabled">保存</Button>
           <Button class="btn-common-width margin-left-10">取消</Button>
         </div>
       </Form>
@@ -192,7 +192,7 @@ export default {
             trigger: "change"
           }
         ],
-        price: [{ required: true, message: "价格不能为空", trigger: "blur" }],
+        price: [{ required: true, message: "价格不能为空", trigger: "change" }],
         additionalDescription: [
            {
             required: true,
@@ -396,7 +396,7 @@ export default {
       });
     },
 
-    save() {
+    save(name) {
        this.$refs[name].validate(valid => {
         if (valid) {
           this.submitDisabled = true;
@@ -407,22 +407,24 @@ export default {
                 return attribute.id == item.selectId;
               });
               let attributeDetail = {
-                attributeName: selectItem.attributeName,
-                attributeType: selectItem.attributeType,
-                isAuditType: selectItem.isAuditType,
+                attributeName: selectItem[0].attributeName,
+                attributeType: selectItem[0].attributeType,
+                isAuditType: selectItem[0].isAuditType,
                 parentAttributeId: item.id
               };
-              this.commodity.categoryAttributeList.push(attributeDetail);
+              this.commodity.commidityAttributeDetail.push(attributeDetail);
             }
           });
 
-          auditCommodity(commodity).then(response => {
+          auditCommodity(this.commodity).then(response => {
+            debugger
               var rdata = response.data;
               if (rdata.code == 200) {
                   this.$Message.success("保存成功");
                   window.history.go(-1);
               } else {
                   this.$Message.error("保存失败" + rdata.msg);
+                  this.submitDisabled = false;
               }
           });
         }
