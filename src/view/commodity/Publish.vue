@@ -22,7 +22,7 @@
         <Row type="flex" justify="space-between">
           <Col :sm="12" :xs="24">
             <FormItem label="订单编号:">
-              <Input v-model="commodity.commodityCode" :maxlength="30"></Input>
+              <Input v-model="commodity.commodityCode" :maxlength="30" @input="queryCommodityCode"></Input>
             </FormItem>
           </Col>
           <Col :sm="12" :xs="24">
@@ -110,7 +110,7 @@
           </Col>
            <Col :sm="12" :xs="24" v-for="(categoryAttribute, index) in categoryAttributeList" :key="index">
             <FormItem :label='categoryAttribute.attributeName + ":"'>
-                <Select>
+                <Select v-model="categoryAttribute.selectId">
                   <Option v-for="attribute in categoryAttribute.childAttribute" :key="attribute.id" :value="attribute.id">{{attribute.attributeName}}</Option>
               </Select>
             </FormItem>
@@ -133,6 +133,7 @@ export default {
   data() {
     return {
       commodity: {
+        id: "",
         commodityCode: "",
         commodityName: "",
         commodityType: 1,
@@ -262,7 +263,7 @@ export default {
           queryCategoryAttribute(params).then(response => {
             let rdata = response.data;
             if (rdata.code == 200) {
-              that.categoryAttributeList = rdata.data;
+              that.categoryAttributeList = rdata.data.commidityAttributeDetail;
             }
           });
         } else {
@@ -290,7 +291,7 @@ export default {
       queryCategoryAttribute(params).then(response => {
         var rdata = response.data;
         if (rdata.code == 200) {
-          that.categoryAttributeList = rdata.data;
+          that.categoryAttributeList = rdata.data.commidityAttributeDetail;
         }
       });
     },
@@ -304,7 +305,33 @@ export default {
       queryCategoryAttribute(params).then(response => {
         var rdata = response.data;
         if (rdata.code == 200) {
-          that.categoryAttributeList = rdata.data;
+          that.categoryAttributeList = rdata.data.commidityAttributeDetail;
+        }
+      });
+    },
+
+    queryCommodityCode() {
+      debugger
+      let that = this;
+      let params = {
+          id: that.commodity.commodityCategoryId,
+          attributeType: that.commodity.commodityType,
+          commodityCode: that.commodity.commodityCode,
+          attributeFirstWord: that.attributeFirstWord
+       };
+       queryCategoryAttribute(params).then(response => {
+        var rdata = response.data;
+        if (rdata.code == 200) {
+          that.categoryAttributeList = rdata.data.commidityAttributeDetail;
+          that.commodity.commodityPicture = rdata.data.commodityPicture;
+          if(rdata.data.commodityPicture) {
+            that.uploadList = [];
+            let pictures = rdata.data.commodityPicture.split(",");
+            pictures.map(item => {
+              that.uploadList.push({url: item, status: 'finished'});
+            });
+          }
+
         }
       });
     }
