@@ -381,6 +381,7 @@ export default {
           that.commodity.commodityType = rdata.data.commodityType;
           that.commodity.commodityName = rdata.data.commodityName;
           that.commodity.description = rdata.data.description;
+          that.commodity.additionalDescription = rdata.data.additionalDescription;
           that.commodity.price = rdata.data.price;
           that.commodity.commodityPicture = rdata.data.commodityPicture;
           // 图片回显
