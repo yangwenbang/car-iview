@@ -128,7 +128,7 @@
           </Col>
         </Row>
         <div class="text-center margin-top-10">
-          <Button type="primary" class="btn-common-width">保存</Button>
+          <Button type="primary" class="btn-common-width" @click="save" :disabled="submitDisabled">保存</Button>
           <Button class="btn-common-width margin-left-10">取消</Button>
         </div>
       </Form>
@@ -143,6 +143,7 @@ export default {
   components: {},
   data() {
     return {
+      submitDisabled: false,
       commodity: {
         id: "",
         commodityCode: "",
@@ -396,17 +397,37 @@ export default {
     },
 
     save() {
-        var that = this;
-        var params = that.commodity;
-        auditCommodity(param).then(response => {
-            var rdata = response.data;
-            if (rdata.code == 200) {
-                this.$Message.success("保存成功");
-                window.history.go(-1);
-            } else {
-                this.$Message.error("保存失败" + rdata.msg);
+       this.$refs[name].validate(valid => {
+        if (valid) {
+          this.submitDisabled = true;
+          this.categoryAttributeList.map(item => {
+            debugger
+            if(item.selectId) {
+              let selectItem = item.childAttribute.filter(attribute => {
+                return attribute.id == item.selectId;
+              });
+              let attributeDetail = {
+                attributeName: selectItem.attributeName,
+                attributeType: selectItem.attributeType,
+                isAuditType: selectItem.isAuditType,
+                parentAttributeId: item.id
+              };
+              this.commodity.categoryAttributeList.push(attributeDetail);
             }
-        });
+          });
+
+          auditCommodity(commodity).then(response => {
+              var rdata = response.data;
+              if (rdata.code == 200) {
+                  this.$Message.success("保存成功");
+                  window.history.go(-1);
+              } else {
+                  this.$Message.error("保存失败" + rdata.msg);
+              }
+          });
+        }
+       });
+
     },
   }
 };
