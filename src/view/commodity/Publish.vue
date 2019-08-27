@@ -115,6 +115,17 @@
               </Select>
             </FormItem>
            </Col>
+           <br></br>
+           <Col :span="24">
+            <FormItem label="商家补充描述:">
+              <textarea
+                style="height:100px;width:388px;padding:3px;border-radius:5px"
+                placeholder="请输入商家补充描述"
+                v-model="commodity.additionalDescription"
+                :maxlength="500"
+              ></textarea>
+            </FormItem>
+          </Col>
         </Row>
         <div class="text-center margin-top-10">
           <Button type="primary" class="btn-common-width">保存</Button>
@@ -139,6 +150,7 @@ export default {
         commodityType: 1,
         commodityPicture: "",
         description: "",
+        additionalDescription: "",
         commodityCategoryId: "",
         price: "",
         commidityAttributeDetail: []
@@ -147,6 +159,7 @@ export default {
       attributeFirstWord: "A",
       categoryList: [],
       categoryAttributeList: [],
+      commodityCategoryId: "",
       defaultList: [
         // {
         //   name: "a42bdcc1178e62b4694c830f028db5c0",
@@ -290,6 +303,7 @@ export default {
         params = {
           id: that.commodity.commodityCategoryId,
           attributeType: that.commodity.commodityType
+
         };
       }else {
          params = {
@@ -308,14 +322,26 @@ export default {
 
     categoryChange() {
       let that = this;
-      let params = {
-        id: that.commodity.commodityCategoryId,
-        attributeType: that.commodity.commodityType
-      };
+      let params = {};
+      if(that.commodityCategoryId == that.commodity.commodityCategoryId) {
+          params = {
+            id: that.commodity.commodityCategoryId,
+            commodityCode: that.commodity.commodityCode,
+            attributeType: that.commodity.commodityType
+          };
+      }else {
+          params = {
+            id: that.commodity.commodityCategoryId,
+            attributeType: that.commodity.commodityType
+          };
+      }
       queryCategoryAttribute(params).then(response => {
         var rdata = response.data;
         if (rdata.code == 200) {
           that.categoryAttributeList = rdata.data.commidityAttributeDetail;
+          if(rdata.data.commodityType) {
+            that.commodity.commodityType = rdata.data.commodityType;
+          }
         }
       });
     },
@@ -341,6 +367,9 @@ export default {
         var rdata = response.data;
         if (rdata.code == 200) {
           that.categoryAttributeList = rdata.data.commidityAttributeDetail;
+          that.commodity.commodityCategoryId = rdata.data.commodityCategoryId;
+          that.commodityCategoryId = rdata.data.commodityCategoryId;
+          that.commodity.commodityType = rdata.data.commodityType;
           that.commodity.commodityName = rdata.data.commodityName;
           that.commodity.description = rdata.data.description;
           that.commodity.price = rdata.data.price;
