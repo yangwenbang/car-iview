@@ -324,8 +324,9 @@ export default {
         if (rdata.code == 200) {
           that.categoryAttributeList = rdata.data.commidityAttributeDetail;
           that.commodity.commodityPicture = rdata.data.commodityPicture;
+          // 图片回显
+          that.uploadList = [];
           if(rdata.data.commodityPicture) {
-            that.uploadList = [];
             let pictures = rdata.data.commodityPicture.split(",");
             pictures.map(item => {
               that.uploadList.push({url: item, status: 'finished'});
