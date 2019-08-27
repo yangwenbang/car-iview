@@ -26,3 +26,12 @@ export const queryCategoryAttribute = (params) => {
         method: 'get'
     })
 }
+
+// 审核商品订单
+export const auditCommodity = (params) => {
+  return axios.request({
+      url: '/car/commodity/auditCommodity',
+      data: params,
+      method: 'post'
+  })
+}

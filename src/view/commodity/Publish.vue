@@ -117,7 +117,7 @@
            </Col>
            <br></br>
            <Col :span="24">
-            <FormItem label="商家补充描述:">
+            <FormItem label="商家补充描述:" prop="additionalDescription">
               <textarea
                 style="height:100px;width:388px;padding:3px;border-radius:5px"
                 placeholder="请输入商家补充描述"
@@ -136,7 +136,7 @@
   </div>
 </template>
 <script>
-import { queryCategory, queryCategoryAttribute } from "@/api/commodity";
+import { queryCategory, queryCategoryAttribute, auditCommodity } from "@/api/commodity";
 
 export default {
   name: "Publish",
@@ -191,7 +191,14 @@ export default {
             trigger: "change"
           }
         ],
-        price: [{ required: true, message: "价格不能为空", trigger: "blur" }]
+        price: [{ required: true, message: "价格不能为空", trigger: "blur" }],
+        additionalDescription: [
+           {
+            required: true,
+            message: "请输入商家补充描述",
+            trigger: "change"
+          }
+        ]
       }
     };
   },
@@ -366,6 +373,7 @@ export default {
       queryCategoryAttribute(params).then(response => {
         var rdata = response.data;
         if (rdata.code == 200) {
+          that.commodity.id = rdata.data.id;
           that.categoryAttributeList = rdata.data.commidityAttributeDetail;
           that.commodity.commodityCategoryId = rdata.data.commodityCategoryId;
           that.commodityCategoryId = rdata.data.commodityCategoryId;
@@ -385,7 +393,21 @@ export default {
 
         }
       });
-    }
+    },
+
+    save() {
+        var that = this;
+        var params = that.commodity;
+        auditCommodity(param).then(response => {
+            var rdata = response.data;
+            if (rdata.code == 200) {
+                this.$Message.success("保存成功");
+                window.history.go(-1);
+            } else {
+                this.$Message.error("保存失败" + rdata.msg);
+            }
+        });
+    },
   }
 };
 </script>
