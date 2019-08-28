@@ -72,12 +72,12 @@
           </Col>
           <Col :sm="12" :xs="24">
             <FormItem label="商品描述:">
-              <textarea
-                style="height:100px;width:388px;padding:3px;border-radius:5px"
+              <Input type="textarea"
+                :rows="4" style="width: 500px"
                 placeholder="请输入商品描述"
                 v-model="commodity.description"
                 :maxlength="500"
-              ></textarea>
+              ></Input>
             </FormItem>
           </Col>
           <Col :span="24" style="margin-bottom: 10px;">
@@ -110,26 +110,37 @@
           </Col>
            <Col :sm="12" :xs="24" v-for="(categoryAttribute, index) in categoryAttributeList" :key="index">
             <FormItem :label='categoryAttribute.attributeName + ":"'>
-                <Select v-model="categoryAttribute.selectId">
+              <template v-if="categoryAttribute.isManualInput == 0">
+                <Select label-in-value v-model="categoryAttribute.selectId" clearable filterable style="width: 200px;" @on-change="selectChange($event, index)">
                   <Option v-for="attribute in categoryAttribute.childAttribute" :key="attribute.id" :value="attribute.id">{{attribute.attributeName}}</Option>
-              </Select>
+                </Select>
+                <Input style="width: 200px; margin-left: 10px;" v-if="categoryAttribute.inputContext != null" v-model="categoryAttribute.inputContext"/>
+              </template>
+              <template v-else>
+                <Input v-model="categoryAttribute.inputContext"/>
+              </template>
             </FormItem>
            </Col>
-           <br></br>
            <Col :span="24">
             <FormItem label="商家补充描述:" prop="additionalDescription">
-              <textarea
-                style="height:100px;width:388px;padding:3px;border-radius:5px"
+              <Input type="textarea"
+                :rows="4" style="width: 500px"
                 placeholder="请输入商家补充描述"
                 v-model="commodity.additionalDescription"
                 :maxlength="500"
-              ></textarea>
+              ></Input>
             </FormItem>
           </Col>
         </Row>
         <div class="text-center margin-top-10">
-          <Button type="primary" class="btn-common-width" @click="save('commodityform')" :disabled="submitDisabled">保存</Button>
-          <Button class="btn-common-width margin-left-10">取消</Button>
+          <Button type="primary" class="btn-common-width" @click="save('commodityform')" :disabled="submitDisabled">
+            <span v-if="commodity.commodityCode">
+                上架
+            </span>
+            <span v-else>
+                保存
+            </span>
+          </Button>
         </div>
       </Form>
     </div>
@@ -229,13 +240,13 @@ export default {
       }
     },
     handleSuccess(res, file) {
+      debugger
       if (res.code == "200") {
         file.url = "http://" + res.data;
       } else {
         this.$Message.error(res.msg);
       }
       var that = this;
-      that.uploadList.push(file);
       if (that.uploadList != null && that.uploadList.length > 0) {
         var urls = "";
         for (var i = 0; i < that.uploadList.length; i++) {
@@ -401,24 +412,48 @@ export default {
         if (valid) {
           this.submitDisabled = true;
           this.categoryAttributeList.map(item => {
-            if(item.selectId) {
-              let selectItem = item.childAttribute.filter(attribute => {
-                return attribute.id == item.selectId;
-              });
-              let attributeDetail = {
-                attributeName: selectItem[0].attributeName,
-                attributeType: selectItem[0].attributeType,
-                isAuditType: selectItem[0].isAuditType,
-                parentAttributeId: item.id,
-                parentAttributeName: selectItem[0].parentAttributeName,
-                categoryAttributeId: selectItem[0].id
+            if(item.isManualInput == 0) {
+              if(item.selectId) {
+                let selectItem = item.childAttribute.filter(attribute => {
+                  return attribute.id == item.selectId;
+                });
+                let attributeDetail = {};
+                if(selectItem[0].attributeName == '其他' || selectItem[0].attributeName == '其它') {
+                  attributeDetail = {
+                    attributeName: selectItem[0].attributeName,
+                    attributeType: selectItem[0].attributeType,
+                    isAuditType: selectItem[0].isAuditType,
+                    parentAttributeId: item.id,
+                    parentAttributeName: selectItem[0].parentAttributeName,
+                    categoryAttributeId: selectItem[0].id,
+                    inputContext: item.inputContext
+                  };
+                }else {
+                  attributeDetail = {
+                    attributeName: selectItem[0].attributeName,
+                    attributeType: selectItem[0].attributeType,
+                    isAuditType: selectItem[0].isAuditType,
+                    parentAttributeId: item.id,
+                    parentAttributeName: selectItem[0].parentAttributeName,
+                    categoryAttributeId: selectItem[0].id
+                  };
+                }
+                this.commodity.commidityAttributeDetail.push(attributeDetail);
+              }
+            }else if(item.isManualInput == 1) {
+              let attributeDetail = {};
+              attributeDetail = {
+                  attributeType: item.attributeType,
+                  isAuditType: item.isAuditType,
+                  parentAttributeId: item.id,
+                  parentAttributeName: item.attributeName,
+                  inputContext: item.inputContext
               };
               this.commodity.commidityAttributeDetail.push(attributeDetail);
             }
           });
 
           auditCommodity(this.commodity).then(response => {
-            debugger
               var rdata = response.data;
               if (rdata.code == 200) {
                   this.$Message.success("保存成功");
@@ -430,8 +465,15 @@ export default {
           });
         }
        });
-
     },
+
+    selectChange(option, index) {
+      if(option.label != '其它' && option.label != '其他') {
+        this.categoryAttributeList[index].inputContext = null;
+      }else {
+        this.categoryAttributeList[index].inputContext = '';
+      }
+    }
   }
 };
 </script>

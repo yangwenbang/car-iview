@@ -1,10 +1,10 @@
 <template>
   <div>
-    <Row :gutter="20" v-if="$store.state.user.employeeId != 1">
+    <Row :gutter="20">
       <i-col :xs="12" :md="8" :lg="8" v-for="(infor, i) in inforCardData" :key="`infor-${i}`" style="height: 120px;padding-bottom: 10px;">
         <infor-card shadow :color="infor.color" :icon="infor.icon" :icon-size="36" :link="infor.link">
           <count-to :end="infor.count" count-class="count-style" />
-          <p>{{ infor.title }}</p>
+          <!-- <p>{{ infor.title }}</p> -->
         </infor-card>
       </i-col>
     </Row>
