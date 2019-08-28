@@ -133,14 +133,19 @@
           </Col>
         </Row>
         <div class="text-center margin-top-10">
-          <Button type="primary" class="btn-common-width" @click="save('commodityform')" :disabled="submitDisabled">
-            <span v-if="commodity.commodityCode">
-                上架
-            </span>
-            <span v-else>
-                保存
-            </span>
-          </Button>
+          <template v-if="commodity.commodityCode">
+            <Button type="primary" class="btn-common-width" @click="save('commodityform', 1)" :disabled="submitDisabled">
+                  上架
+            </Button>
+            <Button type="primary" class="btn-common-width" @click="save('commodityform', 2)">
+                  下架
+            </Button>
+          </template>
+          <template v-else>
+             <Button type="primary" class="btn-common-width" @click="save('commodityform', 2)" :disabled="submitDisabled">
+                  上架
+            </Button>
+           </template>
         </div>
       </Form>
     </div>
@@ -158,6 +163,7 @@ export default {
       commodity: {
         id: "",
         commodityCode: "",
+        auditStatus: "",
         commodityName: "",
         commodityType: 1,
         commodityPicture: "",
@@ -407,9 +413,10 @@ export default {
       });
     },
 
-    save(name) {
+    save(name, status) {
        this.$refs[name].validate(valid => {
         if (valid) {
+          this.commodity.auditStatus = status;
           this.submitDisabled = true;
           this.categoryAttributeList.map(item => {
             if(item.isManualInput == 0) {
