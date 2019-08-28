@@ -142,7 +142,7 @@
             </Button>
           </template>
           <template v-else>
-             <Button type="primary" class="btn-common-width" @click="save('commodityform', 2)" :disabled="submitDisabled">
+             <Button type="primary" class="btn-common-width" @click="save('commodityform', 1)" :disabled="submitDisabled">
                   上架
             </Button>
            </template>
