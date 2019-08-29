@@ -21,7 +21,7 @@
         <hr class="line">
         <Row type="flex" justify="space-between">
           <Col :sm="12" :xs="24">
-            <FormItem label="订单编号:">
+            <FormItem label="商品编号:">
               <Input type="text" v-model="commodity.commodityCode" :maxlength="30" @on-input-change="queryCommodityCode"></Input>
             </FormItem>
           </Col>
@@ -224,6 +224,11 @@ export default {
   },
   mounted() {
     this.uploadList = this.$refs.upload.fileList;
+    let commodityCode = this.$route.query.commodityCode
+    if(commodityCode) {
+      this.commodity.commodityCode = commodityCode;
+      this.queryCommodityCode();
+    }
   },
   methods: {
     handleView(item) {
@@ -246,7 +251,6 @@ export default {
       }
     },
     handleSuccess(res, file) {
-      debugger
       if (res.code == "200") {
         file.url = "http://" + res.data;
       } else {

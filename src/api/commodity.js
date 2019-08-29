@@ -35,3 +35,11 @@ export const auditCommodity = (params) => {
       method: 'post'
   })
 }
+
+export const queryCommodityOrder = (params) => {
+  return axios.request({
+    url: '/car/commodity/queryCommodityOrder',
+    params: params,
+    method: 'get'
+  })
+}
