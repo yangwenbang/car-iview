@@ -28,7 +28,7 @@
           </FormItem>
         </Col>
         <Col :sm="8" :xs="24">
-          <FormItem label="商品订单号:">
+          <FormItem label="商品编号:">
             <Input v-model="searchForm.commodityCode" placeholder="请输入商品订单号"></Input>
           </FormItem>
         </Col>

@@ -393,12 +393,14 @@ export default {
         params = {
           id: that.commodity.commodityCategoryId,
           commodityCode: that.commodity.commodityCode,
-          attributeType: that.commodity.commodityType
+          attributeType: that.commodity.commodityType,
+          attributeFirstWord: that.attributeFirstWord
         };
       } else {
         params = {
           id: that.commodity.commodityCategoryId,
-          attributeType: that.commodity.commodityType
+          attributeType: that.commodity.commodityType,
+          attributeFirstWord: that.attributeFirstWord
         };
       }
       queryCategoryAttribute(params).then(response => {
