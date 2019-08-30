@@ -9,6 +9,7 @@ import config from '@/config'
 import importDirective from '@/directive'
 import installPlugin from '@/plugin'
 import iviewArea from 'iview-area';
+import { Select, Option } from 'element-ui';
 
 import $ from 'jquery'
 import 'iview/dist/styles/iview.css'
@@ -17,6 +18,9 @@ import '@/assets/icons/iconfont.css'
 
 Vue.use(iView)
 Vue.use(iviewArea)
+Vue.use(Select)
+Vue.use(Option)
+
 import * as filters from '@/libs/filters'
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key])
