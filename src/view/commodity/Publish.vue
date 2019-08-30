@@ -56,7 +56,7 @@
                   :default-file-list="defaultList"
                   :on-success="handleSuccess"
                   :format="['jpg','jpeg','png']"
-                  :max-size="20480"
+                  :max-size="50*1024"
                   :on-format-error="handleFormatError"
                   :on-exceeded-size="handleMaxSize"
                   :before-upload="handleBeforeUpload"
@@ -304,24 +304,24 @@ export default {
     },
     handleFormatError(file) {
       this.$Notice.warning({
-        title: "The file format is incorrect",
+        title: "文件格式不正确",
         desc:
-          "File format of " +
+          "文件格式 " +
           file.name +
-          " is incorrect, please select jpg or png."
+          " 不正确, 请选择 jpg or png文件."
       });
     },
     handleMaxSize(file) {
       this.$Notice.warning({
-        title: "Exceeding file size limit",
-        desc: "File  " + file.name + " is too large, no more than 2M."
+        title: "文件大小超限",
+        desc: "文件  " + file.name + " 太大，上传文件大小不能超过50M."
       });
     },
     handleBeforeUpload() {
       const check = this.uploadList.length < 5;
       if (!check) {
         this.$Notice.warning({
-          title: "Up to five pictures can be uploaded."
+          title: "最多上次5张图片."
         });
       }
       return check;
