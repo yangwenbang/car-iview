@@ -22,7 +22,12 @@
         <Row type="flex" justify="space-between">
           <Col :sm="12" :xs="24">
             <FormItem label="商品编号:">
-              <Input type="text" v-model="commodity.commodityCode" :maxlength="30" @on-input-change="queryCommodityCode"></Input>
+              <Input
+                type="text"
+                v-model="commodity.commodityCode"
+                :maxlength="30"
+                @on-input-change="queryCommodityCode"
+              ></Input>
             </FormItem>
           </Col>
           <Col :sm="12" :xs="24">
@@ -51,7 +56,7 @@
                   :default-file-list="defaultList"
                   :on-success="handleSuccess"
                   :format="['jpg','jpeg','png']"
-                  :max-size="2048"
+                  :max-size="20480"
                   :on-format-error="handleFormatError"
                   :on-exceeded-size="handleMaxSize"
                   :before-upload="handleBeforeUpload"
@@ -72,8 +77,10 @@
           </Col>
           <Col :sm="12" :xs="24">
             <FormItem label="商品描述:">
-              <Input type="textarea"
-                :rows="4" style="width: 500px"
+              <Input
+                type="textarea"
+                :rows="4"
+                style="width: 500px"
                 placeholder="请输入商品描述"
                 v-model="commodity.description"
                 :maxlength="500"
@@ -105,26 +112,49 @@
                 <Radio :label="0">原厂</Radio>
                 <Radio :label="1">非原厂</Radio>
               </RadioGroup>
-              <Input style="width: 200px;" v-if="commodity.commodityType==0" v-model="attributeFirstWord" :maxlength="1" @input="typeChange"/>
+              <Input
+                style="width: 200px;"
+                v-if="commodity.commodityType==0"
+                v-model="attributeFirstWord"
+                :maxlength="1"
+                @input="typeChange"
+              />
             </FormItem>
           </Col>
-           <Col :sm="12" :xs="24" v-for="(categoryAttribute, index) in categoryAttributeList" :key="index">
-            <FormItem :label='categoryAttribute.attributeName + ":"'>
+          <Col :sm="12" :xs="24" v-for="(categoryAttribute, index) in categoryAttributeList" :key="index">
+            <FormItem :label="categoryAttribute.attributeName + ':'">
               <template v-if="categoryAttribute.isManualInput == 0">
-                <Select label-in-value v-model="categoryAttribute.selectId" clearable filterable style="width: 200px;" @on-change="selectChange($event, index)">
-                  <Option v-for="attribute in categoryAttribute.childAttribute" :key="attribute.id" :value="attribute.id">{{attribute.attributeName}}</Option>
+                <Select
+                  label-in-value
+                  v-model="categoryAttribute.selectId"
+                  clearable
+                  filterable
+                  style="width: 200px;"
+                  @on-change="selectChange($event, index)"
+                >
+                  <Option
+                    v-for="attribute in categoryAttribute.childAttribute"
+                    :key="attribute.id"
+                    :value="attribute.id"
+                  >{{attribute.attributeName}}</Option>
                 </Select>
-                <Input style="width: 200px; margin-left: 10px;" v-if="categoryAttribute.inputContext != null" v-model="categoryAttribute.inputContext"/>
+                <Input
+                  style="width: 200px; margin-left: 10px;"
+                  v-if="categoryAttribute.inputContext != null"
+                  v-model="categoryAttribute.inputContext"
+                />
               </template>
               <template v-else>
                 <Input v-model="categoryAttribute.inputContext"/>
               </template>
             </FormItem>
-           </Col>
-           <Col :span="24">
+          </Col>
+          <Col :span="24">
             <FormItem label="商家补充描述:" prop="additionalDescription">
-              <Input type="textarea"
-                :rows="4" style="width: 500px"
+              <Input
+                type="textarea"
+                :rows="4"
+                style="width: 500px"
                 placeholder="请输入商家补充描述"
                 v-model="commodity.additionalDescription"
                 :maxlength="500"
@@ -134,25 +164,33 @@
         </Row>
         <div class="text-center margin-top-10">
           <template v-if="commodity.commodityCode">
-            <Button type="primary" class="btn-common-width" @click="save('commodityform', 1)" :disabled="submitDisabled">
-                  上架
-            </Button>
-            <Button type="primary" class="btn-common-width" @click="save('commodityform', 2)">
-                  下架
-            </Button>
+            <Button
+              type="primary"
+              class="btn-common-width"
+              @click="save('commodityform', 1)"
+              :disabled="submitDisabled"
+            >上架</Button>
+            <Button type="primary" class="btn-common-width" @click="save('commodityform', 2)">下架</Button>
           </template>
           <template v-else>
-             <Button type="primary" class="btn-common-width" @click="save('commodityform', 1)" :disabled="submitDisabled">
-                  上架
-            </Button>
-           </template>
+            <Button
+              type="primary"
+              class="btn-common-width"
+              @click="save('commodityform', 1)"
+              :disabled="submitDisabled"
+            >上架</Button>
+          </template>
         </div>
       </Form>
     </div>
   </div>
 </template>
 <script>
-import { queryCategory, queryCategoryAttribute, auditCommodity } from "@/api/commodity";
+import {
+  queryCategory,
+  queryCategoryAttribute,
+  auditCommodity
+} from "@/api/commodity";
 
 export default {
   name: "Publish",
@@ -210,7 +248,7 @@ export default {
           }
         ],
         additionalDescription: [
-           {
+          {
             required: true,
             message: "请输入商家补充描述",
             trigger: "change"
@@ -223,12 +261,6 @@ export default {
     this.getCategoryList();
   },
   mounted() {
-    this.uploadList = this.$refs.upload.fileList;
-    let commodityCode = this.$route.query.commodityCode
-    if(commodityCode) {
-      this.commodity.commodityCode = commodityCode;
-      this.queryCommodityCode();
-    }
   },
   methods: {
     handleView(item) {
@@ -238,7 +270,7 @@ export default {
     },
     handleRemove(file) {
       this.uploadList.splice(this.uploadList.indexOf(file), 1);
-       if (this.uploadList != null && this.uploadList.length > 0) {
+      if (this.uploadList != null && this.uploadList.length > 0) {
         var urls = "";
         for (var i = 0; i < this.uploadList.length; i++) {
           if (i != this.uploadList.length - 1) {
@@ -257,6 +289,7 @@ export default {
         this.$Message.error(res.msg);
       }
       var that = this;
+      that.uploadList.push(file);
       if (that.uploadList != null && that.uploadList.length > 0) {
         var urls = "";
         for (var i = 0; i < that.uploadList.length; i++) {
@@ -306,17 +339,23 @@ export default {
         let rdata = response.data;
         if (rdata.code == 200) {
           that.categoryList = rdata.data.recordList;
-          that.commodity.commodityCategoryId = that.categoryList[0].id;
-          let params = {
-            id: that.commodity.commodityCategoryId,
-            attributeType: that.commodity.commodityType
-          };
-          queryCategoryAttribute(params).then(response => {
-            let rdata = response.data;
-            if (rdata.code == 200) {
-              that.categoryAttributeList = rdata.data.commidityAttributeDetail;
-            }
-          });
+          let commodityCode = that.$route.query.commodityCode;
+          if (commodityCode) {
+            that.commodity.commodityCode = commodityCode;
+            that.queryCommodityCode();
+          } else {
+            that.commodity.commodityCategoryId = that.categoryList[0].id;
+            var param = {
+              id: that.commodity.commodityCategoryId,
+              attributeType: that.commodity.commodityType
+            };
+            queryCategoryAttribute(param).then(response => {
+              let rdata = response.data;
+              if (rdata.code == 200) {
+                that.categoryAttributeList = Object.assign({}, rdata.data.commidityAttributeDetail)
+              }
+            });
+          }
         } else {
           this.$Message.error("查询分类失败" + rdata.msg);
         }
@@ -327,14 +366,13 @@ export default {
       let that = this;
       that.categoryAttributeList = [];
       let params = {};
-      if(that.commodity.commodityType == 1) {
+      if (that.commodity.commodityType == 1) {
         params = {
           id: that.commodity.commodityCategoryId,
           attributeType: that.commodity.commodityType
-
         };
-      }else {
-         params = {
+      } else {
+        params = {
           id: that.commodity.commodityCategoryId,
           attributeType: that.commodity.commodityType,
           attributeFirstWord: that.attributeFirstWord
@@ -351,23 +389,23 @@ export default {
     categoryChange() {
       let that = this;
       let params = {};
-      if(that.commodityCategoryId == that.commodity.commodityCategoryId) {
-          params = {
-            id: that.commodity.commodityCategoryId,
-            commodityCode: that.commodity.commodityCode,
-            attributeType: that.commodity.commodityType
-          };
-      }else {
-          params = {
-            id: that.commodity.commodityCategoryId,
-            attributeType: that.commodity.commodityType
-          };
+      if (that.commodityCategoryId == that.commodity.commodityCategoryId) {
+        params = {
+          id: that.commodity.commodityCategoryId,
+          commodityCode: that.commodity.commodityCode,
+          attributeType: that.commodity.commodityType
+        };
+      } else {
+        params = {
+          id: that.commodity.commodityCategoryId,
+          attributeType: that.commodity.commodityType
+        };
       }
       queryCategoryAttribute(params).then(response => {
         var rdata = response.data;
         if (rdata.code == 200) {
           that.categoryAttributeList = rdata.data.commidityAttributeDetail;
-          if(rdata.data.commodityType) {
+          if (rdata.data.commodityType) {
             that.commodity.commodityType = rdata.data.commodityType;
           }
         }
@@ -377,14 +415,14 @@ export default {
     queryCommodityCode() {
       let that = this;
       let params = {};
-      if(that.commodity.commodityType == 1) {
+      if (that.commodity.commodityType == 1) {
         params = {
           id: that.commodity.commodityCategoryId,
           commodityCode: that.commodity.commodityCode,
           attributeType: that.commodity.commodityType
         };
-      }else {
-         params = {
+      } else {
+        params = {
           id: that.commodity.commodityCategoryId,
           commodityCode: that.commodity.commodityCode,
           attributeType: that.commodity.commodityType,
@@ -401,35 +439,38 @@ export default {
           that.commodity.commodityType = rdata.data.commodityType;
           that.commodity.commodityName = rdata.data.commodityName;
           that.commodity.description = rdata.data.description;
-          that.commodity.additionalDescription = rdata.data.additionalDescription;
+          that.commodity.additionalDescription =
+            rdata.data.additionalDescription;
           that.commodity.price = rdata.data.price;
           that.commodity.commodityPicture = rdata.data.commodityPicture;
           // 图片回显
           that.uploadList = [];
-          if(rdata.data.commodityPicture) {
+          if (rdata.data.commodityPicture) {
             let pictures = rdata.data.commodityPicture.split(",");
             pictures.map(item => {
-              that.uploadList.push({url: item, status: 'finished'});
+              that.uploadList.push({ url: item, status: "finished" });
             });
           }
-
         }
       });
     },
 
     save(name, status) {
-       this.$refs[name].validate(valid => {
+      this.$refs[name].validate(valid => {
         if (valid) {
           this.commodity.auditStatus = status;
           this.submitDisabled = true;
           this.categoryAttributeList.map(item => {
-            if(item.isManualInput == 0) {
-              if(item.selectId) {
+            if (item.isManualInput == 0) {
+              if (item.selectId) {
                 let selectItem = item.childAttribute.filter(attribute => {
                   return attribute.id == item.selectId;
                 });
                 let attributeDetail = {};
-                if(selectItem[0].attributeName == '其他' || selectItem[0].attributeName == '其它') {
+                if (
+                  selectItem[0].attributeName == "其他" ||
+                  selectItem[0].attributeName == "其它"
+                ) {
                   attributeDetail = {
                     attributeName: selectItem[0].attributeName,
                     attributeType: selectItem[0].attributeType,
@@ -439,7 +480,7 @@ export default {
                     categoryAttributeId: selectItem[0].id,
                     inputContext: item.inputContext
                   };
-                }else {
+                } else {
                   attributeDetail = {
                     attributeName: selectItem[0].attributeName,
                     attributeType: selectItem[0].attributeType,
@@ -451,38 +492,38 @@ export default {
                 }
                 this.commodity.commidityAttributeDetail.push(attributeDetail);
               }
-            }else if(item.isManualInput == 1) {
+            } else if (item.isManualInput == 1) {
               let attributeDetail = {};
               attributeDetail = {
-                  attributeType: item.attributeType,
-                  isAuditType: item.isAuditType,
-                  parentAttributeId: item.id,
-                  parentAttributeName: item.attributeName,
-                  inputContext: item.inputContext
+                attributeType: item.attributeType,
+                isAuditType: item.isAuditType,
+                parentAttributeId: item.id,
+                parentAttributeName: item.attributeName,
+                inputContext: item.inputContext
               };
               this.commodity.commidityAttributeDetail.push(attributeDetail);
             }
           });
 
           auditCommodity(this.commodity).then(response => {
-              var rdata = response.data;
-              if (rdata.code == 200) {
-                  this.$Message.success("保存成功");
-                  window.history.go(-1);
-              } else {
-                  this.$Message.error("保存失败" + rdata.msg);
-                  this.submitDisabled = false;
-              }
+            var rdata = response.data;
+            if (rdata.code == 200) {
+              this.$Message.success("保存成功");
+              window.history.go(-1);
+            } else {
+              this.$Message.error("保存失败" + rdata.msg);
+              this.submitDisabled = false;
+            }
           });
         }
-       });
+      });
     },
 
     selectChange(option, index) {
-      if(option.label != '其它' && option.label != '其他') {
+      if (option.label != "其它" && option.label != "其他") {
         this.categoryAttributeList[index].inputContext = null;
-      }else {
-        this.categoryAttributeList[index].inputContext = '';
+      } else {
+        this.categoryAttributeList[index].inputContext = "";
       }
     }
   }

@@ -79,6 +79,7 @@
 import { queryCategory, queryCommodityOrder } from "@/api/commodity";
 import { formatDate } from "@/libs/util";
 export default {
+  name: "CommodityList",
   data() {
     return {
       submitDisabled: false,
