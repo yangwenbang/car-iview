@@ -23,29 +23,29 @@ Vue.use(Option)
 
 import * as filters from '@/libs/filters'
 Object.keys(filters).forEach(key => {
-  Vue.filter(key, filters[key])
-})
-/**
- * @description 注册admin内置插件
- */
+        Vue.filter(key, filters[key])
+    })
+    /**
+     * @description 注册admin内置插件
+     */
 installPlugin(Vue)
-/**
- * @description 生产环境关掉提示
- */
+    /**
+     * @description 生产环境关掉提示
+     */
 Vue.config.productionTip = false
-/**
- * @description 全局注册应用配置
- */
+    /**
+     * @description 全局注册应用配置
+     */
 Vue.prototype.$config = config
-/**
- * 注册指令
- */
+    /**
+     * 注册指令
+     */
 importDirective(Vue)
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
-  router,
-  store,
-  render: h => h(App)
+    el: '#app',
+    router,
+    store,
+    render: h => h(App)
 })
