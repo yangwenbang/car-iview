@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { queryCategory } from "@/api/commodity";
+import { queryCategory, saveCategory, updateCategory, deleteCategory } from "@/api/commodity";
 import { formatDate } from "@/libs/util";
 export default {
   name: "CategoryList",

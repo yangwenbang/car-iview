@@ -18,6 +18,33 @@ export const queryCategory = (params) => {
     })
 }
 
+//删除分类
+export const deleteCategory = (params) => {
+    return axios.request({
+        url: '/car/category/deleteCategory',
+        params: params,
+        method: 'delete'
+    })
+}
+
+// 保存分类
+export const saveCategory = (params) => {
+    return axios.request({
+        url: '/car/category/saveCategory',
+        data: params,
+        method: 'post'
+    })
+}
+
+// 修改分类
+export const updateCategory = (params) => {
+    return axios.request({
+        url: '/car/category/updateCategory',
+        data: params,
+        method: 'post'
+    })
+}
+
 //查询分类属性
 export const queryCategoryAttribute = (params) => {
     return axios.request({
@@ -29,17 +56,17 @@ export const queryCategoryAttribute = (params) => {
 
 // 审核商品订单
 export const auditCommodity = (params) => {
-  return axios.request({
-      url: '/car/commodity/auditCommodity',
-      data: params,
-      method: 'post'
-  })
+    return axios.request({
+        url: '/car/commodity/auditCommodity',
+        data: params,
+        method: 'post'
+    })
 }
 
 export const queryCommodityOrder = (params) => {
-  return axios.request({
-    url: '/car/commodity/queryCommodityOrder',
-    params: params,
-    method: 'get'
-  })
+    return axios.request({
+        url: '/car/commodity/queryCommodityOrder',
+        params: params,
+        method: 'get'
+    })
 }
