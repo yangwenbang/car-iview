@@ -743,7 +743,17 @@ export default [{
                 },
                 component: () =>
                     import ('@/view/commodity/CategoryList.vue')
-            }
+            },
+            {
+              path: 'CategoryTree',
+              name: 'CategoryTree',
+              meta: {
+                  title: '分类属性',
+                  pageTitle: '分类属性'
+              },
+              component: () =>
+                  import ('@/view/commodity/CategoryTree.vue')
+          }
         ]
     },
     {

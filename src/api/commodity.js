@@ -70,3 +70,31 @@ export const queryCommodityOrder = (params) => {
         method: 'get'
     })
 }
+
+//删除分类属性
+export const deleteCategoryAttribute = (params) => {
+  return axios.request({
+      url: '/car/category/deleteCategoryAttribute',
+      params: params,
+      method: 'delete'
+  })
+}
+
+//查询分类
+export const queryCategoryAttributeList = (params) => {
+  return axios.request({
+      url: '/car/category/queryCategoryAttributeList',
+      params: params,
+      method: 'get'
+  })
+}
+
+
+// 修改分类
+export const saveCategoryAttribute = (params) => {
+  return axios.request({
+      url: '/car/category/saveCategoryAttribute',
+      data: params,
+      method: 'post'
+  })
+}
