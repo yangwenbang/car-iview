@@ -20,6 +20,7 @@
     "dayjs": "^1.7.7",
     "echarts": "^4.0.4",
     "element-ui": "^2.10.1",
+    "tree-table-vue": "^1.1.0",
     "html2canvas": "^1.0.0-alpha.12",
     "iview": "^3.3.0",
     "iview-area": "^1.6.0",

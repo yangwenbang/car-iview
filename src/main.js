@@ -10,6 +10,7 @@ import importDirective from '@/directive'
 import installPlugin from '@/plugin'
 import iviewArea from 'iview-area';
 import { Select, Option } from 'element-ui';
+import TreeTable from 'tree-table-vue'
 
 import $ from 'jquery'
 import 'iview/dist/styles/iview.css'
@@ -20,6 +21,7 @@ Vue.use(iView)
 Vue.use(iviewArea)
 Vue.use(Select)
 Vue.use(Option)
+Vue.use(TreeTable)
 
 import * as filters from '@/libs/filters'
 Object.keys(filters).forEach(key => {
