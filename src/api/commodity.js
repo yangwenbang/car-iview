@@ -98,3 +98,19 @@ export const saveCategoryAttribute = (params) => {
       method: 'post'
   })
 }
+
+export const queryTreeOfCategoryAttribute = (params) => {
+  return axios.request({
+    url: '/car/category/queryTreeOfCategoryAttribute',
+    params: params,
+    method: 'get'
+  })
+}
+
+export const updateCategoryAttribute = (params) => {
+  return axios.request({
+    url: '/car/category/updateCategoryAttribute',
+    data: params,
+    method: 'post'
+  })
+}

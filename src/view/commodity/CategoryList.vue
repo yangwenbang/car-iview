@@ -146,57 +146,56 @@
                 this.$refs.formValidate.validate(valid => {
                     if(valid){
                         this.submitDisabled = true;
-                    }
-                    let data = {};
-                    if(this.changeForm.id) {
-                        data = {
-                            categoryName:this.changeForm.categoryName,
-                            seq:this.changeForm.seq,
-                            id:this.changeForm.id
-                        }
-                        updateCategory(data).then(res=>{
-                            if(res.data.code=="200"){
-                                this.$Message.success({
-                                    content:'分类修改成功',
-                                    duration:1
-                                });
-                                this.modal=false;
-                                this.getCategoryList(this.pageNum,this.pageSize)
-                            }else{
-                                this.$Message.error({
-                                    content:res.data.msg,
-                                    duration:1
-                                });
+                        let data = {};
+                        if(this.changeForm.id) {
+                            data = {
+                                categoryName:this.changeForm.categoryName,
+                                seq:this.changeForm.seq,
+                                id:this.changeForm.id
                             }
-                            setTimeout(() => {
-                                this.submitDisabled = false;
-                            }, 1000);
-                        })
-                    }else {
-                        data = {
-                            categoryName:this.changeForm.categoryName,
-                            seq:this.changeForm.seq
-                        }
-                        saveCategory(data).then(res=>{
-                            if(res.data.code=="200"){
-                                this.$Message.success({
-                                    content:'新增分类成功',
-                                    duration:1
-                                });
-                                this.modal=false;
-                                this.getCategoryList(this.pageNum,this.pageSize)
-                            }else{
-                                this.$Message.error({
-                                    content:res.data.msg,
-                                    duration:1
-                                });
+                            updateCategory(data).then(res=>{
+                                if(res.data.code=="200"){
+                                    this.$Message.success({
+                                        content:'分类修改成功',
+                                        duration:1
+                                    });
+                                    this.modal=false;
+                                    this.getCategoryList(this.pageNum,this.pageSize)
+                                }else{
+                                    this.$Message.error({
+                                        content:res.data.msg,
+                                        duration:1
+                                    });
+                                }
+                                setTimeout(() => {
+                                    this.submitDisabled = false;
+                                }, 1000);
+                            })
+                        }else {
+                            data = {
+                                categoryName:this.changeForm.categoryName,
+                                seq:this.changeForm.seq
                             }
-                            setTimeout(() => {
-                                this.submitDisabled = false;
-                            }, 1000);
-                        })
+                            saveCategory(data).then(res=>{
+                                if(res.data.code=="200"){
+                                    this.$Message.success({
+                                        content:'新增分类成功',
+                                        duration:1
+                                    });
+                                    this.modal=false;
+                                    this.getCategoryList(this.pageNum,this.pageSize)
+                                }else{
+                                    this.$Message.error({
+                                        content:res.data.msg,
+                                        duration:1
+                                    });
+                                }
+                                setTimeout(() => {
+                                    this.submitDisabled = false;
+                                }, 1000);
+                            })
+                        }
                     }
-
                 });
             },
             cancel: function() {

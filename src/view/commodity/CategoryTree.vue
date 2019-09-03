@@ -1,73 +1,104 @@
 <template>
   <div>
-    <Tabs type="card" v-model="commodityType">
+    <Tabs type="card" v-model="attributeType" @on-click="changeTab">
       <TabPane label="非原厂" name="1" icon="ios-car">
         <Card shadow>
-          <tree-table expand-key="name" :expand-type="false" :selectable="false" :columns="columns" :data="data">
+          <tree-table
+            show-row-hover
+            expand-key="attributeName"
+            :expand-type="false"
+            :selectable="false"
+            :columns="columns"
+            :data="data"
+          >
             <template slot="operate" slot-scope="scope">
-              <Button @click="handle(scope)">新增</Button>
-              <Button @click="handle(scope)">修改</Button>
-              <Button @click="handle(scope)">删除</Button>
+              <Button @click="add(scope)" v-if="scope.row.level != 3">添加</Button>
+              <Button @click="upd(scope)" v-if="scope.row.level != 1">修改</Button>
+              <Button @click="del(scope)" v-if="scope.row.level != 1">删除</Button>
             </template>
           </tree-table>
         </Card>
       </TabPane>
       <TabPane label="原厂" name="0" icon="md-car">
         <Card shadow>
-          <tree-table expand-key="name" :expand-type="false" :selectable="false" :columns="columns" :data="data">
+          <tree-table
+            show-row-hover
+            expand-key="attributeName"
+            :expand-type="false"
+            :selectable="false"
+            :columns="columns"
+            :data="data"
+          >
             <template slot="operate" slot-scope="scope">
-              <Button @click="handle(scope)">新增</Button>
-              <Button @click="handle(scope)">修改</Button>
-              <Button @click="handle(scope)">删除</Button>
+              <Button @click="add(scope)" v-if="scope.row.level != 3">添加</Button>
+              <Button @click="upd(scope)" v-if="scope.row.level != 1">修改</Button>
+              <Button @click="del(scope)" v-if="scope.row.level != 1">删除</Button>
             </template>
           </tree-table>
         </Card>
       </TabPane>
       <Modal ref="modal" v-model="modal" :title="modalTitle" @on-ok="submit">
-            <Form ref="formValidate" :model="changeForm" :rules="ruleValidate" :label-width="100">
-                <FormItem label="分类名称:" prop="">
-                    <Input  placeholder="请输入分类名称" :maxlength="20"></Input>
-                </FormItem>
-                <FormItem label="顺序号:" prop="">
-                    <Input  placeholder="请输入顺序号" :maxlength="3"></Input>
-                </FormItem>
-            </Form>
-            <div slot="footer">
-                <Button type="text" size="large" @click="cancel">取消</Button>
-                <Button type="primary" size="large" @click="submit" :disabled="submitDisabled">确定</Button>
-            </div>
-        </Modal>
+        <Form ref="formValidate" :model="attributeForm" :rules="ruleValidate" :label-width="100">
+          <FormItem label="属性名称:" prop="attributeName">
+            <Input placeholder="请输入属性名称" v-model="attributeForm.attributeName" :maxlength="20"></Input>
+          </FormItem>
+          <FormItem label="是否审核类型:">
+            <RadioGroup v-model="attributeForm.isAuditType">
+              <Radio :label="0">否</Radio>
+              <Radio :label="1">是</Radio>
+            </RadioGroup>
+          </FormItem>
+          <FormItem label="是否手动输入:">
+            <RadioGroup v-model="attributeForm.isManualInput">
+              <Radio :label="0">否</Radio>
+              <Radio :label="1">是</Radio>
+            </RadioGroup>
+          </FormItem>
+        </Form>
+        <div slot="footer">
+          <Button type="text" size="large" @click="cancel">取消</Button>
+          <Button type="primary" size="large" @click="submit" :disabled="submitDisabled">确定</Button>
+        </div>
+      </Modal>
     </Tabs>
   </div>
 </template>
 
 <script>
-    import { deleteCategoryAttribute, saveCategoryAttribute, queryCategoryAttributeList } from "@/api/commodity";
+import {
+  deleteCategoryAttribute,
+  saveCategoryAttribute,
+  queryCategoryAttributeList,
+  queryTreeOfCategoryAttribute,
+  updateCategoryAttribute
+} from "@/api/commodity";
 export default {
   name: "CategoryTree",
   data() {
     return {
-      commodityType:"1",
+      attributeType: "1",
       modal: false,
-      modalTitle: '修改分类属性',
+      modalTitle: "修改分类属性",
       submitDisabled: false,
-      changeForm: {
-          id: "",
-          categoryName: "",
-          seq: ""
+      attributeForm: {
+        attributeFirstWord: "",
+        attributeName: "",
+        attributeType: "",
+        commodityCategoryId: "",
+        id: "",
+        isAuditType: 0,
+        isManualInput: 0,
+        parentId: ""
       },
       ruleValidate: {
-        categoryName: [
-            { required: true, message: '分类名称不能为空', trigger: 'blur' }
-        ],
-        seq: [
-            { required: true, message: '顺序号不能为空', trigger: 'blur' }
+        attributeName: [
+          { required: true, message: "属性名称不能为空", trigger: "blur" }
         ]
       },
       columns: [
         {
           title: "属性名称",
-          key: "name",
+          key: "attributeName",
           minWidth: "400px"
         },
         {
@@ -78,81 +109,147 @@ export default {
           template: "operate"
         }
       ],
-      data: [
-        {
-          name: "轮毂",
-          children: [
-            {
-              name: "轮毂制作工艺",
-              children: [
-                {
-                  name: "低压铸造",
-                },
-                {
-                  name: "DPT 铸造",
-                }
-              ]
-            },
-            {
-              name: "直径",
-               children: [
-                {
-                  name: "15 英寸",
-                },
-                {
-                  name: "16 英寸",
-                }
-              ]
-            }
-          ]
-        },
-        {
-          name: "刹车",
-          children: [
-            {
-              name: "类型",
-              children: [
-                {
-                  name: "制动套装"
-                },
-                {
-                  name: "刹车盘"
-                }
-              ]
-            },
-            {
-              name: "品牌",
-              children: [
-                {
-                  name: "Brembo"
-                },
-                {
-                  name: "Apracing"
-                }
-              ]
-            }
-          ]
-        }
-      ]
+      data: []
     };
   },
   methods: {
-    handle(scope) {
-      console.log(scope);
+    add(scope) {
+      this.modal = true;
+      this.modalTitle = "新增分类属性";
+      this.attributeForm.attributeType = this.attributeType;
+      this.attributeForm.commodityCategoryId = scope.row.commodityCategoryId;
+      if (scope.row.level == 1) {
+        this.attributeForm.parentId = 0;
+      } else {
+        this.attributeForm.parentId = scope.row.id;
+      }
     },
 
-    cancel() {},
+    upd(scope) {
+      this.modal = true;
+      this.modalTitle = "修改分类属性";
+      this.attributeForm.attributeType = this.attributeType;
+      this.attributeForm.commodityCategoryId = scope.row.commodityCategoryId;
+      this.attributeForm.attributeName = scope.row.attributeName;
+      this.attributeForm.isAuditType = scope.row.isAuditType;
+      this.attributeForm.isManualInput = scope.row.isManualInput ? scope.row.isManualInput : 0;
+      this.attributeForm.id = scope.row.id;
 
-    submit() {}
+    },
+
+    del(scope) {
+       this.$Modal.confirm({
+          title: '删除',
+          content: '是否要删除该分类属性？',
+          onOk: () => {
+            let params = {
+              id: scope.row.id
+            }
+            deleteCategoryAttribute(params).then(res => {
+              if (res.data.code == "200") {
+                    this.$Message.success({
+                      content: "分类属性删除成功",
+                      duration: 1
+                    });
+                    this.getCategoryAttributes(this.attributeType);
+                } else {
+                  this.$Message.error({
+                    content: res.data.msg,
+                    duration: 1
+                  });
+                }
+            });
+          }
+       });
+    },
+
+    reset() {
+        this.attributeForm.attributeFirstWord = "",
+        this.attributeForm.attributeName =  "",
+        this.attributeForm.attributeType =  "",
+        this.attributeForm.commodityCategoryId = "",
+        this.attributeForm.id = "",
+        this.attributeForm.isAuditType = 0,
+        this.attributeForm.isManualInput = 0,
+        this.attributeForm.parentId =  ""
+    },
+
+    cancel() {
+      this.modal = false;
+      this.reset();
+    },
+
+    submit() {
+      this.submitDisabled = true;
+      if(this.attributeForm.id) {
+          updateCategoryAttribute(this.attributeForm).then(res => {
+          if (res.data.code == "200") {
+              this.$Message.success({
+                content: "分类属性修改成功",
+                duration: 1
+              });
+              this.modal = false;
+              this.getCategoryAttributes(this.attributeType);
+            } else {
+              this.$Message.error({
+                content: res.data.msg,
+                duration: 1
+              });
+            }
+            this.reset();
+        });
+      }else {
+        saveCategoryAttribute(this.attributeForm).then(res => {
+          if (res.data.code == "200") {
+            this.$Message.success({
+              content: "分类属性添加成功",
+              duration: 1
+            });
+            this.modal = false;
+            this.getCategoryAttributes(this.attributeType);
+          } else {
+            this.$Message.error({
+              content: res.data.msg,
+              duration: 1
+            });
+          }
+          this.reset();
+        });
+      }
+      setTimeout(() => {
+        this.submitDisabled = false;
+      }, 1000);
+    },
+
+    getCategoryAttributes(val) {
+      let params = {
+        attributeType: val
+      };
+      queryTreeOfCategoryAttribute(params).then(res => {
+        if (res.data.code == "200") {
+          this.data = res.data.data;
+        } else {
+          this.$Message.error("查询分类失败" + rdata.msg);
+        }
+      });
+    },
+
+    changeTab(val) {
+      this.getCategoryAttributes(val);
+    }
+  },
+
+  created: function() {
+    this.getCategoryAttributes(this.attributeType);
   }
 };
 </script>
 
 <style lang="less" scoped>
- .zk-table /deep/ .zk-table--tree-icon {
-    font-size: 16px !important;
- }
- .ivu-btn {
-   margin-right: 10px !important;
- }
+.zk-table /deep/ .zk-table--tree-icon {
+  font-size: 16px !important;
+}
+.ivu-btn {
+  margin-right: 10px !important;
+}
 </style>

@@ -186,10 +186,10 @@ export default {
       this.queryCommoditys(1, 10);
     },
     reset: function() {
-      (this.searchForm.commodityCategoryId = ""),
-        (this.searchForm.commodityName = ""),
-        (this.searchForm.commodityCode = ""),
-        (this.searchForm.auditStatus = "");
+      this.searchForm.commodityCategoryId = "",
+        this.searchForm.commodityName = "",
+        this.searchForm.commodityCode = "",
+        this.searchForm.auditStatus = ""
     },
     submit: function() {
       this.$refs.formValidate.validate(valid => {
