@@ -227,7 +227,21 @@ export default {
       };
       queryTreeOfCategoryAttribute(params).then(res => {
         if (res.data.code == "200") {
-          this.data = res.data.data;
+          if(val == 1) {
+            this.data = res.data.data;
+          }else if(val == 0) {
+            let data = {
+              id: 0,
+              parentId: 0,
+              attributeName: "品牌/属性",
+              attributeType: 0,
+              isAuditType: 0,
+              isManualInput: 0,
+              level: 1,
+              children: res.data.data
+            }
+            this.data = [data];
+          }
         } else {
           this.$Message.error("查询分类失败" + rdata.msg);
         }
