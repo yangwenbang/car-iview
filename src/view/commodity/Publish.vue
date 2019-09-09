@@ -518,16 +518,27 @@ export default {
             }
           });
           if(this.commodity.commodityType == 1 && this.brandValue.length > 0) {
+            let brand = {};
+            let child = {};
             this.brandList.forEach(item => {
-              // TODO
+                if(this.brandValue[0] == item.value) {
+                    brand = item;
+                }
             });
+            if(this.brandValue.length > 1) {
+                brand.children.forEach(item => {
+                    if(this.brandValue[1] == item.value) {
+                        child = item;
+                    }
+                });
+            }
             let attributeDetail = {
-                attributeName: "",
+                attributeName: child.label,
                 attributeType: "",
-                isAuditType: "",
-                parentAttributeId: "",
-                parentAttributeName: "",
-                categoryAttributeId: "",
+                isAuditType: child.isAuditType,
+                parentAttributeId: child.parentId,
+                parentAttributeName: child.parentAttributeName,
+                categoryAttributeId: child.value,
                 isCarBrand: 1
             }
             this.commodity.commidityAttributeDetail.push(attributeDetail);
