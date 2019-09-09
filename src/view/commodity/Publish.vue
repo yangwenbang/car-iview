@@ -489,7 +489,8 @@ export default {
                     parentAttributeId: item.id,
                     parentAttributeName: selectItem[0].parentAttributeName,
                     categoryAttributeId: selectItem[0].id,
-                    inputContext: item.inputContext
+                    inputContext: item.inputContext,
+                    isCarBrand: 0
                   };
                 } else {
                   attributeDetail = {
@@ -498,31 +499,36 @@ export default {
                     isAuditType: selectItem[0].isAuditType,
                     parentAttributeId: item.id,
                     parentAttributeName: selectItem[0].parentAttributeName,
-                    categoryAttributeId: selectItem[0].id
+                    categoryAttributeId: selectItem[0].id,
+                    isCarBrand: 0
                   };
                 }
                 this.commodity.commidityAttributeDetail.push(attributeDetail);
               }
             } else if (item.isManualInput == 1) {
-              let attributeDetail = {};
-              attributeDetail = {
+              let attributeDetail = {
                 attributeType: item.attributeType,
                 isAuditType: item.isAuditType,
                 parentAttributeId: item.id,
                 parentAttributeName: item.attributeName,
-                inputContext: item.inputContext
+                inputContext: item.inputContext,
+                isCarBrand: 0
               };
               this.commodity.commidityAttributeDetail.push(attributeDetail);
             }
           });
           if(this.commodity.commodityType == 1 && this.brandValue.length > 0) {
+            this.brandList.forEach(item => {
+              // TODO
+            });
             let attributeDetail = {
                 attributeName: "",
                 attributeType: "",
                 isAuditType: "",
                 parentAttributeId: "",
                 parentAttributeName: "",
-                categoryAttributeId: ""
+                categoryAttributeId: "",
+                isCarBrand: 1
             }
             this.commodity.commidityAttributeDetail.push(attributeDetail);
           }
