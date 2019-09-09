@@ -75,7 +75,7 @@
               </div>
             </FormItem>
           </Col>
-          <Col :sm="12" :xs="24">
+          <Col  :span="24">
             <FormItem label="商品描述:">
               <Input
                 type="textarea"
@@ -114,11 +114,15 @@
               </RadioGroup>
               <Input
                 style="width: 200px;"
-                v-if="commodity.commodityType==0"
                 v-model="attributeFirstWord"
                 :maxlength="1"
                 @input="typeChange"
               />
+            </FormItem>
+          </Col>
+          <Col :sm="12" :xs="24" v-if="commodity.commodityType == 1">
+            <FormItem label="适用车型:">
+               <Cascader :data="brandList" trigger="hover" filterable change-on-select v-model="brandValue"  style="width: 200px;"></Cascader>
             </FormItem>
           </Col>
           <Col :sm="12" :xs="24" v-for="(categoryAttribute, index) in categoryAttributeList" :key="index">
@@ -145,7 +149,7 @@
                 />
               </template>
               <template v-else>
-                <Input v-model="categoryAttribute.inputContext"/>
+                <Input v-model="categoryAttribute.inputContext" style="width: 200px;"/>
               </template>
             </FormItem>
           </Col>
@@ -189,7 +193,8 @@
 import {
   queryCategory,
   queryCategoryAttribute,
-  auditCommodity
+  auditCommodity,
+  queryFactoryBrand
 } from "@/api/commodity";
 
 export default {
@@ -228,6 +233,8 @@ export default {
         //     "https://o5wwk8baw.qnssl.com/bc7521e033abdd1e92222d733590f104/avatar"
         // }
       ],
+      brandList: [],
+      brandValue: [],
       imgName: "",
       imgUrl: "",
       visible: false,
@@ -259,6 +266,7 @@ export default {
   },
   created() {
     this.getCategoryList();
+    this.queryFactoryBrand();
   },
   mounted() {
   },
@@ -384,6 +392,7 @@ export default {
           that.categoryAttributeList = rdata.data.commidityAttributeDetail;
         }
       });
+      this.queryFactoryBrand();
     },
 
     categoryChange() {
@@ -506,7 +515,17 @@ export default {
               this.commodity.commidityAttributeDetail.push(attributeDetail);
             }
           });
-
+          if(this.commodity.commodityType == 1 && this.brandValue.length > 0) {
+            let attributeDetail = {
+                attributeName: "",
+                attributeType: "",
+                isAuditType: "",
+                parentAttributeId: "",
+                parentAttributeName: "",
+                categoryAttributeId: ""
+            }
+            this.commodity.commidityAttributeDetail.push(attributeDetail);
+          }
           auditCommodity(this.commodity).then(response => {
             var rdata = response.data;
             if (rdata.code == 200) {
@@ -527,6 +546,18 @@ export default {
       } else {
         this.categoryAttributeList[index].inputContext = "";
       }
+    },
+
+    queryFactoryBrand() {
+      let params = {
+        attributeFirstWord: this.attributeFirstWord
+      }
+      queryFactoryBrand(params).then(response => {
+        let rdata = response.data;
+        if(rdata.code = 200) {
+          this.brandList = rdata.data;
+        }
+      });
     }
   }
 };

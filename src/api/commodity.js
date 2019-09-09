@@ -114,3 +114,11 @@ export const updateCategoryAttribute = (params) => {
     method: 'post'
   })
 }
+
+export const queryFactoryBrand = (params) => {
+  return axios.request({
+    url: '/car/category/queryFactoryCategoryAttribute',
+    params: params,
+    method: 'get'
+  })
+}
