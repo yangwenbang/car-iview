@@ -26,7 +26,7 @@
                 type="text"
                 v-model="commodity.commodityCode"
                 :maxlength="30"
-                @on-input-change="queryCommodityCode"
+                @on-enter="queryCommodityCode"
               ></Input>
             </FormItem>
           </Col>
@@ -112,17 +112,27 @@
                 <Radio :label="0">原厂</Radio>
                 <Radio :label="1">非原厂</Radio>
               </RadioGroup>
-              <Input
-                style="width: 200px;"
-                v-model="attributeFirstWord"
-                :maxlength="1"
-                @input="typeChange"
-              />
+              <template v-if="commodity.commodityType == 0">
+                <Input
+                  style="width: 200px;"
+                  v-model="attributeFirstWord"
+                  :maxlength="1"
+                  @input="typeChange"
+                />
+              </template>
+              <template v-else>
+                <Input
+                  style="width: 200px;"
+                  v-model="attributeFirstWord"
+                  :maxlength="1"
+                  @input="queryFactoryBrand()"
+                />
+              </template>
             </FormItem>
           </Col>
           <Col :sm="12" :xs="24" v-if="commodity.commodityType == 1">
             <FormItem label="适用车型:">
-               <Cascader :data="brandList" trigger="hover" filterable change-on-select v-model="brandValue"  style="width: 200px;"></Cascader>
+               <Cascader :data="brandList" trigger="hover" :disabled="attributeFirstWord == ''? true : false" filterable change-on-select v-model="brandValue"  style="width: 200px;"></Cascader>
             </FormItem>
           </Col>
           <Col :sm="12" :xs="24" v-for="(categoryAttribute, index) in categoryAttributeList" :key="index">
@@ -266,7 +276,6 @@ export default {
   },
   created() {
     this.getCategoryList();
-    this.queryFactoryBrand();
   },
   mounted() {
   },
@@ -336,6 +345,7 @@ export default {
     },
 
     getCategoryList() {
+      debugger
       var that = this;
       let params = {
         pageNo: 1,
@@ -348,8 +358,12 @@ export default {
         if (rdata.code == 200) {
           that.categoryList = rdata.data.recordList;
           let commodityCode = that.$route.query.commodityCode;
+          let commodityType = that.$route.query.commodityType;
+          let commodityCategoryId = that.$route.query.commodityCategoryId;
           if (commodityCode) {
             that.commodity.commodityCode = commodityCode;
+            that.commodity.commodityType = commodityType;
+            that.commodity.commodityCategoryId = commodityCategoryId;
             that.queryCommodityCode();
           } else {
             that.commodity.commodityCategoryId = that.categoryList[0].id;
@@ -363,6 +377,7 @@ export default {
                 that.categoryAttributeList = Object.assign({}, rdata.data.commidityAttributeDetail)
               }
             });
+            that.queryFactoryBrand();
           }
         } else {
           this.$Message.error("查询分类失败" + rdata.msg);
@@ -454,6 +469,7 @@ export default {
             rdata.data.additionalDescription;
           that.commodity.price = rdata.data.price;
           that.commodity.commodityPicture = rdata.data.commodityPicture;
+          that.brandValue = rdata.data.noFactoryCarBrands;
           // 图片回显
           that.uploadList = [];
           if (rdata.data.commodityPicture) {
@@ -461,7 +477,8 @@ export default {
             pictures.map(item => {
               that.uploadList.push({ url: item, status: "finished" });
             });
-          }
+          };
+          that.queryFactoryBrand();
         }
       });
     },
@@ -517,6 +534,7 @@ export default {
               this.commodity.commidityAttributeDetail.push(attributeDetail);
             }
           });
+          // 保存适用车型
           if(this.commodity.commodityType == 1 && this.brandValue.length > 0) {
             let brand = {};
             let child = {};
@@ -532,14 +550,27 @@ export default {
                     }
                 });
             }
-            let attributeDetail = {
-                attributeName: child.label,
-                attributeType: "",
-                isAuditType: child.isAuditType,
-                parentAttributeId: child.parentId,
-                parentAttributeName: child.parentAttributeName,
-                categoryAttributeId: child.value,
-                isCarBrand: 1
+            let attributeDetail = {};
+            if(Object.keys(child).length != 0) {
+              attributeDetail = {
+                  attributeName: child.label,
+                  attributeType: "",
+                  isAuditType: child.isAuditType,
+                  parentAttributeId: child.parentId,
+                  parentAttributeName: child.parentAttributeName,
+                  categoryAttributeId: child.value,
+                  isCarBrand: 1
+              }
+            }else {
+              attributeDetail = {
+                  attributeName: brand.label,
+                  attributeType: "",
+                  isAuditType: brand.isAuditType,
+                  parentAttributeId: brand.value,
+                  parentAttributeName: brand.label,
+                  categoryAttributeId: brand.value,
+                  isCarBrand: 1
+              }
             }
             this.commodity.commidityAttributeDetail.push(attributeDetail);
           }

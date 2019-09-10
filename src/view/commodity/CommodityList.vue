@@ -169,7 +169,9 @@ export default {
                     this.$router.push({
                       name: "CommodityAdd",
                       query: {
-                        commodityCode: data.row.commodityCode
+                        commodityCode: data.row.commodityCode,
+                        commodityType: data.row.commodityType,
+                        commodityCategoryId: data.row.commodityCategoryId
                       }
                     });
                   }
