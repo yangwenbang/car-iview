@@ -345,7 +345,6 @@ export default {
     },
 
     getCategoryList() {
-      debugger
       var that = this;
       let params = {
         pageNo: 1,
