@@ -222,7 +222,7 @@
               @click="save('commodityform', 1)"
               :disabled="submitDisabled"
             >上架</Button>
-            <Button type="primary" class="btn-common-width" @click="save('commodityform', 2)">下架</Button>
+            <Button type="dashed" class="btn-common-width" @click="save('commodityform', 2)">下架</Button>
           </template>
           <template v-else>
             <Button
@@ -707,32 +707,6 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.table-title {
-  text-align: center;
-  font-size: 24px;
-  font-weight: bold;
-  color: #000;
-}
-
-.panel .tr {
-  position: relative;
-}
-
-.panel .tip {
-  position: absolute;
-  left: 12px;
-  font-size: 12px;
-  color: #c6303e;
-  text-align: left;
-  margin: 5px auto;
-  width: 250px;
-}
-
-.panel .not {
-  background-color: rgba(49, 195, 166, 0.5);
-  cursor: not-allowed;
-}
-
 .header {
   padding: 0 30px;
   text-align: left;
@@ -764,20 +738,6 @@ export default {
 
 .content {
   margin: 30px 0;
-}
-
-.panel /deep/ input {
-  border-radius: 5px !important;
-}
-
-.tr-radio {
-  padding: 10px;
-}
-
-.tr-span {
-  position: absolute;
-  left: 5px;
-  top: 8px;
 }
 
 .demo-upload-list {

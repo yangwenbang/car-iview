@@ -4,7 +4,7 @@
       <i-col :xs="12" :md="8" :lg="8" v-for="(infor, i) in inforCardData" :key="`infor-${i}`" style="height: 120px;padding-bottom: 10px;">
         <infor-card shadow :color="infor.color" :icon="infor.icon" :icon-size="36" :link="infor.link">
           <count-to :end="infor.count" count-class="count-style" />
-          <!-- <p>{{ infor.title }}</p> -->
+          <p>{{ infor.title }}</p>
         </infor-card>
       </i-col>
     </Row>
@@ -25,54 +25,24 @@ export default {
         return {
             inforCardData: [
                 {
-                    title: "待审核入库单",
-                    icon: "md-log-in",
+                    title: "已上架商品",
+                    icon: "ios-car",
                     count: 0,
                     color: "#2d8cf0",
-                    link: "/warehouse/WarehouseRegister"
+                    link: "/commodity/CommodityList"
                 },
                 {
-                    title: "待审核出库结算单",
+                    title: "未上架商品",
                     icon: "md-log-out",
                     count: 0,
                     color: "#19be6b",
-                    link: "/outstock/OutstockSettlement"
-                },
-                {
-                    title: "待审核提货单",
-                    icon: "md-log-out",
-                    count: 0,
-                    color: "#E46CBB",
-                    link: "/outstock/PickGoodsManage"
-                },
-                {
-                    title: "待审核过户单",
-                    icon: "md-log-out",
-                    count: 0,
-                    color: "#5618AC",
-                    link: "/outstock/TransferManage"
-                },
-                {
-                    title: "待加工数量",
-                    icon: "ios-hammer",
-                    count: 0,
-                    color: "#ff9900",
-                    link: "/process/ProcessList"
-                },
-                {
-                    title: "待审核客户",
-                    icon: "md-person-add",
-                    count: 0,
-                    color: "#ed3f14",
-                    link: "/customer/CustomerMaintain"
+                    link: "/commodity/CommodityList"
                 }
             ]
         };
     },
     mounted() {
-      // if(this.$store.state.user.employeeId != 1){
-      //   this.getCountFun();
-      // }
+    
     },
     methods:{
       getCountFun() {
@@ -81,18 +51,11 @@ export default {
                 const countInfor = res.data.data;
                 this.inforCardData[0].count = countInfor.inEnterCount;
                 this.inforCardData[1].count = countInfor.outEnterCount;
-                this.inforCardData[2].count = countInfor.deliveryCount;
-                this.inforCardData[3].count = countInfor.transferCount;
-                this.inforCardData[4].count = countInfor.processCount;
-                this.inforCardData[5].count = countInfor.customerCount;
             } else {
                 this.$Message.error(res.data.msg);
             }
         });
       },
-    //   goLink(link){
-    //     this.$router.push({ name:link});
-    //   }
     }
 };
 </script>
