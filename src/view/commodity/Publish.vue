@@ -577,7 +577,7 @@ export default {
             var rdata = response.data;
             if (rdata.code == 200) {
               this.$Message.success("保存成功");
-              window.history.go(-1);
+              window.location.reload();
             } else {
               this.$Message.error("保存失败" + rdata.msg);
               this.submitDisabled = false;
