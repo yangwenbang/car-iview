@@ -42,6 +42,9 @@
           <FormItem label="属性名称:" prop="attributeName">
             <Input placeholder="请输入属性名称" v-model="attributeForm.attributeName" :maxlength="20"></Input>
           </FormItem>
+          <FormItem label="顺序号:">
+            <Input placeholder="请输入顺序号" v-model="attributeForm.seq" :maxlength="3"></Input>
+          </FormItem>
           <FormItem label="是否审核类型:">
             <RadioGroup v-model="attributeForm.isAuditType">
               <Radio :label="0">否</Radio>
@@ -88,7 +91,8 @@ export default {
         id: "",
         isAuditType: 0,
         isManualInput: 0,
-        parentId: ""
+        parentId: "",
+        seq: 0
       },
       ruleValidate: {
         attributeName: [
@@ -118,6 +122,7 @@ export default {
       this.modalTitle = "新增分类属性";
       this.attributeForm.attributeType = this.attributeType;
       this.attributeForm.commodityCategoryId = scope.row.commodityCategoryId;
+      this.attributeForm.seq = 0;
       if (scope.row.level == 1) {
         this.attributeForm.parentId = 0;
       } else {
@@ -134,6 +139,7 @@ export default {
       this.attributeForm.isAuditType = scope.row.isAuditType;
       this.attributeForm.isManualInput = scope.row.isManualInput ? scope.row.isManualInput : 0;
       this.attributeForm.id = scope.row.id;
+      this.attributeForm.seq = scope.row.seq;
 
     },
 
@@ -171,7 +177,8 @@ export default {
         this.attributeForm.id = "",
         this.attributeForm.isAuditType = 0,
         this.attributeForm.isManualInput = 0,
-        this.attributeForm.parentId =  ""
+        this.attributeForm.parentId =  "",
+        this.attributeForm.seq = 0
     },
 
     cancel() {
