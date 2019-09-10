@@ -536,13 +536,14 @@ export default {
           that.commodity.commodityType = rdata.data.commodityType;
           that.commodity.commodityName = rdata.data.commodityName;
           that.commodity.description = rdata.data.description;
-          that.commodity.additionalDescription =
-            rdata.data.additionalDescription;
+          that.commodity.additionalDescription = rdata.data.additionalDescription;
           that.commodity.price = rdata.data.price;
           that.commodity.commodityPicture = rdata.data.commodityPicture;
-          that.brandValue = rdata.data.noFactoryCarBrands;
-          that.attributeFirstWord = rdata.data.noFactoryCarBrandsFirstWord;
-
+          // 非原厂回显车型
+          if (that.commodity.commodityType == 1) {
+              that.brandValue = rdata.data.noFactoryCarBrands;
+              that.attributeFirstWord = rdata.data.noFactoryCarBrandsFirstWord;
+          }
           // 图片回显
           that.uploadList = [];
           if (rdata.data.commodityPicture) {
