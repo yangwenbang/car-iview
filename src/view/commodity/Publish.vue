@@ -99,7 +99,7 @@
             </FormItem>
           </Col>
           <Col :sm="12" :xs="24">
-            <FormItem label="一口价:">
+            <FormItem label="一口价:" prop="price">
               <div class="input-price">
                 <Input style="width: 200px;" v-model="commodity.price"></Input>
                 <span class="tr-span">￥</span>
@@ -154,13 +154,51 @@
                 </Select>
                 <Input
                   style="width: 200px; margin-left: 10px;"
-                  v-if="categoryAttribute.inputContext != null"
+                  v-if="categoryAttribute.inputContext != null && categoryAttribute.attributeName.indexOf('划痕') == -1"
                   v-model="categoryAttribute.inputContext"
                 />
               </template>
               <template v-else>
                 <Input v-model="categoryAttribute.inputContext" style="width: 200px;"/>
               </template>
+            </FormItem>
+            <FormItem label="请上传划痕图片: " v-if="categoryAttribute.attributeName.indexOf('划痕') > -1">
+              <div class="attrUploadPic">
+                <div class="demo-upload-list" v-for="item in uploadList1">
+                  <template v-if="item.status === 'finished'">
+                    <img :src="item.url">
+                    <div class="demo-upload-list-cover">
+                      <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                      <Icon type="ios-trash-outline" @click.native="handleRemove1(item)"></Icon>
+                    </div>
+                  </template>
+                  <template v-else>
+                    <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
+                  </template>
+                </div>
+                <Upload
+                  ref="upload1"
+                  :show-upload-list="false"
+                  :default-file-list="defaultList"
+                  :on-success="handleSuccess1"
+                  :format="['jpg','jpeg','png']"
+                  :max-size="50*1024"
+                  :on-format-error="handleFormatError"
+                  :on-exceeded-size="handleMaxSize"
+                  :before-upload="handleBeforeUpload1"
+                  multiple
+                  type="drag"
+                  action="/car/qualityshop/uploadPicture"
+                  style="display: inline-block;width:58px;"
+                >
+                  <div style="width: 58px;height:58px;line-height: 58px;">
+                    <Icon type="ios-camera" size="20"></Icon>
+                  </div>
+                </Upload>
+                <Modal title="图片预览" v-model="visible">
+                  <img :src="imgUrl" v-if="visible" style="width: 100%">
+                </Modal>
+              </div>
             </FormItem>
           </Col>
           <Col :span="24">
@@ -249,11 +287,14 @@ export default {
       imgUrl: "",
       visible: false,
       uploadList: [],
+      uploadList1: [],
       ruleValidate: {
         commodityName: [
           {
+            type: 'string',
+            min: 12,
             required: true,
-            message: "请输入商品标题",
+            message: "请输入商品标题(最少12个字符)",
             trigger: "change"
           }
         ],
@@ -270,6 +311,9 @@ export default {
             message: "请输入商家补充描述",
             trigger: "change"
           }
+        ],
+        price: [
+         {required: true, message: "请输入一口价"},
         ]
       }
     };
@@ -277,8 +321,7 @@ export default {
   created() {
     this.getCategoryList();
   },
-  mounted() {
-  },
+  mounted() {},
   methods: {
     handleView(item) {
       this.imgName = item.name;
@@ -298,6 +341,9 @@ export default {
         }
         this.commodity.commodityPicture = urls;
       }
+    },
+    handleRemove1(file) {
+      this.uploadList1.splice(this.uploadList1.indexOf(file), 1);
     },
     handleSuccess(res, file) {
       if (res.code == "200") {
@@ -319,6 +365,15 @@ export default {
         that.commodity.commodityPicture = urls;
       }
     },
+    handleSuccess1(res, file) {
+      if (res.code == "200") {
+        file.url = "http://" + res.data;
+      } else {
+        this.$Message.error(res.msg);
+      }
+      var that = this;
+      that.uploadList1.push(file);
+    },
     handleFormatError(file) {
       this.$Notice.warning({
         title: "文件格式不正确",
@@ -336,6 +391,15 @@ export default {
     },
     handleBeforeUpload() {
       const check = this.uploadList.length < 5;
+      if (!check) {
+        this.$Notice.warning({
+          title: "最多上次5张图片."
+        });
+      }
+      return check;
+    },
+    handleBeforeUpload1() {
+      const check = this.uploadList1.length < 5;
       if (!check) {
         this.$Notice.warning({
           title: "最多上次5张图片."
@@ -373,7 +437,7 @@ export default {
             queryCategoryAttribute(param).then(response => {
               let rdata = response.data;
               if (rdata.code == 200) {
-                that.categoryAttributeList = Object.assign({}, rdata.data.commidityAttributeDetail)
+                that.categoryAttributeList = Object.assign([], rdata.data.commidityAttributeDetail)
               }
             });
             that.queryFactoryBrand();
@@ -459,6 +523,14 @@ export default {
         if (rdata.code == 200) {
           that.commodity.id = rdata.data.id;
           that.categoryAttributeList = rdata.data.commidityAttributeDetail;
+          that.categoryAttributeList.forEach(item => {
+            if(item.attributeName.indexOf('划痕') > -1) {
+              let imgUrls = item.inputContext.split(',');
+              imgUrls.map(url => {
+                that.uploadList1.push({ url: url, status: "finished" });
+              });
+            }
+          });
           that.commodity.commodityCategoryId = rdata.data.commodityCategoryId;
           that.commodityCategoryId = rdata.data.commodityCategoryId;
           that.commodity.commodityType = rdata.data.commodityType;
@@ -469,6 +541,8 @@ export default {
           that.commodity.price = rdata.data.price;
           that.commodity.commodityPicture = rdata.data.commodityPicture;
           that.brandValue = rdata.data.noFactoryCarBrands;
+          that.attributeFirstWord = rdata.data.noFactoryCarBrandsFirstWord;
+
           // 图片回显
           that.uploadList = [];
           if (rdata.data.commodityPicture) {
@@ -487,17 +561,14 @@ export default {
         if (valid) {
           this.commodity.auditStatus = status;
           this.submitDisabled = true;
-          this.categoryAttributeList.map(item => {
+          this.categoryAttributeList.forEach(item => {
             if (item.isManualInput == 0) {
               if (item.selectId) {
                 let selectItem = item.childAttribute.filter(attribute => {
                   return attribute.id == item.selectId;
                 });
                 let attributeDetail = {};
-                if (
-                  selectItem[0].attributeName == "其他" ||
-                  selectItem[0].attributeName == "其它"
-                ) {
+                if (selectItem[0].attributeName == "其他" || selectItem[0].attributeName == "其它") {
                   attributeDetail = {
                     attributeName: selectItem[0].attributeName,
                     attributeType: selectItem[0].attributeType,
@@ -509,15 +580,39 @@ export default {
                     isCarBrand: 0
                   };
                 } else {
-                  attributeDetail = {
-                    attributeName: selectItem[0].attributeName,
-                    attributeType: selectItem[0].attributeType,
-                    isAuditType: selectItem[0].isAuditType,
-                    parentAttributeId: item.id,
-                    parentAttributeName: selectItem[0].parentAttributeName,
-                    categoryAttributeId: selectItem[0].id,
-                    isCarBrand: 0
-                  };
+                  // 判断属性是否包含有划痕
+                  if(item.attributeName.indexOf('划痕') > -1) {
+                    let inputContext = '';
+                    if (this.uploadList1 != null && this.uploadList1.length > 0) {
+                      for (var i = 0; i < this.uploadList1.length; i++) {
+                        if (i != this.uploadList1.length - 1) {
+                          inputContext += this.uploadList1[i].url + ",";
+                        } else {
+                          inputContext += this.uploadList1[i].url;
+                        }
+                      }
+                    }
+                    attributeDetail = {
+                      attributeName: selectItem[0].attributeName,
+                      attributeType: selectItem[0].attributeType,
+                      isAuditType: selectItem[0].isAuditType,
+                      parentAttributeId: item.id,
+                      parentAttributeName: selectItem[0].parentAttributeName,
+                      categoryAttributeId: selectItem[0].id,
+                      inputContext: inputContext,
+                      isCarBrand: 0
+                    }
+                  }else {
+                    attributeDetail = {
+                      attributeName: selectItem[0].attributeName,
+                      attributeType: selectItem[0].attributeType,
+                      isAuditType: selectItem[0].isAuditType,
+                      parentAttributeId: item.id,
+                      parentAttributeName: selectItem[0].parentAttributeName,
+                      categoryAttributeId: selectItem[0].id,
+                      isCarBrand: 0
+                    };
+                  }
                 }
                 this.commodity.commidityAttributeDetail.push(attributeDetail);
               }
@@ -538,16 +633,16 @@ export default {
             let brand = {};
             let child = {};
             this.brandList.forEach(item => {
-                if(this.brandValue[0] == item.value) {
-                    brand = item;
-                }
+              if(this.brandValue[0] == item.value) {
+                  brand = item;
+              }
             });
             if(this.brandValue.length > 1) {
-                brand.children.forEach(item => {
-                    if(this.brandValue[1] == item.value) {
-                        child = item;
-                    }
-                });
+              brand.children.forEach(item => {
+                  if(this.brandValue[1] == item.value) {
+                      child = item;
+                  }
+              });
             }
             let attributeDetail = {};
             if(Object.keys(child).length != 0) {
@@ -585,6 +680,7 @@ export default {
           });
         }
       });
+
     },
 
     selectChange(option, index) {
@@ -729,5 +825,9 @@ export default {
 
 .input-price /deep/ input {
   padding: 5px 20px;
+}
+
+.attrUploadPic {
+  display: inline-block;
 }
 </style>
