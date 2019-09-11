@@ -63,8 +63,8 @@ export default [{
             path: 'register',
             name: 'register',
             meta: {
-                title: '商家入住',
-                pageTitle: '商家入住'
+                title: '商家入驻',
+                pageTitle: '商家入驻'
             },
             component: () =>
                 import ('@/view/shop/Register.vue')
