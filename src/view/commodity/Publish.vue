@@ -63,9 +63,9 @@
                   multiple
                   type="drag"
                   action="/car/qualityshop/uploadPicture"
-                  style="display: inline-block;width:58px;"
+                  style="display: inline-block;width:100px;"
                 >
-                  <div style="width: 58px;height:58px;line-height: 58px;">
+                  <div style="width: 100px;height:100px;line-height: 100px;">
                     <Icon type="ios-camera" size="20"></Icon>
                   </div>
                 </Upload>
@@ -189,9 +189,9 @@
                   multiple
                   type="drag"
                   action="/car/qualityshop/uploadPicture"
-                  style="display: inline-block;width:58px;"
+                  style="display: inline-block;width:100px;"
                 >
-                  <div style="width: 58px;height:58px;line-height: 58px;">
+                  <div style="width: 100px;height:100px;line-height: 100px;">
                     <Icon type="ios-camera" size="20"></Icon>
                   </div>
                 </Upload>
@@ -742,10 +742,10 @@ export default {
 
 .demo-upload-list {
   display: inline-block;
-  width: 60px;
-  height: 60px;
+  width: 102px;
+  height: 102px;
   text-align: center;
-  line-height: 60px;
+  line-height: 100px;
   border: 1px solid transparent;
   border-radius: 4px;
   overflow: hidden;
@@ -755,8 +755,8 @@ export default {
   margin-right: 4px;
 }
 .demo-upload-list img {
-  width: 100%;
-  height: 100%;
+  width: 102%;
+  height: 102%;
 }
 .demo-upload-list-cover {
   display: none;
@@ -790,5 +790,11 @@ export default {
 
 .attrUploadPic {
   display: inline-block;
+}
+
+.table-title {
+  font-size: 18px;
+  font-weight: bold;
+  text-align: center;
 }
 </style>
