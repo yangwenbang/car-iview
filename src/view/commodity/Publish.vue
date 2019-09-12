@@ -154,7 +154,7 @@
                 </Select>
                 <Input
                   style="width: 200px; margin-left: 10px;"
-                  v-if="categoryAttribute.inputContext != null && categoryAttribute.attributeName.indexOf('划痕') == -1"
+                  v-if="categoryAttribute.inputContext != null"
                   v-model="categoryAttribute.inputContext"
                 />
               </template>
@@ -525,7 +525,7 @@ export default {
           that.categoryAttributeList = rdata.data.commidityAttributeDetail;
           that.categoryAttributeList.forEach(item => {
             if(item.attributeName.indexOf('划痕') > -1) {
-              let imgUrls = item.inputContext.split(',');
+              let imgUrls = item.pictureUrls.split(',');
               imgUrls.map(url => {
                 that.uploadList1.push({ url: url, status: "finished" });
               });
@@ -583,13 +583,13 @@ export default {
                 } else {
                   // 判断属性是否包含有划痕
                   if(item.attributeName.indexOf('划痕') > -1) {
-                    let inputContext = '';
+                    let pictureUrls = '';
                     if (this.uploadList1 != null && this.uploadList1.length > 0) {
                       for (var i = 0; i < this.uploadList1.length; i++) {
                         if (i != this.uploadList1.length - 1) {
-                          inputContext += this.uploadList1[i].url + ",";
+                          pictureUrls += this.uploadList1[i].url + ",";
                         } else {
-                          inputContext += this.uploadList1[i].url;
+                          pictureUrls += this.uploadList1[i].url;
                         }
                       }
                     }
@@ -600,7 +600,7 @@ export default {
                       parentAttributeId: item.id,
                       parentAttributeName: selectItem[0].parentAttributeName,
                       categoryAttributeId: selectItem[0].id,
-                      inputContext: inputContext,
+                      pictureUrls: pictureUrls,
                       isCarBrand: 0
                     }
                   }else {
