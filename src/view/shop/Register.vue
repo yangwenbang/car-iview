@@ -183,6 +183,104 @@
               </div>
             </FormItem>
           </Col>
+          <Col span="6">
+             <FormItem label="负责人姓名:" prop="chargePerson">
+              <Input
+                type="text"
+                v-model="shop.chargePerson"
+                :maxlength="10"
+                style="width: 200px"
+              ></Input>
+            </FormItem>
+          </Col>
+          <Col span=18>
+             <FormItem label="负责人联系电话:" prop="chargePersonTelephone">
+              <Input
+                type="text"
+                v-model="shop.chargePersonTelephone"
+                :maxlength="11"
+                style="width: 200px"
+              ></Input>
+            </FormItem>
+          </Col>
+          <Col span="6">
+             <FormItem label="备用联系人:">
+              <Input
+                type="text"
+                v-model="shop.standbyPerson"
+                :maxlength="10"
+                style="width: 200px"
+              ></Input>
+            </FormItem>
+          </Col>
+          <Col span="18">
+             <FormItem label="备用联系人联系电话:">
+              <Input
+                type="text"
+                v-model="shop.standbyPersonTelephone"
+                :maxlength="11"
+                style="width: 200px"
+              ></Input>
+            </FormItem>
+          </Col>
+          <Col span="6">
+             <FormItem label="店面联系电话:" prop="shopTelephone">
+              <Input
+                type="text"
+                v-model="shop.shopTelephone"
+                style="width: 200px"
+              ></Input>
+            </FormItem>
+          </Col>
+          <Col span="18">
+             <FormItem label="店面名称:" prop="shopName">
+              <Input
+                type="text"
+                v-model="shop.shopName"
+                style="width: 200px"
+              ></Input>
+            </FormItem>
+          </Col>
+          <Col span="12">
+             <FormItem label="公司地址:" prop="address">
+              <al-cascader v-model="shop.address" level="2" style="width: 300px;"/>
+            </FormItem>
+          </Col>
+          <Col span="12"></Col>
+          <Col span="12">
+            <FormItem label="详细地址" prop="detailAddress">
+              <Input v-model="shop.detailAddress" style="width: 300px;"></Input>
+            </FormItem>
+          </Col>
+          <Col span="12"></Col>
+          <Col :sm="8" :xs="24">
+            <FormItem label="营业时间:" required>
+              <TimePicker
+                v-model="shop.businessTime"
+                format="HH:mm"
+                type="timerange"
+                placement="bottom-start"
+                placeholder="请选择营业时间"
+                style="width:100%;"
+              ></TimePicker >
+            </FormItem>
+          </Col>
+          <Col span="12"></Col>
+          <Col :sm="8" :xs="24">
+            <FormItem label="输入手机号码:">
+              <Input v-model="telephone" placeholder="请输入手机号码"></Input>
+              <Input class="kaptcha" v-model="shop.mobileVerificationCode" placeholder="请输入验证码"></Input>
+              <span class="star-red">*</span>
+              <Button
+              type="primary"
+              class="input-button"
+              @click="getkaptcha"
+              >获取验证码</Button>
+              </FormItem>
+          </Col>
+          <Col span="12">
+
+          </Col>
         </Row>
         <Modal title="图片预览" v-model="visible">
           <img :src="imgUrl" v-if="visible" style="width: 100%">
@@ -192,6 +290,7 @@
   </div>
 </template>
 <script>
+import { sendSms } from "@/api/shop";
 export default {
   name: "Register",
   data() {
@@ -202,8 +301,19 @@ export default {
         businessLicenseUrls: '',
         companyName: '',
         legalPerson: '',
-        legalPersonCardUrls: ''
+        legalPersonCardUrls: '',
+        chargePerson: '',
+        chargePersonTelephone: '',
+        standbyPerson: '',
+        standbyPersonTelephone: '',
+        shopTelephone: '',
+        shopName: '',
+        address: [],
+        detailAddress: '',
+        businessTime: [],
+        mobileVerificationCode: ''
       },
+      telephone: '',
       imgName: "",
       imgUrl: "",
       visible: false,
@@ -227,6 +337,57 @@ export default {
             message: '请输入法人姓名',
             trigger: 'change'
           }
+        ],
+        chargePerson: [
+          {
+            type: 'string',
+            required: true,
+            message: '请输入负责人姓名',
+            trigger: 'change'
+          }
+        ],
+        chargePersonTelephone: [
+          { required: true, message: "负责人电话不能为空", trigger: "blur" },
+          {
+            type: "number",
+            trigger: "blur",
+            validator: (rule, value, callback) => {
+              if (!value) {
+                return callback(new Error("负责人电话不能为空"));
+              } else if (!/^1[3-9]+\d{9}$/.test(value)) {
+                callback("请输入正确的手机号");
+              } else {
+                callback();
+              }
+            }
+          }
+        ],
+        shopTelephone: [
+          {
+            type: 'string',
+            required: true,
+            message: '请输入店面联系方式',
+            trigger: 'change'
+          }
+        ],
+        shopName: [
+          {
+            type: 'string',
+            required: true,
+            message: '请输入店面名称',
+            trigger: 'change'
+          }
+        ],
+        address: [
+          {
+            required: true,
+            type: "array",
+            message: "公司地址不能为空",
+            trigger: "change"
+          }
+        ],
+        detailAddress: [
+          { required: true, message: "详细地址不能为空", trigger: "blur" }
         ]
       }
     };
@@ -347,6 +508,28 @@ export default {
         desc: "文件  " + file.name + " 太大，上传文件大小不能超过8M."
       });
     },
+
+    getkaptcha() {
+      if(this.telephone != '' && this.telephone != null) {
+        if (!/^1[3-9]+\d{9}$/.test(this.telephone)) {
+          this.$Message.error("请输入正确的手机号码");
+        }else {
+          let params = {
+            telephone: this.telephone
+          }
+          sendSms(params).then(response => {
+            let rdata = response.data;
+            if (rdata.code == 200) {
+              this.$Message.info(rdata.data)
+            }else {
+              this.$Message.error("查询分类失败" + rdata.msg);
+            }
+          });
+        }
+      }else {
+          this.$Message.error("请输入手机号码");
+      }
+    }
   }
 };
 </script>
@@ -435,4 +618,26 @@ export default {
   text-align: center;
 }
 
+.input-button {
+  display: inline-block;
+  border-color: #fbc647;
+  background-color: #fbc647;
+  margin-top: 10px;
+}
+
+.kaptcha {
+  display: inline-block;
+  position: absolute;
+  margin-left: 32px;
+  width: 200px;
+}
+.star-red {
+    display: inline-block;
+    position: absolute;
+    margin-left: 20px;
+    line-height: 35px;
+    font-family: SimSun;
+    font-size: 12px;
+    color: #ed4014;
+  }
 </style>
