@@ -60,15 +60,26 @@ export default [{
         },
         component: Main,
         children: [{
-            path: 'register',
-            name: 'register',
-            meta: {
-                title: '商家入驻',
-                pageTitle: '商家入驻'
+                path: 'register',
+                name: 'register',
+                meta: {
+                    title: '商家入驻',
+                    pageTitle: '商家入驻'
+                },
+                component: () =>
+                    import ('@/view/shop/Register.vue')
             },
-            component: () =>
-                import ('@/view/shop/Register.vue')
-        }]
+            {
+                path: 'shopList',
+                name: 'shopList',
+                meta: {
+                    title: '商家列表',
+                    pageTitle: '商家列表'
+                },
+                component: () =>
+                    import ('@/view/shop/ShopList.vue')
+            }
+        ]
     },
     {
         path: '/commodity',
