@@ -1,10 +1,5 @@
 <template>
     <div class="white-bg device-manage">
-        <Row>
-            <Col span="24">
-            <Button type="primary" @click="addCategory" class="margin-bottom-10 margin-right-10">新增分类</Button>
-            </Col>
-        </Row>
         <Table :columns="tableColumns" :data="tableData" border></Table>
         <div class="page-wrapper">
             <div v-if="this.$store.state.app.screenSize>768">
@@ -15,30 +10,11 @@
                 <Page class="pull-right" :current="pageNum" :page-size="pageSize" :total="total" @on-change="pageChange" simple />
             </div>
         </div>
-        <Modal ref="modal" v-model="modal" :title="modalTitle" @on-ok="submit">
-            <Form ref="formValidate" :model="changeForm" :rules="ruleValidate" :label-width="100">
-                <FormItem label="分类名称:" prop="categoryName">
-                    <Input v-model="changeForm.categoryName" placeholder="请输入分类名称" :maxlength="20"></Input>
-                </FormItem>
-                <FormItem label="顺序号:" prop="seq">
-                    <Input v-model="changeForm.seq" placeholder="请输入顺序号" :maxlength="3"></Input>
-                </FormItem>
-            </Form>
-            <div slot="footer">
-                <Button type="text" size="large" @click="cancel">取消</Button>
-                <Button type="primary" size="large" @click="submit" :disabled="submitDisabled">确定</Button>
-            </div>
-        </Modal>
     </div>
 </template>
 
 <script>
-    import {
-        queryCategory,
-        saveCategory,
-        updateCategory,
-        deleteCategory
-    } from "@/api/commodity";
+    import { queryQualityShopList } from "@/api/shop";
     import {
         formatDate
     } from "@/libs/util";
@@ -50,23 +26,33 @@
                 pageNum: 1,
                 total: 0,
                 pageSize: 10,
-                modal: false,
-                modalTitle: '修改分类',
-                changeForm: {
-                    id: "",
-                    categoryName: "",
-                    seq: ""
-                },
-                categoryList: [],
+                shopName: '',
+                shopList: [],
                 tableData: [],
-                tableColumns: [{
-                        title: "分类名称",
-                        key: "categoryName",
+                tableColumns: [
+                    {
+                        title: "商店名称",
+                        key: "shopName",
                         minWidth: 140
                     },
                     {
-                        title: "分类顺序",
-                        key: "seq",
+                        title: "负责人姓名",
+                        key: "chargePerson",
+                        minWidth: 140
+                    },
+                    {
+                        title: "负责人联系电话",
+                        key: "chargePersonTelephone",
+                        minWidth: 140
+                    },
+                    {
+                        title: "商店地址",
+                        key: "address",
+                        minWidth: 140
+                    },
+                    {
+                        title: "商店描述",
+                        key: "description",
                         minWidth: 140
                     },
                     {
@@ -75,164 +61,60 @@
                         fixed: "right",
                         minWidth: 50,
                         render: (h, data) => {
-                            return h('div', [h("span", {
-                                    class: 'tb-link margin-right-20',
+                                return h(
+                                "span",
+                                {
+                                    class: "tb-link margin-right-10",
                                     on: {
-                                        click: () => {
-                                            this.$refs.formValidate.resetFields();
-                                            this.changeForm.id = data.row.id;
-                                            this.changeForm.categoryName = data.row.categoryName;
-                                            this.changeForm.seq = data.row.seq;
-                                            this.modalTitle = "修改分类";
-                                            this.modal = true;
-                                        }
-                                    }
-                                }, "修改"),
-
-                                h("span", {
-                                    class: 'tb-link margin-right-20 color-red',
-                                    on: {
-                                        click: () => {
-                                            this.$Modal.confirm({
-                                                title: ' ',
-                                                content: '是否要删除该分类？',
-                                                onOk: () => {
-                                                    let deleteData = {
-                                                        id: data.row.id
-                                                    }
-                                                    deleteCategory(deleteData).then(res => {
-                                                        if (res.data.code == "200") {
-                                                            this.$Message.success({
-                                                                content: '删除成功',
-                                                                duration: 1
-                                                            });
-                                                            this.getCategoryList(this.pageNum, this.pageSize)
-                                                        } else {
-                                                            this.$Message.error({
-                                                                content: res.data.msg,
-                                                                duration: 1
-                                                            });
-                                                        }
-                                                    })
+                                    click: () => {
+                                            this.$router.push({
+                                                name: "register",
+                                                query: {
+                                                    id: data.row.id
                                                 }
-                                            })
+                                            });
                                         }
                                     }
-                                }, "删除")
-                            ])
+                                },
+                                "查看");
                         }
                     }
-                ],
-                ruleValidate: {
-                    categoryName: [{
-                        required: true,
-                        message: '分类名称不能为空',
-                        trigger: 'blur'
-                    }],
-                    seq: [{
-                        required: true,
-                        message: '顺序号不能为空',
-                        trigger: 'blur'
-                    }]
-                }
+                ]
             };
         },
         methods: {
-            addCategory: function() {
-                this.$refs.formValidate.resetFields();
-                this.changeForm.id = '',
-                    this.changeForm.changeForm = '';
-                this.changeForm.seq = '';
-                this.modalTitle = "新增分类"
-                this.modal = true;
-            },
-            submit: function() {
-                this.$refs.formValidate.validate(valid => {
-                    if (valid) {
-                        this.submitDisabled = true;
-                        let data = {};
-                        if (this.changeForm.id) {
-                            data = {
-                                categoryName: this.changeForm.categoryName,
-                                seq: this.changeForm.seq,
-                                id: this.changeForm.id
-                            }
-                            updateCategory(data).then(res => {
-                                if (res.data.code == "200") {
-                                    this.$Message.success({
-                                        content: '分类修改成功',
-                                        duration: 1
-                                    });
-                                    this.modal = false;
-                                    this.getCategoryList(this.pageNum, this.pageSize)
-                                } else {
-                                    this.$Message.error({
-                                        content: res.data.msg,
-                                        duration: 1
-                                    });
-                                }
-                                setTimeout(() => {
-                                    this.submitDisabled = false;
-                                }, 1000);
-                            })
-                        } else {
-                            data = {
-                                categoryName: this.changeForm.categoryName,
-                                seq: this.changeForm.seq
-                            }
-                            saveCategory(data).then(res => {
-                                if (res.data.code == "200") {
-                                    this.$Message.success({
-                                        content: '新增分类成功',
-                                        duration: 1
-                                    });
-                                    this.modal = false;
-                                    this.getCategoryList(this.pageNum, this.pageSize)
-                                } else {
-                                    this.$Message.error({
-                                        content: res.data.msg,
-                                        duration: 1
-                                    });
-                                }
-                                setTimeout(() => {
-                                    this.submitDisabled = false;
-                                }, 1000);
-                            })
-                        }
-                    }
-                });
-            },
-            cancel: function() {
-                this.modal = false;
-            },
             pageChange: function(value) {
                 this.getCategoryList(value, this.pageSize);
             },
             pageSizeChange: function(value) {
                 this.getCategoryList(this.pageNum, value);
             },
-            getCategoryList(pageNo, numPerPage) {
+            getShopList(pageNo, numPerPage) {
                 var that = this;
                 let params = {
                     pageNo: pageNo,
                     numPerPage: numPerPage,
                     // 是否分页，0-不分页 1-分页
-                    isPage: 1
+                    isPage: 1,
+                    shopName: this.shopName
                 };
-                queryCategory(params).then(res => {
+                queryQualityShopList(params).then(res => {
                     if (res.data.code == "200") {
-                        this.tableData = res.data.data.recordList;
+                        this.tableData  = res.data.data.recordList.map(item => {
+                            item.address = item.address.split(",").join("");
+                            return item;
+                        })
                         this.total = res.data.data.totalCount;
                         this.pageNum = res.data.data.currentPage;
                         this.pageSize = res.data.data.numPerPage;
                     } else {
-                        this.$Message.error("查询分类失败" + rdata.msg)
+                        this.$Message.error("查询质检商家列表失败" + rdata.msg)
                     }
                 });
             }
         },
         created: function() {
-            this.getCategoryList(1, 10);
+            this.getShopList(1, 10);
         }
     };
 </script>

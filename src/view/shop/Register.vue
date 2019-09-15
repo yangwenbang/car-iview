@@ -137,7 +137,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col :span="6">
+          <Col :span="8">
             <FormItem label="法人姓名:" prop="legalPerson">
               <Input
                 type="text"
@@ -148,7 +148,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col :span="18">
+          <Col :span="16">
             <FormItem label="法人身份证照片(正反面):" required>
               <div class="clearfix">
                 <div class="demo-upload-list" v-for="item in uploadList3">
@@ -183,7 +183,7 @@
               </div>
             </FormItem>
           </Col>
-          <Col span="6">
+          <Col span="8">
              <FormItem label="负责人姓名:" prop="chargePerson">
               <Input
                 type="text"
@@ -193,7 +193,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span=18>
+          <Col span="16">
              <FormItem label="负责人联系电话:" prop="chargePersonTelephone">
               <Input
                 type="text"
@@ -203,7 +203,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="6">
+          <Col span="8">
              <FormItem label="备用联系人:">
               <Input
                 type="text"
@@ -213,7 +213,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="18">
+          <Col span="16">
              <FormItem label="备用联系人联系电话:">
               <Input
                 type="text"
@@ -223,7 +223,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="6">
+          <Col span="8">
              <FormItem label="店面联系电话:" prop="shopTelephone">
               <Input
                 type="text"
@@ -232,7 +232,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="18">
+          <Col span="16">
              <FormItem label="店面名称:" prop="shopName">
               <Input
                 type="text"
@@ -242,8 +242,8 @@
             </FormItem>
           </Col>
           <Col span="12">
-             <FormItem label="公司地址:" prop="address">
-              <al-cascader v-model="shop.address" level="2" style="width: 300px;"/>
+             <FormItem label="公司地址:" required>
+              <al-cascader v-model="addressArray" level="2" style="width: 300px;"/>
             </FormItem>
           </Col>
           <Col span="12"></Col>
@@ -256,7 +256,7 @@
           <Col :sm="8" :xs="24">
             <FormItem label="营业时间:" required>
               <TimePicker
-                v-model="shop.businessTime"
+                v-model="businessTimeArray"
                 format="HH:mm"
                 type="timerange"
                 placement="bottom-start"
@@ -275,13 +275,24 @@
               type="primary"
               class="input-button"
               @click="getkaptcha"
-              >获取验证码</Button>
-              </FormItem>
-          </Col>
-          <Col span="12">
-
+              :disabled="buttonDisabled"
+              >{{buttonMsg}}</Button>
+            </FormItem>
           </Col>
         </Row>
+        <div class="text-center margin-top-10">
+            <template v-if="shop.id">
+                <Button
+                type="primary"
+                class="btn-common-width"
+                @click="save('shopform')"
+                :disabled="submitDisabled"
+                >修改</Button>
+            </template>
+            <template v-else>
+                <Button type="primary" class="btn-common-width" @click="save('shopform')" :disabled="submitDisabled">新增</Button>
+            </template>
+        </div>
         <Modal title="图片预览" v-model="visible">
           <img :src="imgUrl" v-if="visible" style="width: 100%">
         </Modal>
@@ -290,12 +301,14 @@
   </div>
 </template>
 <script>
-import { sendSms } from "@/api/shop";
+import { sendSms, queryQualityShop, saveQualityShop, updateQualityShop} from "@/api/shop";
 export default {
   name: "Register",
   data() {
     return {
+      submitDisabled: false,
       shop: {
+        id: '',
         headPortraitUrls: '',
         shopPicture: '',
         businessLicenseUrls: '',
@@ -308,11 +321,13 @@ export default {
         standbyPersonTelephone: '',
         shopTelephone: '',
         shopName: '',
-        address: [],
+        address: '',
         detailAddress: '',
-        businessTime: [],
+        businessTime: '',
         mobileVerificationCode: ''
       },
+      addressArray: [],
+      businessTimeArray: [],
       telephone: '',
       imgName: "",
       imgUrl: "",
@@ -321,6 +336,9 @@ export default {
       uploadList1: [],
       uploadList2: [],
       uploadList3: [],
+      second: 60,
+      buttonMsg: '获取验证码',
+      buttonDisabled: false,
       ruleValidate: {
         companyName: [
           {
@@ -378,21 +396,19 @@ export default {
             trigger: 'change'
           }
         ],
-        address: [
-          {
-            required: true,
-            type: "array",
-            message: "公司地址不能为空",
-            trigger: "change"
-          }
-        ],
         detailAddress: [
           { required: true, message: "详细地址不能为空", trigger: "blur" }
         ]
       }
     };
   },
-  created() {},
+  created() {
+      let shopId = this.$route.query.id;
+      if(shopId) {
+          this.shop.id = shopId;
+          this.queryQualityShop(shopId);
+      }
+  },
   mounted() {},
   methods: {
     handleView(item) {
@@ -514,21 +530,139 @@ export default {
         if (!/^1[3-9]+\d{9}$/.test(this.telephone)) {
           this.$Message.error("请输入正确的手机号码");
         }else {
+          var that = this;
+          that.buttonDisabled = true;
+          var timer = setInterval(function () {
+              if(that.second > 1) {
+                  that.second --;
+                  that.buttonMsg = that.second + "秒后可重发!";
+              }else {
+                  clearInterval(timer);
+                  that.buttonMsg = "获取验证码";
+                  that.second = 60;
+                  that.buttonDisabled = false;
+              }
+          }, 1000);
           let params = {
-            telephone: this.telephone
+            telephone: that.telephone
           }
           sendSms(params).then(response => {
             let rdata = response.data;
             if (rdata.code == 200) {
-              this.$Message.info(rdata.data)
+              that.$Message.info(rdata.data)
             }else {
-              this.$Message.error("查询分类失败" + rdata.msg);
+              that.$Message.error("发送验证码失败" + rdata.msg);
+              clearInterval(timer);
+              that.second = 60;
+              that.buttonDisabled = flase;
             }
           });
         }
       }else {
           this.$Message.error("请输入手机号码");
       }
+    },
+
+    queryQualityShop(id) {
+        let params = {
+            id: id
+        }
+        queryQualityShop(params).then(response => {
+            var rdata = response.data;
+            if (rdata.code == 200) {
+                this.shop = Object.assign({}, rdata.data);
+                this.shop.address.split(",").forEach(item => {
+                    this.addressArray.push({
+                        name: item
+                    })
+                });
+                this.shop.businessTime.split("-").forEach(item => {
+                    this.businessTimeArray.push(item);
+                });
+                 // 图片回显
+                this.uploadList = [];
+                if (this.shop.headPortraitUrls) {
+                    let pictures = this.shop.headPortraitUrls.split(",");
+                    pictures.map(item => {
+                        this.uploadList.push({ url: item, status: "finished" });
+                    });
+                };
+                this.uploadList1 = [];
+                if (this.shop.shopPicture) {
+                    let pictures = this.shop.shopPicture.split(",");
+                    pictures.map(item => {
+                        this.uploadList1.push({ url: item, status: "finished" });
+                    });
+                };
+                this.uploadList2 = [];
+                if (this.shop.businessLicenseUrls) {
+                    let pictures = this.shop.businessLicenseUrls.split(",");
+                    pictures.map(item => {
+                        this.uploadList2.push({ url: item, status: "finished" });
+                    });
+                };
+                this.uploadList3 = [];
+                if (this.shop.legalPersonCardUrls) {
+                    let pictures = this.shop.legalPersonCardUrls.split(",");
+                    pictures.map(item => {
+                        this.uploadList3.push({ url: item, status: "finished" });
+                    });
+                };
+            }
+        })
+    },
+
+    save(name) {
+        this.$refs[name].validate(valid => {
+            if (valid) {
+                this.submitDisabled = true;
+                 if(this.shop.id) {
+                    // TODO 修改
+                    let address = '';
+                    for(let i = 0; i != this.addressArray.length; i ++) {
+                        if(i != this.addressArray.length - 1) {
+                            address += this.addressArray[i].name + ",";
+                        }else {
+                            address += this.addressArray[i].name;
+                        }
+                    }
+                    this.shop.address = address;
+                    this.shop.businessTime = this.businessTimeArray.join("-");
+                    updateQualityShop(this.shop).then(response => {
+                        var rdata = response.data;
+                        if (rdata.code == 200) {
+                            this.$Message.success("修改成功");
+                            window.location.reload();
+                        } else {
+                            this.$Message.error("修改失败" + rdata.msg);
+                            this.submitDisabled = false;
+                        }
+                    })
+                 }else {
+                     // TODO 新增
+                    let address = '';
+                    for(let i = 0; i != this.addressArray.length; i ++) {
+                        if(i != this.addressArray.length - 1) {
+                            address += this.addressArray[i].name + ",";
+                        }else {
+                            address += this.addressArray[i].name;
+                        }
+                    }
+                    this.shop.address = address;
+                    this.shop.businessTime = this.businessTimeArray.join("-");
+                    saveQualityShop(this.shop).then(response => {
+                        var rdata = response.data;
+                        if (rdata.code == 200) {
+                            this.$Message.success("新增成功");
+                            window.location.reload();
+                        } else {
+                            this.$Message.error("新增失败" + rdata.msg);
+                            this.submitDisabled = false;
+                        }
+                    })
+                 }
+            }
+        });
     }
   }
 };
@@ -620,6 +754,7 @@ export default {
 
 .input-button {
   display: inline-block;
+  color: aliceblue;
   border-color: #fbc647;
   background-color: #fbc647;
   margin-top: 10px;
@@ -639,5 +774,10 @@ export default {
     font-family: SimSun;
     font-size: 12px;
     color: #ed4014;
+  }
+
+  .btn-common-width {
+      background-color: #fbc647;
+      border-color: #fbc647;
   }
 </style>
