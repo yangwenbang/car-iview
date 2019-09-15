@@ -322,6 +322,7 @@ export default {
         shopTelephone: '',
         shopName: '',
         address: '',
+        addressCode: '',
         detailAddress: '',
         businessTime: '',
         mobileVerificationCode: ''
@@ -570,15 +571,22 @@ export default {
         queryQualityShop(params).then(response => {
             var rdata = response.data;
             if (rdata.code == 200) {
+                this.addressArray = [];
+                this.businessTimeArray = [];
                 this.shop = Object.assign({}, rdata.data);
-                this.shop.address.split(",").forEach(item => {
+                let address = this.shop.address.split(",");
+                let addressCode = this.shop.addressCode.split(",");
+                for(var i = 0; i < address.length; i++) {
                     this.addressArray.push({
-                        name: item
+                        name: address[i],
+                        code: addressCode[i]
                     })
-                });
+                }
+                this.addressArray = Object.assign([], this.addressArray);
                 this.shop.businessTime.split("-").forEach(item => {
                     this.businessTimeArray.push(item);
                 });
+                this.businessTimeArray = Object.assign([], this.businessTimeArray);
                  // 图片回显
                 this.uploadList = [];
                 if (this.shop.headPortraitUrls) {
@@ -617,16 +625,19 @@ export default {
             if (valid) {
                 this.submitDisabled = true;
                  if(this.shop.id) {
-                    // TODO 修改
                     let address = '';
+                    let addressCode = '';
                     for(let i = 0; i != this.addressArray.length; i ++) {
                         if(i != this.addressArray.length - 1) {
                             address += this.addressArray[i].name + ",";
+                            addressCode += this.addressArray[i].code + ","
                         }else {
                             address += this.addressArray[i].name;
+                            addressCode += this.addressArray[i].code + ","
                         }
                     }
                     this.shop.address = address;
+                    this.shop.addressCode = addressCode;
                     this.shop.businessTime = this.businessTimeArray.join("-");
                     updateQualityShop(this.shop).then(response => {
                         var rdata = response.data;
@@ -639,16 +650,19 @@ export default {
                         }
                     })
                  }else {
-                     // TODO 新增
                     let address = '';
+                    let addressCode = '';
                     for(let i = 0; i != this.addressArray.length; i ++) {
                         if(i != this.addressArray.length - 1) {
                             address += this.addressArray[i].name + ",";
+                            addressCode += this.addressArray[i].code + ","
                         }else {
                             address += this.addressArray[i].name;
+                            addressCode += this.addressArray[i].code;
                         }
                     }
                     this.shop.address = address;
+                    this.shop.addressCode = addressCode;
                     this.shop.businessTime = this.businessTimeArray.join("-");
                     saveQualityShop(this.shop).then(response => {
                         var rdata = response.data;
