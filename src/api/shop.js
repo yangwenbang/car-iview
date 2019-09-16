@@ -44,3 +44,12 @@ export const queryQualityShopList = (params) => {
         method: 'get'
     })
 }
+
+// 删除质检商家
+export const deleteQualityShop = (params) => {
+    return axios.request({
+        url: '/car/qualityshop/deleteQualityShop',
+        params: params,
+        method: 'delete'
+    })
+}

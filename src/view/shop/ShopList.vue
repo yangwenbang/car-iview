@@ -14,7 +14,7 @@
 </template>
 
 <script>
-    import { queryQualityShopList } from "@/api/shop";
+    import { queryQualityShopList, deleteQualityShop } from "@/api/shop";
     import {
         formatDate
     } from "@/libs/util";
@@ -62,8 +62,8 @@
                         minWidth: 50,
                         render: (h, data) => {
                                 return h(
-                                "span",
-                                {
+                                "div",
+                                [h("span",{
                                     class: "tb-link margin-right-10",
                                     on: {
                                     click: () => {
@@ -76,7 +76,38 @@
                                         }
                                     }
                                 },
-                                "查看");
+                                "查看"),
+                                h("span", {
+                                    class: 'tb-link margin-right-20 color-red',
+                                    on: {
+                                        click: () => {
+                                            this.$Modal.confirm({
+                                                title: ' ',
+                                                content: '是否要删除该质检商家？',
+                                                onOk: () => {
+                                                    let deleteData = {
+                                                        id: data.row.id
+                                                    }
+                                                    deleteQualityShop(deleteData).then(res => {
+                                                        if (res.data.code == "200") {
+                                                            this.$Message.success({
+                                                                content: '删除成功',
+                                                                duration: 1
+                                                            });
+                                                            this.getShopList(this.pageNum, this.pageSize)
+                                                        } else {
+                                                            this.$Message.error({
+                                                                content: res.data.msg,
+                                                                duration: 1
+                                                            });
+                                                        }
+                                                    })
+                                                }
+                                            })
+                                        }
+                                    }
+                                }, "删除")
+                                ]);
                         }
                     }
                 ]
