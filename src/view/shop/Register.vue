@@ -261,14 +261,14 @@
                 type="timerange"
                 placement="bottom-start"
                 placeholder="请选择营业时间"
-                style="width:100%;"
+                style="width: 200px;"
               ></TimePicker >
             </FormItem>
           </Col>
           <Col span="12"></Col>
           <Col :sm="8" :xs="24">
-            <FormItem label="输入手机号码:">
-              <Input v-model="telephone" placeholder="请输入手机号码"></Input>
+            <FormItem label="输入手机号码:" prop="verificationTelephone" required>
+              <Input v-model="shop.verificationTelephone" placeholder="请输入手机号码"></Input>
               <Input class="kaptcha" v-model="shop.mobileVerificationCode" placeholder="请输入验证码"></Input>
               <span class="star-red">*</span>
               <Button
@@ -325,6 +325,7 @@ export default {
         addressCode: '',
         detailAddress: '',
         businessTime: '',
+        verificationTelephone: '',
         mobileVerificationCode: ''
       },
       addressArray: [],
@@ -399,6 +400,22 @@ export default {
         ],
         detailAddress: [
           { required: true, message: "详细地址不能为空", trigger: "blur" }
+        ],
+        verificationTelephone: [
+          { required: true, message: "获取验证码手机号不能为空", trigger: "blur" },
+          {
+            type: "number",
+            trigger: "blur",
+            validator: (rule, value, callback) => {
+              if (!value) {
+                return callback(new Error("获取验证码手机号不能为空"));
+              } else if (!/^1[3-9]+\d{9}$/.test(value)) {
+                callback("请输入正确的手机号");
+              } else {
+                callback();
+              }
+            }
+          }
         ]
       }
     };
@@ -527,8 +544,8 @@ export default {
     },
 
     getkaptcha() {
-      if(this.telephone != '' && this.telephone != null) {
-        if (!/^1[3-9]+\d{9}$/.test(this.telephone)) {
+      if(this.shop.verificationTelephone != '' && this.shop.verificationTelephone != null) {
+        if (!/^1[3-9]+\d{9}$/.test(this.shop.verificationTelephone)) {
           this.$Message.error("请输入正确的手机号码");
         }else {
           var that = this;
@@ -545,7 +562,7 @@ export default {
               }
           }, 1000);
           let params = {
-            telephone: that.telephone
+            telephone: that.shop.verificationTelephone
           }
           sendSms(params).then(response => {
             let rdata = response.data;
@@ -577,16 +594,11 @@ export default {
                 let address = this.shop.address.split(",");
                 let addressCode = this.shop.addressCode.split(",");
                 for(var i = 0; i < address.length; i++) {
-                    this.addressArray.push({
-                        name: address[i],
-                        code: addressCode[i]
-                    })
+                    this.addressArray.push(address[i])
                 }
-                this.addressArray = Object.assign([], this.addressArray);
                 this.shop.businessTime.split("-").forEach(item => {
                     this.businessTimeArray.push(item);
                 });
-                this.businessTimeArray = Object.assign([], this.businessTimeArray);
                  // 图片回显
                 this.uploadList = [];
                 if (this.shop.headPortraitUrls) {
