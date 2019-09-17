@@ -82,7 +82,7 @@
                                     on: {
                                         click: () => {
                                             this.$Modal.confirm({
-                                                title: ' ',
+                                                title: '删除',
                                                 content: '是否要删除该质检商家？',
                                                 onOk: () => {
                                                     let deleteData = {
