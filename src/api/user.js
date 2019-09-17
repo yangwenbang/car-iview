@@ -1,30 +1,26 @@
 import axios from '@/libs/api.request'
 
-export const pwmsLogin = ({ userName, password }) => {
-  const data = {
-    userName,
-    password
-  }
-  return axios.request({
-    url: '/pwms/user/login',
-    data,
-    method: 'post'
-  })
-}
-
-export const getUserInfo = (token) => {
-  return axios.request({
-    url: '/pwms/user/WarehouseChoose',
-    params: {
-      token
-    },
-    method: 'get'
-  })
-}
-
 export const logout = (token) => {
-  return axios.request({
-    url: 'logout',
-    method: 'post'
-  })
+    return axios.request({
+        url: 'logout',
+        method: 'post'
+    })
+}
+
+// 查询质检商家账号列表
+export const queryAccountList = (params) => {
+    return axios.request({
+        url: '/car/accountmanage/queryAccountList',
+        params: params,
+        method: 'get'
+    })
+}
+
+// 质检商家账号重置密码
+export const resetPassword = (params) => {
+    return axios.request({
+        url: '/car/accountmanage/resetPassword',
+        params: params,
+        method: 'get'
+    })
 }

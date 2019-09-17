@@ -224,7 +224,7 @@
             </FormItem>
           </Col>
           <Col span="8">
-             <FormItem label="店面联系电话:" prop="shopTelephone">
+             <FormItem label="质检店面电话:" prop="shopTelephone">
               <Input
                 type="text"
                 v-model="shop.shopTelephone"
@@ -233,7 +233,7 @@
             </FormItem>
           </Col>
           <Col span="16">
-             <FormItem label="店面名称:" prop="shopName">
+             <FormItem label="质检店面名称:" prop="shopName">
               <Input
                 type="text"
                 v-model="shop.shopName"

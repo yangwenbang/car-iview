@@ -132,6 +132,25 @@ export default [{
         ]
     },
     {
+        path: '/user',
+        name: 'user',
+        meta: {
+            icon: 'md-contacts',
+            title: '账号管理'
+        },
+        component: Main,
+        children: [{
+            path: 'ShopAccount',
+            name: 'ShopAccount',
+            meta: {
+                title: '商家账号',
+                pageTitle: '商家账号'
+            },
+            component: () =>
+                import ('@/view/account/ShopAccount.vue')
+        }]
+    },
+    {
         path: '/error_401',
         name: 'error_401',
         component: Main,

@@ -44,7 +44,6 @@
       :columns="tableColumns"
       :row-class-name="rowClassName"
       :data="tableData"
-      @on-selection-change="selectionChange"
       border
     ></Table>
     <div class="page-wrapper">
@@ -231,12 +230,6 @@ export default {
       if (row.status == "2") {
         return "table-delete";
       }
-    },
-    selectionChange: function(selection) {
-      let temp = selection.map(item => {
-        return item.id;
-      });
-      this.tableCheckList = temp.toString();
     },
     queryCommoditys: function(pageNo, numPerPage) {
       let data = {
