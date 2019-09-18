@@ -3,19 +3,11 @@ import { setToken, getToken } from '@/libs/util'
 
 export default {
     state: {
-        userName: '',
-        user: '',
         token: getToken(),
         access: '',
         hasGetInfo: false
     },
     mutations: {
-        setUser(state, user) {
-            state.user = user
-        },
-        setUserName(state, name) {
-            state.userName = name
-        },
         setToken(state, token) {
             state.token = token
             setToken(token)
@@ -34,7 +26,6 @@ export default {
                     password
                 }).then(res => {
                     if (res.data.code == "200") {
-                        commit('setUserName', userName)
                         commit('setHasGetInfo', true)
                         resolve(res.data.data)
                     } else {
