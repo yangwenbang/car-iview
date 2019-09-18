@@ -22,6 +22,7 @@
                     <language v-if="$config.useI18n" @on-lang-change="setLocal" style="margin-right: 10px;" :lang="local" />
                     <error-store v-if="$config.plugin['error-store'] && $config.plugin['error-store'].showInHeader" :has-read="hasReadErrorPage" :count="errorCount"></error-store>
                     <fullscreen v-if="this.$store.state.app.screenSize>768" v-model="isFullscreen" style="margin-right: 10px;" />
+                    <div class="shop-info margin-right-20" v-if="this.$store.state.user.token.isAdmin != 1">{{shopName}}</div>
                 </header-bar>
             </Header>
             <Content class="main-content-con">
@@ -102,6 +103,9 @@ export default {
         },
         hasReadErrorPage() {
             return this.$store.state.app.hasReadErrorPage;
+        },
+        shopName() {
+            return JSON.parse(this.$store.state.user.token).qualityShopName;
         }
     },
     methods: {
@@ -192,6 +196,7 @@ export default {
             this.setTagNavList(getNewTagList(this.tagNavList, newRoute));
             this.$refs.sideMenu.updateOpenName(newRoute.name);
         }
+        debugger
         //手机屏幕时，左侧是默认合起来的
         if(this.$store.state.app.screenSize<=768){
             this.collapsed = true;

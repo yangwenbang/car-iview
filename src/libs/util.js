@@ -3,59 +3,59 @@ import Cookies from 'js-cookie'
 import config from '@/config'
 import { forEach, hasOneOf, objEqual } from '@/libs/tools'
 
-export const TOKEN_KEY = 'userInfo'
+export const TOKEN_KEY = 'user'
 
 export const setToken = (token) => {
-  Cookies.set(TOKEN_KEY, token, { expires: config.cookieExpires || 1 })
+    Cookies.set(TOKEN_KEY, token, { expires: config.cookieExpires || 1 })
 }
 
 export const getToken = () => {
-  const token = Cookies.get(TOKEN_KEY)
-  if (token) return token
-  else return false
+    const token = Cookies.get(TOKEN_KEY)
+    if (token) return token
+    else return false
 }
 
-export const setCookie = (key,value) => {
-  Cookies.set(key, value, { expires: config.cookieExpires || 1 })
+export const setCookie = (key, value) => {
+    Cookies.set(key, value, { expires: config.cookieExpires || 1 })
 }
 
 export const getCookie = (key) => {
-  const val = Cookies.get(key)
-  if (val) return val
-  else return false
+    const val = Cookies.get(key)
+    if (val) return val
+    else return false
 }
 
 export const hasChild = (item) => {
-  return item.children && item.children.length !== 0
+    return item.children && item.children.length !== 0
 }
 
 const showThisMenuEle = (item, access) => {
-  if (item.meta && item.meta.access && item.meta.access.length) {
-    if (hasOneOf(item.meta.access, access)) return true
-    else return false
-  } else return true
-}
-/**
- * @param {Array} list 通过路由列表得到菜单列表
- * @returns {Array}
- */
-export const getMenuByRouter = (list, access) => {
-  let res = []
-  forEach(list, item => {
-    if (!item.meta || (item.meta && !item.meta.hideInMenu)) {
-      let obj = {
-        icon: (item.meta && item.meta.icon) || '',
-        name: item.name,
-        meta: item.meta
-      }
-      if ((hasChild(item) || (item.meta && item.meta.showAlways)) && showThisMenuEle(item, access)) {
-        obj.children = getMenuByRouter(item.children, access)
-      }
-      if (item.meta && item.meta.href) obj.href = item.meta.href
-      if (showThisMenuEle(item, access)) res.push(obj)
+        if (item.meta && item.meta.access && item.meta.access.length) {
+            if (hasOneOf(item.meta.access, access)) return true
+            else return false
+        } else return true
     }
-  })
-  return res
+    /**
+     * @param {Array} list 通过路由列表得到菜单列表
+     * @returns {Array}
+     */
+export const getMenuByRouter = (list, access) => {
+    let res = []
+    forEach(list, item => {
+        if (!item.meta || (item.meta && !item.meta.hideInMenu)) {
+            let obj = {
+                icon: (item.meta && item.meta.icon) || '',
+                name: item.name,
+                meta: item.meta
+            }
+            if ((hasChild(item) || (item.meta && item.meta.showAlways)) && showThisMenuEle(item, access)) {
+                obj.children = getMenuByRouter(item.children, access)
+            }
+            if (item.meta && item.meta.href) obj.href = item.meta.href
+            if (showThisMenuEle(item, access)) res.push(obj)
+        }
+    })
+    return res
 }
 
 /**
@@ -63,62 +63,62 @@ export const getMenuByRouter = (list, access) => {
  * @returns {Array}
  */
 export const getBreadCrumbList = (route, homeRoute) => {
-  let homeItem = { ...homeRoute, icon: homeRoute.meta.icon }
-  let routeMetched = route.matched
-  if (routeMetched.some(item => item.name === homeRoute.name)) return [homeItem]
-  let res = routeMetched.filter(item => {
-    return item.meta === undefined || !item.meta.hide
-  }).map(item => {
-    let meta = { ...item.meta }
-    if (meta.title && typeof meta.title === 'function') meta.title = meta.title(route)
-    let obj = {
-      icon: (item.meta && item.meta.icon) || '',
-      name: item.name,
-      meta: meta
-    }
-    return obj
-  })
+    let homeItem = {...homeRoute, icon: homeRoute.meta.icon }
+    let routeMetched = route.matched
+    if (routeMetched.some(item => item.name === homeRoute.name)) return [homeItem]
+    let res = routeMetched.filter(item => {
+        return item.meta === undefined || !item.meta.hide
+    }).map(item => {
+        let meta = {...item.meta }
+        if (meta.title && typeof meta.title === 'function') meta.title = meta.title(route)
+        let obj = {
+            icon: (item.meta && item.meta.icon) || '',
+            name: item.name,
+            meta: meta
+        }
+        return obj
+    })
 
-  // res = res.filter(item => {
-  //   return !item.meta.hideInMenu
-  // })
-  return [{ ...homeItem, to: homeRoute.path }, ...res]
+    // res = res.filter(item => {
+    //   return !item.meta.hideInMenu
+    // })
+    return [{...homeItem, to: homeRoute.path }, ...res]
 }
 
 export const getRouteTitleHandled = (route) => {
-  let router = { ...route }
-  let meta = { ...route.meta }
-  let title = ''
-  if (meta.title) {
-    if (typeof meta.title === 'function') title = meta.title(router)
-    else title = meta.title
-  }
-  meta.title = title
-  router.meta = meta
-  return router
+    let router = {...route }
+    let meta = {...route.meta }
+    let title = ''
+    if (meta.title) {
+        if (typeof meta.title === 'function') title = meta.title(router)
+        else title = meta.title
+    }
+    meta.title = title
+    router.meta = meta
+    return router
 }
 
 export const showTitle = (item, vm) => {
-  let title = item.meta.title
-  if (vm.$config.useI18n) {
-    if (title.includes('{{') && title.includes('}}') && vm.$config.useI18n) title = title.replace(/({{[\s\S]+?}})/, (m, str) => str.replace(/{{([\s\S]*)}}/, (m, _) => vm.$t(_.trim())))
-    else title = vm.$t(item.name)
-  } else title = (item.meta && item.meta.title) || item.name
-  return title
+    let title = item.meta.title
+    if (vm.$config.useI18n) {
+        if (title.includes('{{') && title.includes('}}') && vm.$config.useI18n) title = title.replace(/({{[\s\S]+?}})/, (m, str) => str.replace(/{{([\s\S]*)}}/, (m, _) => vm.$t(_.trim())))
+        else title = vm.$t(item.name)
+    } else title = (item.meta && item.meta.title) || item.name
+    return title
 }
 
 /**
  * @description 本地存储和获取标签导航列表
  */
 export const setTagNavListInLocalstorage = list => {
-  localStorage.tagNaveList = JSON.stringify(list)
-}
-/**
- * @returns {Array} 其中的每个元素只包含路由原信息中的name, path, meta三项
- */
+        localStorage.tagNaveList = JSON.stringify(list)
+    }
+    /**
+     * @returns {Array} 其中的每个元素只包含路由原信息中的name, path, meta三项
+     */
 export const getTagNavListFromLocalstorage = () => {
-  const list = localStorage.tagNaveList
-  return list ? JSON.parse(list) : []
+    const list = localStorage.tagNaveList
+    return list ? JSON.parse(list) : []
 }
 
 /**
@@ -126,19 +126,19 @@ export const getTagNavListFromLocalstorage = () => {
  * @description 用于找到路由列表中name为home的对象
  */
 export const getHomeRoute = (routers, homeName = 'home') => {
-  let i = -1
-  let len = routers.length
-  let homeRoute = {}
-  while (++i < len) {
-    let item = routers[i]
-    if (item.children && item.children.length) {
-      let res = getHomeRoute(item.children, homeName)
-      if (res.name) return res
-    } else {
-      if (item.name === homeName) homeRoute = item
+    let i = -1
+    let len = routers.length
+    let homeRoute = {}
+    while (++i < len) {
+        let item = routers[i]
+        if (item.children && item.children.length) {
+            let res = getHomeRoute(item.children, homeName)
+            if (res.name) return res
+        } else {
+            if (item.name === homeName) homeRoute = item
+        }
     }
-  }
-  return homeRoute
+    return homeRoute
 }
 
 /**
@@ -147,11 +147,11 @@ export const getHomeRoute = (routers, homeName = 'home') => {
  * @description 如果该newRoute已经存在则不再添加
  */
 export const getNewTagList = (list, newRoute) => {
-  const { name, path, meta } = newRoute
-  let newList = [...list]
-  if (newList.findIndex(item => item.name === name) >= 0) return newList
-  else newList.push({ name, path, meta })
-  return newList
+    const { name, path, meta } = newRoute
+    let newList = [...list]
+    if (newList.findIndex(item => item.name === name) >= 0) return newList
+    else newList.push({ name, path, meta })
+    return newList
 }
 
 /**
@@ -159,8 +159,8 @@ export const getNewTagList = (list, newRoute) => {
  * @param {*} route 路由列表
  */
 const hasAccess = (access, route) => {
-  if (route.meta && route.meta.access) return hasOneOf(access, route.meta.access)
-  else return true
+    if (route.meta && route.meta.access) return hasOneOf(access, route.meta.access)
+    else return true
 }
 
 /**
@@ -171,17 +171,17 @@ const hasAccess = (access, route) => {
  * @description 用户是否可跳转到该页
  */
 export const canTurnTo = (name, access, routes) => {
-  const routePermissionJudge = (list) => {
-    return list.some(item => {
-      if (item.children && item.children.length) {
-        return routePermissionJudge(item.children)
-      } else if (item.name === name) {
-        return hasAccess(access, item)
-      }
-    })
-  }
+    const routePermissionJudge = (list) => {
+        return list.some(item => {
+            if (item.children && item.children.length) {
+                return routePermissionJudge(item.children)
+            } else if (item.name === name) {
+                return hasAccess(access, item)
+            }
+        })
+    }
 
-  return routePermissionJudge(routes)
+    return routePermissionJudge(routes)
 }
 
 /**
@@ -189,13 +189,13 @@ export const canTurnTo = (name, access, routes) => {
  * @description 从URL中解析参数
  */
 export const getParams = url => {
-  const keyValueArr = url.split('?')[1].split('&')
-  let paramObj = {}
-  keyValueArr.forEach(item => {
-    const keyValue = item.split('=')
-    paramObj[keyValue[0]] = keyValue[1]
-  })
-  return paramObj
+    const keyValueArr = url.split('?')[1].split('&')
+    let paramObj = {}
+    keyValueArr.forEach(item => {
+        const keyValue = item.split('=')
+        paramObj[keyValue[0]] = keyValue[1]
+    })
+    return paramObj
 }
 
 /**
@@ -203,15 +203,15 @@ export const getParams = url => {
  * @param {String} name 当前关闭的标签的name
  */
 export const getNextRoute = (list, route) => {
-  let res = {}
-  if (list.length === 2) {
-    res = getHomeRoute(list)
-  } else {
-    const index = list.findIndex(item => routeEqual(item, route))
-    if (index === list.length - 1) res = list[list.length - 2]
-    else res = list[index + 1]
-  }
-  return res
+    let res = {}
+    if (list.length === 2) {
+        res = getHomeRoute(list)
+    } else {
+        const index = list.findIndex(item => routeEqual(item, route))
+        if (index === list.length - 1) res = list[list.length - 2]
+        else res = list[index + 1]
+    }
+    return res
 }
 
 /**
@@ -219,10 +219,10 @@ export const getNextRoute = (list, route) => {
  * @param {Function} callback 回调函数
  */
 export const doCustomTimes = (times, callback) => {
-  let i = -1
-  while (++i < times) {
-    callback(i)
-  }
+    let i = -1
+    while (++i < times) {
+        callback(i)
+    }
 }
 
 /**
@@ -231,24 +231,24 @@ export const doCustomTimes = (times, callback) => {
  * @description 从Csv文件中解析出表格，解析成二维数组
  */
 export const getArrayFromFile = (file) => {
-  let nameSplit = file.name.split('.')
-  let format = nameSplit[nameSplit.length - 1]
-  return new Promise((resolve, reject) => {
-    let reader = new FileReader()
-    reader.readAsText(file) // 以文本格式读取
-    let arr = []
-    reader.onload = function (evt) {
-      let data = evt.target.result // 读到的数据
-      let pasteData = data.trim()
-      arr = pasteData.split((/[\n\u0085\u2028\u2029]|\r\n?/g)).map(row => {
-        return row.split('\t')
-      }).map(item => {
-        return item[0].split(',')
-      })
-      if (format === 'csv') resolve(arr)
-      else reject(new Error('[Format Error]:你上传的不是Csv文件'))
-    }
-  })
+    let nameSplit = file.name.split('.')
+    let format = nameSplit[nameSplit.length - 1]
+    return new Promise((resolve, reject) => {
+        let reader = new FileReader()
+        reader.readAsText(file) // 以文本格式读取
+        let arr = []
+        reader.onload = function(evt) {
+            let data = evt.target.result // 读到的数据
+            let pasteData = data.trim()
+            arr = pasteData.split((/[\n\u0085\u2028\u2029]|\r\n?/g)).map(row => {
+                return row.split('\t')
+            }).map(item => {
+                return item[0].split(',')
+            })
+            if (format === 'csv') resolve(arr)
+            else reject(new Error('[Format Error]:你上传的不是Csv文件'))
+        }
+    })
 }
 
 /**
@@ -257,67 +257,67 @@ export const getArrayFromFile = (file) => {
  * @description 从二维数组中获取表头和表格数据，将第一行作为表头，用于在iView的表格中展示数据
  */
 export const getTableDataFromArray = (array) => {
-  let columns = []
-  let tableData = []
-  if (array.length > 1) {
-    let titles = array.shift()
-    columns = titles.map(item => {
-      return {
-        title: item,
-        key: item
-      }
-    })
-    tableData = array.map(item => {
-      let res = {}
-      item.forEach((col, i) => {
-        res[titles[i]] = col
-      })
-      return res
-    })
-  }
-  return {
-    columns,
-    tableData
-  }
+    let columns = []
+    let tableData = []
+    if (array.length > 1) {
+        let titles = array.shift()
+        columns = titles.map(item => {
+            return {
+                title: item,
+                key: item
+            }
+        })
+        tableData = array.map(item => {
+            let res = {}
+            item.forEach((col, i) => {
+                res[titles[i]] = col
+            })
+            return res
+        })
+    }
+    return {
+        columns,
+        tableData
+    }
 }
 
 export const findNodeUpper = (ele, tag) => {
-  if (ele.parentNode) {
-    if (ele.parentNode.tagName === tag.toUpperCase()) {
-      return ele.parentNode
-    } else {
-      return findNodeUpper(ele.parentNode, tag)
+    if (ele.parentNode) {
+        if (ele.parentNode.tagName === tag.toUpperCase()) {
+            return ele.parentNode
+        } else {
+            return findNodeUpper(ele.parentNode, tag)
+        }
     }
-  }
 }
 
 export const findNodeUpperByClasses = (ele, classes) => {
-  let parentNode = ele.parentNode
-  if (parentNode) {
-    let classList = parentNode.classList
-    if (classList && classes.every(className => classList.contains(className))) {
-      return parentNode
-    } else {
-      return findNodeUpperByClasses(parentNode, classes)
+    let parentNode = ele.parentNode
+    if (parentNode) {
+        let classList = parentNode.classList
+        if (classList && classes.every(className => classList.contains(className))) {
+            return parentNode
+        } else {
+            return findNodeUpperByClasses(parentNode, classes)
+        }
     }
-  }
 }
 
 export const findNodeDownward = (ele, tag) => {
-  const tagName = tag.toUpperCase()
-  if (ele.childNodes.length) {
-    let i = -1
-    let len = ele.childNodes.length
-    while (++i < len) {
-      let child = ele.childNodes[i]
-      if (child.tagName === tagName) return child
-      else return findNodeDownward(child, tag)
+    const tagName = tag.toUpperCase()
+    if (ele.childNodes.length) {
+        let i = -1
+        let len = ele.childNodes.length
+        while (++i < len) {
+            let child = ele.childNodes[i]
+            if (child.tagName === tagName) return child
+            else return findNodeDownward(child, tag)
+        }
     }
-  }
 }
 
 export const showByAccess = (access, canViewAccess) => {
-  return hasOneOf(canViewAccess, access)
+    return hasOneOf(canViewAccess, access)
 }
 
 /**
@@ -326,213 +326,213 @@ export const showByAccess = (access, canViewAccess) => {
  * @param {*} route2 路由对象
  */
 export const routeEqual = (route1, route2) => {
-  const params1 = route1.params || {}
-  const params2 = route2.params || {}
-  const query1 = route1.query || {}
-  const query2 = route2.query || {}
-  return (route1.name === route2.name) && objEqual(params1, params2)
+    const params1 = route1.params || {}
+    const params2 = route2.params || {}
+    const query1 = route1.query || {}
+    const query2 = route2.query || {}
+    return (route1.name === route2.name) && objEqual(params1, params2)
 }
 export const routeQueryEqual = (route1, route2) => {
-  const query1 = route1.query || {}
-  const query2 = route2.query || {}
-  if((route1.name === route2.name) && !objEqual(query1, query2)){
-    return true
-  }else{
-    return false
-  }
+    const query1 = route1.query || {}
+    const query2 = route2.query || {}
+    if ((route1.name === route2.name) && !objEqual(query1, query2)) {
+        return true
+    } else {
+        return false
+    }
 }
 
 /**
  * 判断打开的标签列表里是否已存在这个新添加的路由对象
  */
 export const routeHasExist = (tagNavList, routeItem) => {
-  let len = tagNavList.length
-  let res = false
-  doCustomTimes(len, (index) => {
-    if (routeEqual(tagNavList[index], routeItem)) res = true
-  })
-  return res
+    let len = tagNavList.length
+    let res = false
+    doCustomTimes(len, (index) => {
+        if (routeEqual(tagNavList[index], routeItem)) res = true
+    })
+    return res
 }
 
 export const localSave = (key, value) => {
-  localStorage.setItem(key, value)
+    localStorage.setItem(key, value)
 }
 
 export const localRead = (key) => {
-  return localStorage.getItem(key) || ''
+    return localStorage.getItem(key) || ''
 }
 export const screenSize = () => {
-  return document.body.clientWidth
+    return document.body.clientWidth
 }
 
 /**
  * 关闭当前路由
  */
 export const closeNowTag = (state, route) => {
-  let res = state.tagNavList.filter(item => !routeEqual(route, item))
-  let tagList = []
-  if (res) {
-    tagList = [...res]
-  } else tagList = getTagNavListFromLocalstorage() || []
-  if (tagList[0] && tagList[0].name !== config.homeName) tagList.shift()
-  let homeTagIndex = tagList.findIndex(item => item.name === config.homeName)
-  if (homeTagIndex > 0) {
-    let homeTag = tagList.splice(homeTagIndex, 1)[0]
-    tagList.unshift(homeTag)
-  }
-  state.tagNavList = tagList
+    let res = state.tagNavList.filter(item => !routeEqual(route, item))
+    let tagList = []
+    if (res) {
+        tagList = [...res]
+    } else tagList = getTagNavListFromLocalstorage() || []
+    if (tagList[0] && tagList[0].name !== config.homeName) tagList.shift()
+    let homeTagIndex = tagList.findIndex(item => item.name === config.homeName)
+    if (homeTagIndex > 0) {
+        let homeTag = tagList.splice(homeTagIndex, 1)[0]
+        tagList.unshift(homeTag)
+    }
+    state.tagNavList = tagList
 
-  setTagNavListInLocalstorage([...tagList])
+    setTagNavListInLocalstorage([...tagList])
 }
 
 /**
  * 重量保留四位小数
  */
 export const formatWeight = (weight) => {
-  return weight && Number(weight) ? Number(weight).toFixed(4) : '0.0000';
+    return weight && Number(weight) ? Number(weight).toFixed(4) : '0.0000';
 }
 
 /**
  * 价格保留两位小数
  */
 export const formatPrice = (price) => {
-  return price && Number(price) ? Number(price).toFixed(2) : '0.00';
+    return price && Number(price) ? Number(price).toFixed(2) : '0.00';
 }
 
 /**
  * 毫秒数转化为年月日时分秒格式
  */
 export const formatSeconds = (value) => {
-  if(value && (value != "-") && (value != "0")){
-    var date = new Date(value);
-    var seperator1 = "-";
-    var seperator2 = ":";
-    var month = date.getMonth() + 1;
-    var strDate = date.getDate();
-    var Hour = date.getHours();
-    var Minute = date.getMinutes();
-    var Second = date.getSeconds();
-    if (month >= 1 && month <= 9) {
-        month = "0" + month;
+    if (value && (value != "-") && (value != "0")) {
+        var date = new Date(value);
+        var seperator1 = "-";
+        var seperator2 = ":";
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        var Hour = date.getHours();
+        var Minute = date.getMinutes();
+        var Second = date.getSeconds();
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        if (Hour >= 0 && Hour <= 9) {
+            Hour = "0" + Hour;
+        }
+        if (Minute >= 0 && Minute <= 9) {
+            Minute = "0" + Minute;
+        }
+        if (Second >= 0 && Second <= 9) {
+            Second = "0" + Second;
+        }
+        var dateTime = date.getFullYear() + seperator1 + month + seperator1 + strDate +
+            " " + Hour + seperator2 + Minute +
+            seperator2 + Second;
+        return dateTime;
+    } else {
+        return "-"
     }
-    if (strDate >= 0 && strDate <= 9) {
-        strDate = "0" + strDate;
-    }
-    if (Hour >= 0 && Hour <= 9) {
-        Hour = "0" + Hour;
-    }
-    if (Minute >= 0 && Minute <= 9) {
-        Minute = "0" + Minute;
-    }
-    if (Second >= 0 && Second <= 9) {
-        Second = "0" + Second;
-    }
-    var dateTime = date.getFullYear() + seperator1 + month + seperator1 + strDate
-            + " " + Hour + seperator2 + Minute
-            + seperator2 + Second;
-    return dateTime;
-  }else{
-      return "-"
-  }
 }
 
 /**
  * 毫秒数转化为年月日时分秒格式
  */
 export const formatDate = (value) => {
-  if(value){
-      var date = new Date(value);
-      var seperator = "/";
-      var month = date.getMonth() + 1;
-      var strDate = date.getDate();
-      if (month >= 1 && month <= 9) {
-          month = "0" + month;
-      }
-      if (strDate >= 0 && strDate <= 9) {
-          strDate = "0" + strDate;
-      }
-      var dateTime = date.getFullYear() + seperator + month + seperator + strDate;
-      return dateTime;
-  }else{
-      return ""
-  }
+    if (value) {
+        var date = new Date(value);
+        var seperator = "/";
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        var dateTime = date.getFullYear() + seperator + month + seperator + strDate;
+        return dateTime;
+    } else {
+        return ""
+    }
 }
 
 //判断是否有Pdf阅读插件
 export const isAcrobatPluginInstall = () => {
-  var flag = false;
-  if (navigator.plugins && navigator.plugins.length) {
-    for (let x = 0; x < navigator.plugins.length; x++) {
-      if (navigator.plugins[x].name.indexOf("PDF") != -1 || navigator.plugins[x].name.indexOf("Acrobat") != -1)
-        flag = true;
-    }
-  }
-  // 下面代码都是处理IE浏览器的情况
-  else if (window.ActiveXObject) {
-    for (let x = 2; x < 10; x++) {
-      try {
-        oAcro = eval("new ActiveXObject('PDF.PdfCtrl." + x + "');");
-        this.$Message.error({
-          content: oAcro,
-          duration: 1
-        });
-        if (oAcro) {
-          flag = true;
+    var flag = false;
+    if (navigator.plugins && navigator.plugins.length) {
+        for (let x = 0; x < navigator.plugins.length; x++) {
+            if (navigator.plugins[x].name.indexOf("PDF") != -1 || navigator.plugins[x].name.indexOf("Acrobat") != -1)
+                flag = true;
         }
-      } catch (e) {
-        flag = false;
-      }
     }
-    try {
-      oAcro4 = new ActiveXObject('PDF.PdfCtrl.1');
-      if (oAcro4)
-        flag = true;
-    } catch (e) {
-      flag = false;
+    // 下面代码都是处理IE浏览器的情况
+    else if (window.ActiveXObject) {
+        for (let x = 2; x < 10; x++) {
+            try {
+                oAcro = eval("new ActiveXObject('PDF.PdfCtrl." + x + "');");
+                this.$Message.error({
+                    content: oAcro,
+                    duration: 1
+                });
+                if (oAcro) {
+                    flag = true;
+                }
+            } catch (e) {
+                flag = false;
+            }
+        }
+        try {
+            oAcro4 = new ActiveXObject('PDF.PdfCtrl.1');
+            if (oAcro4)
+                flag = true;
+        } catch (e) {
+            flag = false;
+        }
+        try {
+            oAcro7 = new ActiveXObject('AcroPDF.PDF.1');
+            if (oAcro7)
+                flag = true;
+        } catch (e) {
+            flag = false;
+        }
     }
-    try {
-      oAcro7 = new ActiveXObject('AcroPDF.PDF.1');
-      if (oAcro7)
-        flag = true;
-    } catch (e) {
-      flag = false;
+    if (flag) {
+        return true;
+    } else {
+        this.$Message.error({
+            content: "对不起,您还没有安装PDF阅读器软件呢,为了方便预览PDF文档,请安装！",
+            duration: 1
+        });
     }
-  }
-  if (flag) {
-    return true;
-  } else {
-    this.$Message.error({
-      content: "对不起,您还没有安装PDF阅读器软件呢,为了方便预览PDF文档,请安装！",
-      duration: 1
-    });
-  }
-  return flag;
+    return flag;
 }
 
 /**
  * input输入限制,maxInt整数部分限制位数，maxDecimal小数部分限制位数
  */
-export const decimalInput = (value,maxInt,maxDecimal) => {
-  if(value){
-    value = String(value);
-    if(maxDecimal == "4"){
-      value = value.replace(/^(\-)*(\d+)\.(\d{0,4}).*$/, "$1$2.$3");
-    }else if(maxDecimal == "2"){
-      value = value.replace(/^(\-)*(\d+)\.(\d{0,2}).*$/, "$1$2.$3");
-    } else if(maxDecimal == "0") {
-      var index = value.indexOf(".");
-      value = value.substr(0,index>=0?index:value.length).substr(0,maxInt);
+export const decimalInput = (value, maxInt, maxDecimal) => {
+    if (value) {
+        value = String(value);
+        if (maxDecimal == "4") {
+            value = value.replace(/^(\-)*(\d+)\.(\d{0,4}).*$/, "$1$2.$3");
+        } else if (maxDecimal == "2") {
+            value = value.replace(/^(\-)*(\d+)\.(\d{0,2}).*$/, "$1$2.$3");
+        } else if (maxDecimal == "0") {
+            var index = value.indexOf(".");
+            value = value.substr(0, index >= 0 ? index : value.length).substr(0, maxInt);
+        }
+        if (String(parseInt(value)).length > maxInt) {
+            value = String(parseInt(value)).substr(0, maxInt) + (String(value).indexOf(".") >= 0 ? "." + String(value).split(".")[1] : "");
+        }
     }
-    if(String(parseInt(value)).length > maxInt){
-      value = String(parseInt(value)).substr(0,maxInt) + (String(value).indexOf(".") >= 0 ? "."+String(value).split(".")[1] : "");
-    }
-  }
-  return value;
+    return value;
 }
 
 export const guid = () => {
-  function S4() {
-      return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
-  }
-  return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
+    function S4() {
+        return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+    }
+    return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
 }
