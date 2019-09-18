@@ -196,7 +196,6 @@ export default {
             this.setTagNavList(getNewTagList(this.tagNavList, newRoute));
             this.$refs.sideMenu.updateOpenName(newRoute.name);
         }
-        debugger
         //手机屏幕时，左侧是默认合起来的
         if(this.$store.state.app.screenSize<=768){
             this.collapsed = true;

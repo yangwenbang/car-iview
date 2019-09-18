@@ -141,7 +141,6 @@ export default {
     changePswFun() {
       this.$refs["formPswValidate"].validate(valid => {
         if (valid) {
-          debugger
           var user = this.$store.state.user.token;
           this.formPswValidate.userName = user.name;
           updatePassword(this.formPswValidate).then(res => {
