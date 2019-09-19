@@ -22,7 +22,7 @@
                     <language v-if="$config.useI18n" @on-lang-change="setLocal" style="margin-right: 10px;" :lang="local" />
                     <error-store v-if="$config.plugin['error-store'] && $config.plugin['error-store'].showInHeader" :has-read="hasReadErrorPage" :count="errorCount"></error-store>
                     <fullscreen v-if="this.$store.state.app.screenSize>768" v-model="isFullscreen" style="margin-right: 10px;" />
-                    <div class="shop-info margin-right-20" v-if="this.$store.state.user.token.isAdmin != 1">{{shopName}}</div>
+                    <div class="shop-info margin-right-20" v-if="JSON.parse(this.$store.state.user.token).isAdmin != 1">{{shopName}}</div>
                 </header-bar>
             </Header>
             <Content class="main-content-con">

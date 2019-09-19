@@ -1,4 +1,5 @@
 import Main from '@/components/main'
+import { setToken, getToken } from '@/libs/util'
 
 /**
  * iview-admin中meta除了原生参数外可配置的参数:
@@ -18,6 +19,10 @@ import Main from '@/components/main'
  *  singleSubMenu: (false) 设为true后在左侧菜单会单独显示包含左侧的与一级菜单平级的菜单链接，出现该标签时，该条路由外层必须只能单独存在该条children
  * }
  */
+var hideMenu = true;
+ if(getToken()) {
+  hideMenu = JSON.parse(getToken()).isAdmin == 1 ? false : true;
+ }
 
 export default [{
         path: '/login',
@@ -55,8 +60,9 @@ export default [{
         path: '/qualityShop',
         name: 'qualityShop',
         meta: {
-            icon: 'ios-speedometer-outline',
-            title: '质检商家'
+          title: '质检商家',
+          icon: 'ios-speedometer-outline',
+          hideInMenu:  hideMenu
         },
         component: Main,
         children: [{
@@ -114,7 +120,8 @@ export default [{
                 name: 'CategoryList',
                 meta: {
                     title: '产品分类',
-                    pageTitle: '产品分类'
+                    pageTitle: '产品分类',
+                    hideInMenu:  hideMenu
                 },
                 component: () =>
                     import ('@/view/commodity/CategoryList.vue')
@@ -124,7 +131,8 @@ export default [{
                 name: 'CategoryTree',
                 meta: {
                     title: '分类属性',
-                    pageTitle: '分类属性'
+                    pageTitle: '分类属性',
+                    hideInMenu:  hideMenu
                 },
                 component: () =>
                     import ('@/view/commodity/CategoryTree.vue')
@@ -136,7 +144,8 @@ export default [{
         name: 'user',
         meta: {
             icon: 'md-contacts',
-            title: '账号管理'
+            title: '账号管理',
+            hideInMenu:  hideMenu
         },
         component: Main,
         children: [{
