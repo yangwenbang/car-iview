@@ -46,12 +46,12 @@
                         minWidth: 140
                     },
                     {
-                        title: "商店地址",
+                        title: "商家地址",
                         key: "address",
                         minWidth: 140
                     },
                     {
-                        title: "商店描述",
+                        title: "商家描述",
                         key: "description",
                         minWidth: 140
                     },

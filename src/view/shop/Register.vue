@@ -184,6 +184,26 @@
             </FormItem>
           </Col>
           <Col span="8">
+             <FormItem label="支付宝账号:" prop="alipayAccount">
+              <Input
+                type="text"
+                v-model="shop.alipayAccount"
+                :maxlength="20"
+                style="width: 200px"
+              ></Input>
+            </FormItem>
+          </Col>
+          <Col span="16">
+             <FormItem label="支付宝账号真实姓名:" prop="realName">
+              <Input
+                type="text"
+                v-model="shop.realName"
+                :maxlength="10"
+                style="width: 200px"
+              ></Input>
+            </FormItem>
+          </Col>
+          <Col span="8">
              <FormItem label="负责人姓名:" prop="chargePerson">
               <Input
                 type="text"
@@ -224,19 +244,19 @@
             </FormItem>
           </Col>
           <Col span="8">
-             <FormItem label="质检店面电话:" prop="shopTelephone">
+             <FormItem label="质检店面名称:" prop="shopName">
               <Input
                 type="text"
-                v-model="shop.shopTelephone"
+                v-model="shop.shopName"
                 style="width: 200px"
               ></Input>
             </FormItem>
           </Col>
           <Col span="16">
-             <FormItem label="质检店面名称:" prop="shopName">
+             <FormItem label="质检店面电话:" prop="shopTelephone">
               <Input
                 type="text"
-                v-model="shop.shopName"
+                v-model="shop.shopTelephone"
                 style="width: 200px"
               ></Input>
             </FormItem>
@@ -315,6 +335,8 @@ export default {
         companyName: '',
         legalPerson: '',
         legalPersonCardUrls: '',
+        realName: '',
+        alipayAccount: '',
         chargePerson: '',
         chargePersonTelephone: '',
         standbyPerson: '',
@@ -356,6 +378,22 @@ export default {
             required: true,
             message: '请输入法人姓名',
             trigger: 'change'
+          }
+        ],
+        realName: [
+          {
+            type: 'string',
+            required: true,
+            message: "请输入支付宝账号真实姓名",
+            trigger: "change"
+          }
+        ],
+        alipayAccount: [
+          {
+            type: 'string',
+            required: true,
+            message: "请输入支付宝账号",
+            trigger: "change"
           }
         ],
         chargePerson: [
