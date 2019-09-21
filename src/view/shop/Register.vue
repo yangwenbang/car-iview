@@ -591,7 +591,7 @@ export default {
           var timer = setInterval(function () {
               if(that.second > 1) {
                   that.second --;
-                  that.buttonMsg = that.second + "秒后可重发!";
+                  that.buttonMsg = that.second + "秒后可重发";
               }else {
                   clearInterval(timer);
                   that.buttonMsg = "获取验证码";
