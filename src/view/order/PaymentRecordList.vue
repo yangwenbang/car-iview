@@ -3,33 +3,34 @@
     <Form :label-width="150" class="search-form">
       <Row type="flex" justify="space-between">
         <Col :sm="8" :xs="24">
-          <FormItem label="产品分类:">
-            <Select v-model="searchForm.commodityCategoryId" clearable>
-              <Option
-                v-for="(item,index) in categoryList"
-                :value="item.id"
-                :key="index"
-              >{{ item.categoryName }}</Option>
+          <FormItem label="商品订单号:">
+             <Input v-model="searchForm.payRecordOrderNo" placeholder="请输入商品订单号"></Input>
+          </FormItem>
+        </Col>
+        <Col :sm="8" :xs="24">
+          <FormItem label="收款人类型:">
+            <Select v-model="searchForm.payeeType" clearable>
+              <Option :value="0">商品卖家</Option>
+              <Option :value="1">质检商家</Option>
             </Select>
           </FormItem>
         </Col>
         <Col :sm="8" :xs="24">
-          <FormItem label="商品状态:">
-            <Select v-model="searchForm.auditStatus" clearable>
-              <Option :value="0">未上架</Option>
-              <Option :value="1">已上架</Option>
-              <Option :value="2">已下架</Option>
+          <FormItem label="付款人名称:">
+            <Input v-model="searchForm.payerUserName" placeholder="请输入付款人名称"></Input>
+          </FormItem>
+        </Col>
+        <Col :sm="8" :xs="24">
+          <FormItem label="收款人真实姓名:">
+            <Input v-model="searchForm.payeeRealName" placeholder="请输入收款人真实姓名"></Input>
+          </FormItem>
+        </Col>
+        <Col :sm="8" :xs="24">
+          <FormItem label="状态:">
+            <Select v-model="searchForm.status" clearable>
+              <Option :value="0">未打款</Option>
+              <Option :value="1">已打款</Option>
             </Select>
-          </FormItem>
-        </Col>
-        <Col :sm="8" :xs="24">
-          <FormItem label="商品标题:">
-            <Input v-model="searchForm.commodityName" placeholder="请输入商品标题"></Input>
-          </FormItem>
-        </Col>
-        <Col :sm="8" :xs="24">
-          <FormItem label="商品编号:">
-            <Input v-model="searchForm.commodityCode" placeholder="请输入商品订单号"></Input>
           </FormItem>
         </Col>
         <Col :span="24" class="text-right">
@@ -40,12 +41,7 @@
         </Col>
       </Row>
     </Form>
-    <Table
-      :columns="tableColumns"
-      :row-class-name="rowClassName"
-      :data="tableData"
-      border
-    ></Table>
+    <Table :columns="tableColumns" :data="tableData" border></Table>
     <div class="page-wrapper">
       <div v-if="this.$store.state.app.screenSize>768">
         <span class="left">共{{total}}条记录 第{{pageNum}}页 / 共{{Math.ceil(total / pageSize)}}页</span>
@@ -70,13 +66,33 @@
           simple
         />
       </div>
+      <Modal ref="modal" v-model="modal" :title="modalTitle" style="text-align:center" @on-ok="submit">
+            <Form :model="paymentForm" :label-width="100">
+                <FormItem label="商品订单号:">
+                    <Input v-model="paymentForm.payRecordOrderNo" readonly></Input>
+                </FormItem>
+                <FormItem label="打款金额:">
+                    <Input v-model="paymentForm.money" readonly></Input>
+                </FormItem>
+                <FormItem label="收款人真实姓名:">
+                    <Input v-model="paymentForm.payeeRealName" readonly></Input>
+                </FormItem>
+                <FormItem label="收款人类型:">
+                    <Input v-model="paymentForm.payeeType" readonly></Input>
+                </FormItem>
+            </Form>
+            <div slot="footer" style="text-align:center">
+                <Button type="dashed"  @click="cancel">取消</Button>
+                <Button type="primary" @click="submit" style="background-color: #fbc647;border: #fbc647;" :disabled="submitDisabled">确认打款</Button>
+            </div>
+        </Modal>
     </div>
   </div>
 </template>
 
 <script>
-import { queryCategory, queryCommodityOrder } from "@/api/commodity";
-import { formatDate } from "@/libs/util";
+import { paymentRecord, queryPaymentRecordList } from "@/api/order";
+import { formatDate, formatPrice } from "@/libs/util";
 export default {
   name: "PaymentRecordList",
   data() {
@@ -86,97 +102,111 @@ export default {
       total: 0,
       pageSize: 10,
       searchForm: {
-        commodityCategoryId: "",
-        commodityName: "",
-        commodityCode: "",
-        auditStatus: ""
+        payRecordOrderNo: "",
+        payeeType: "",
+        payerUserName: "",
+        payeeRealName: "",
+        status: ""
       },
-      categoryList: [],
+      modal: false,
+      modalTitle: '确认打款?',
+      paymentForm: {
+        paymentRecordId: "",
+        payRecordOrderNo: "",
+        money: "",
+        payeeRealName: "",
+        payeeType: ""
+      },
       tableData: [],
       tableColumns: [
         {
-          title: "商品编号",
-          key: "commodityCode",
-          minWidth: 50
-        },
-        {
-          title: "商品标题",
-          key: "commodityName",
+          title: "商品订单号",
+          key: "payRecordOrderNo",
           minWidth: 100
         },
         {
-          title: "商品状态",
-          key: "auditStatus",
+          title: "打款金额(元)",
+          key: "money",
           minWidth: 50,
           render: (h, data) => {
-            if (data.row.auditStatus == "0") {
-              return h("span", {}, "未上架");
-            } else if (data.row.auditStatus == "1") {
-              return h("span", {}, "已上架");
-            } else if (data.row.auditStatus == "2") {
-              return h("span", {}, "已下架");
+              return h("span", formatPrice(data.row.money));
+          }
+        },
+        {
+          title: "付款人付款总金额(元)",
+          key: "payerMoney",
+          minWidth: 100,
+          render: (h, data) => {
+              return h("span", formatPrice(data.row.payerMoney));
+          }
+        },
+        {
+          title: "收款人真实姓名",
+          key: "payeeRealName",
+          minWidth: 100
+        },
+        {
+          title: "收款人类型",
+          key: "payeeType",
+          minWidth: 50,
+          render: (h, data) => {
+            if (data.row.payeeType == "0") {
+              return h("span", "商品卖家");
+            } else if (data.row.payeeType == "1") {
+              return h("span", "质检商家");
             }
           }
         },
         {
-          title: "产品分类",
-          key: "commodityCategoryName",
+          title: "付款人名称",
+          key: "payerUserName",
           minWidth: 50
         },
         {
-          title: "商品类型",
-          key: "commodityType",
-          align: "left",
+          title: "付款人手机号",
+          key: "payerMobile",
+          minWidth: 50
+        },
+        {
+          title: "打款交易单号",
+          key: "paymentNo",
+          minWidth: 140
+        },
+        {
+          title: "状态",
+          key: "status",
           minWidth: 50,
           render: (h, data) => {
-            if (data.row.commodityType == "0") {
-              return h("span", {}, "原厂");
-            } else if (data.row.commodityType == "1") {
-              return h("span", {}, "非原厂");
+            if (data.row.status == "0") {
+              return h("span", "未打款");
+            } else if (data.row.status == "1") {
+              return h("span", "已打款");
             }
           }
-        },
-        {
-          title: "一口价",
-          key: "price",
-          minWidth: 50
-        },
-        {
-          title: "创建时间",
-          key: "createTime",
-          align: "left",
-          minWidth: 50
-        },
-        {
-          title: "发布地址",
-          key: "address",
-          align: "left",
-          minWidth: 120
         },
         {
           title: "操作",
           key: "",
           fixed: "right",
-          minWidth: 140,
+          minWidth: 100,
           render: (h, data) => {
-            return h(
-              "span",
-              {
-                class: "tb-link margin-right-10",
-                on: {
-                  click: () => {
-                    this.$router.push({
-                      name: "CommodityAdd",
-                      query: {
-                        commodityCode: data.row.commodityCode,
-                        commodityType: data.row.commodityType,
-                        commodityCategoryId: data.row.commodityCategoryId
-                      }
-                    });
+            if(data.row.status == 0) {
+              return h("span",
+                {
+                  class: "tb-link margin-right-10",
+                  on: {
+                    click: () => {
+                        this.paymentForm.paymentRecordId = data.row.id;
+                        this.paymentForm.payRecordOrderNo = data.row.payRecordOrderNo;
+                        this.paymentForm.money = formatPrice(data.row.money);
+                        this.paymentForm.payeeRealName = data.row.payeeRealName;
+                        this.paymentForm.payeeType = data.row.payeeType == 0 ? "商品卖家" : "质检商家";
+                        this.modal = true;
+                    }
                   }
-                }
-              },
-              "查看");
+                },
+              "打款");
+            }
           }
         }
       ]
@@ -184,106 +214,71 @@ export default {
   },
   methods: {
     search: function() {
-      this.queryCommoditys(1, 10);
+      this.queryPaymentRecordList(1, 10);
     },
     reset: function() {
-      this.searchForm.commodityCategoryId = "",
-        this.searchForm.commodityName = "",
-        this.searchForm.commodityCode = "",
-        this.searchForm.auditStatus = ""
+      this.searchForm.payRecordOrderNo = "",
+      this.searchForm.payeeRealName = "",
+      this.searchForm.payerUserName = "",
+      this.paymentForm.payeeType = "",
+      this.searchForm.status = ""
     },
     submit: function() {
-      this.$refs.formValidate.validate(valid => {
-        if (valid) {
-          this.submitDisabled = true;
-          let data = {
-            deviceType: this.changeForm.deviceCode,
-            deviceName: this.changeForm.deviceName,
-            processMode: this.changeForm.processMode,
-            brand: this.changeForm.brand,
-            remark: this.changeForm.remark
-          };
-
-          data.id = this.updataId;
-          updateDevice(data).then(res => {
-            if (res.data.code == "200") {
-              this.$Message.success({
-                content: "信息修改成功",
-                duration: 1
-              });
-              this.modal = false;
-              this.queryCommodityOrder(this.pageNum, this.pageSize);
-            } else {
-              this.$Message.error({
-                content: res.data.msg,
-                duration: 1
-              });
-            }
-            setTimeout(() => {
-              this.submitDisabled = false;
-            }, 1000);
+      this.submitDisabled = true;
+      let data = {
+        paymentRecordId: this.paymentForm.paymentRecordId
+      };
+      paymentRecord(data).then(res => {
+        if (res.data.code == "200") {
+          this.$Message.success({
+            content: "打款成功",
+            duration: 1
+          });
+          this.modal = false;
+          this.queryPaymentRecordList(this.pageNum, this.pageSize);
+        } else {
+          this.$Message.error({
+            content: res.data.msg,
+            duration: 1
           });
         }
+        setTimeout(() => {
+          this.submitDisabled = false;
+        }, 1000);
       });
     },
-    rowClassName: function(row, index) {
-      if (row.status == "2") {
-        return "table-delete";
-      }
-    },
-    queryCommoditys: function(pageNo, numPerPage) {
+    queryPaymentRecordList: function(pageNo, numPerPage) {
       let data = {
-        commodityCategoryId: this.searchForm.commodityCategoryId,
-        commodityName: this.searchForm.commodityName,
-        commodityCode: this.searchForm.commodityCode,
-        auditStatus: this.searchForm.auditStatus,
+        payRecordOrderNo: this.searchForm.payRecordOrderNo,
+        payeeType: this.searchForm.payeeType,
+        payerUserName: this.searchForm.payerUserName,
+        payeeRealName: this.searchForm.payeeRealName,
+        status: this.searchForm.status,
         pageNo: pageNo,
         numPerPage: numPerPage,
         isPage: 1
       };
-      queryCommodityOrder(data).then(res => {
+      queryPaymentRecordList(data).then(res => {
         if (res.data.code == "200") {
-          this.tableData = res.data.data.recordList.map(item => {
-            if (item.status == "2") {
-              item._disabled = true;
-            }
-            return item;
-          });
+          this.tableData = res.data.data.recordList;
           this.total = res.data.data.totalCount;
           this.pageNum = res.data.data.currentPage;
           this.pageSize = res.data.data.numPerPage;
         }
       });
     },
+    cancel: function() {
+        this.modal = false;
+    },
     pageChange: function(value) {
-      this.queryCommoditys(value, this.pageSize);
+      this.queryPaymentRecordList(value, this.pageSize);
     },
     pageSizeChange: function(value) {
-      this.queryCommoditys(this.pageNum, value);
-    },
-    getCategoryList() {
-      var that = this;
-      let params = {
-        pageNo: 1,
-        numPerPage: 10,
-        // 是否分页，0-不分页 1-分页
-        isPage: 0
-      };
-      queryCategory(params).then(response => {
-        let rdata = response.data;
-        if (rdata.code == 200) {
-          that.categoryList = rdata.data.recordList;
-        } else {
-          this.$Message.error("查询分类失败" + rdata.msg);
-        }
-      });
+      this.queryPaymentRecordList(this.pageNum, value);
     }
   },
-  created: function() {
-    this.getCategoryList();
-  },
   mounted: function() {
-    this.queryCommoditys(1, 10);
+    this.queryPaymentRecordList(1, 10);
   }
 };
 </script>
