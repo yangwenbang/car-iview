@@ -4,7 +4,7 @@
       <Row type="flex" justify="space-between">
         <Col :sm="8" :xs="24">
           <FormItem label="商品订单号:">
-             <Input v-model="searchForm.payRecordOrderNo" placeholder="请输入商品订单号"></Input>
+             <Input v-model="searchForm.orderNo" placeholder="请输入商品订单号"></Input>
           </FormItem>
         </Col>
         <Col :sm="8" :xs="24">
@@ -69,7 +69,7 @@
       <Modal ref="modal" v-model="modal" :title="modalTitle" style="text-align:center" @on-ok="submit">
             <Form :model="paymentForm" :label-width="100">
                 <FormItem label="商品订单号:">
-                    <Input v-model="paymentForm.payRecordOrderNo" readonly></Input>
+                    <Input v-model="paymentForm.orderNo" readonly></Input>
                 </FormItem>
                 <FormItem label="打款金额:">
                     <Input v-model="paymentForm.money" readonly></Input>
@@ -102,7 +102,7 @@ export default {
       total: 0,
       pageSize: 10,
       searchForm: {
-        payRecordOrderNo: "",
+        orderNo: "",
         payeeType: "",
         payerUserName: "",
         payeeRealName: "",
@@ -112,7 +112,7 @@ export default {
       modalTitle: '确认打款?',
       paymentForm: {
         paymentRecordId: "",
-        payRecordOrderNo: "",
+        orderNo: "",
         money: "",
         payeeRealName: "",
         payeeType: ""
@@ -121,7 +121,7 @@ export default {
       tableColumns: [
         {
           title: "商品订单号",
-          key: "payRecordOrderNo",
+          key: "orderNo",
           minWidth: 100
         },
         {
@@ -197,7 +197,7 @@ export default {
                   on: {
                     click: () => {
                         this.paymentForm.paymentRecordId = data.row.id;
-                        this.paymentForm.payRecordOrderNo = data.row.payRecordOrderNo;
+                        this.paymentForm.orderNo = data.row.orderNo;
                         this.paymentForm.money = formatPrice(data.row.money);
                         this.paymentForm.payeeRealName = data.row.payeeRealName;
                         this.paymentForm.payeeType = data.row.payeeType == 0 ? "商品卖家" : "质检商家";
@@ -217,7 +217,7 @@ export default {
       this.queryPaymentRecordList(1, 10);
     },
     reset: function() {
-      this.searchForm.payRecordOrderNo = "",
+      this.searchForm.orderNo = "",
       this.searchForm.payeeRealName = "",
       this.searchForm.payerUserName = "",
       this.paymentForm.payeeType = "",
@@ -249,7 +249,7 @@ export default {
     },
     queryPaymentRecordList: function(pageNo, numPerPage) {
       let data = {
-        payRecordOrderNo: this.searchForm.payRecordOrderNo,
+        orderNo: this.searchForm.orderNo,
         payeeType: this.searchForm.payeeType,
         payerUserName: this.searchForm.payerUserName,
         payeeRealName: this.searchForm.payeeRealName,
