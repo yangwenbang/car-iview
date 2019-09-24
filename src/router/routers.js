@@ -147,26 +147,27 @@ export default [{
           title: '订单管理'
       },
       component: Main,
-      children: [{
-              path: 'OrderList',
-              name: 'OrderList',
-              meta: {
-                  title: '订单列表',
-                  pageTitle: '订单列表'
-              },
-              component: () =>
-                  import ('@/view/order/OrderList.vue')
-          },
-          {
-              path: 'PaymentRecordList',
-              name: 'PaymentRecordList',
-              meta: {
-                  title: '打款列表',
-                  pageTitle: '打款列表'
-              },
-              component: () =>
-                  import ('@/view/order/PaymentRecordList.vue')
-          }
+      children: [
+        // {
+        //       path: 'OrderList',
+        //       name: 'OrderList',
+        //       meta: {
+        //           title: '订单列表',
+        //           pageTitle: '订单列表'
+        //       },
+        //       component: () =>
+        //           import ('@/view/order/OrderList.vue')
+        // },
+        {
+            path: 'PaymentRecordList',
+            name: 'PaymentRecordList',
+            meta: {
+                title: '打款列表',
+                pageTitle: '打款列表'
+            },
+            component: () =>
+                import ('@/view/order/PaymentRecordList.vue')
+        }
       ]
     },
     {

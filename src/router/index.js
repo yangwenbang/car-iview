@@ -19,7 +19,6 @@ if(process.env.NODE_ENV != 'development') {
   router.beforeEach((to, from, next) => {
     iView.LoadingBar.start()
     const token = getToken()
-    //const token = '{"warehouse":{"warehouseId":1,"warehouseName":"上海城南库"}}'
     if (!token && to.name !== LOGIN_PAGE_NAME) {
       // 未登录且要跳转的页面不是登录页
       next({
