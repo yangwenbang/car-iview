@@ -126,6 +126,41 @@
               </div>
             </FormItem>
           </Col>
+           <Col :span="24">
+            <FormItem label="上传合同 :" required>
+              <div class="clearfix">
+                <div class="demo-upload-list" v-for="item in uploadList4">
+                  <template v-if="item.status === 'finished'">
+                    <img :src="item.url">
+                    <div class="demo-upload-list-cover">
+                      <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                      <Icon type="ios-trash-outline" @click.native="handleRemove4(item)"></Icon>
+                    </div>
+                  </template>
+                  <template v-else>
+                    <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
+                  </template>
+                </div>
+                <Upload
+                  ref="upload4"
+                  :show-upload-list="false"
+                  :on-success="handleSuccess4"
+                  :format="['jpg','jpeg','png']"
+                  :max-size="8*1024"
+                  :on-format-error="handleFormatError"
+                  :on-exceeded-size="handleMaxSize"
+                  :before-upload="handleBeforeUpload4"
+                  type="drag"
+                  action="/car/qualityshop/uploadPicture"
+                  style="display: inline-block;width:100px;"
+                >
+                  <div style="width: 100px;height:100px;line-height: 100px;">
+                    <Icon type="ios-camera" size="20"></Icon>
+                  </div>
+                </Upload>
+              </div>
+            </FormItem>
+          </Col>
           <Col :span="24">
             <FormItem label="公司名称:" prop="companyName">
               <Input
@@ -287,6 +322,12 @@
           </Col>
           <Col span="12"></Col>
           <Col :sm="8" :xs="24">
+            <FormItem label="合同到期日期:" required>
+              <DatePicker v-model="shop.expiresTime" confirm format="yyyy/MM/dd" type="date" placeholder="请选择合同到期日期" style="width: 200px"></DatePicker>
+            </FormItem>
+          </Col>
+          <Col span="12"></Col>
+          <Col :sm="8" :xs="24">
             <FormItem label="输入手机号码:" prop="verificationTelephone" required>
               <Input v-model="shop.verificationTelephone" placeholder="请输入手机号码"></Input>
               <Input class="kaptcha" v-model="shop.mobileVerificationCode" placeholder="请输入验证码"></Input>
@@ -332,6 +373,7 @@ export default {
         headPortraitUrls: '',
         shopPicture: '',
         businessLicenseUrls: '',
+        contractUrls: '',
         companyName: '',
         legalPerson: '',
         legalPersonCardUrls: '',
@@ -347,6 +389,7 @@ export default {
         addressCode: '',
         detailAddress: '',
         businessTime: '',
+        expiresTime: '',
         verificationTelephone: '',
         mobileVerificationCode: ''
       },
@@ -360,6 +403,7 @@ export default {
       uploadList1: [],
       uploadList2: [],
       uploadList3: [],
+      uploadList4: [],
       second: 60,
       buttonMsg: '获取验证码',
       buttonDisabled: false,
@@ -484,6 +528,9 @@ export default {
     handleRemove3(file) {
       this.uploadList3.splice(this.uploadList3.indexOf(file), 1);
     },
+    handleRemove4(file) {
+      this.uploadList4.splice(this.uploadList4.indexOf(file), 1);
+    },
     handleSuccess(res, file) {
       if (res.code == "200") {
         file.url = "http://" + res.data;
@@ -540,6 +587,25 @@ export default {
       }
       this.shop.legalPersonCardUrls = urls;
     },
+    handleSuccess4(res, file) {
+      if (res.code == "200") {
+        file.url = "http://" + res.data;
+      } else {
+        this.$Message.error(res.msg);
+      }
+      this.uploadList4.push(file);
+      var urls = "";
+      if (this.uploadList4 != null && this.uploadList4.length > 0) {
+        for (var i = 0; i < this.uploadList4.length; i++) {
+          if (i != this.uploadList4.length - 1) {
+            urls += this.uploadList4[i].url + ",";
+          } else {
+            urls += this.uploadList4[i].url;
+          }
+        }
+      }
+      this.shop.contractUrls = urls;
+    },
     handleBeforeUpload() {
       const check = this.uploadList.length < 1;
       if (!check) {
@@ -565,6 +631,13 @@ export default {
       const check = this.uploadList3.length < 2;
       if (!check) {
         this.$Message.info("最多上传2张身份证照片.");
+      }
+      return check;
+    },
+    handleBeforeUpload4() {
+      const check = this.uploadList4.length < 2;
+      if (!check) {
+        this.$Message.info("最多上传2张合同图片.");
       }
       return check;
     },
@@ -666,12 +739,20 @@ export default {
                         this.uploadList3.push({ url: item, status: "finished" });
                     });
                 };
+                this.uploadList4 = [];
+                if (this.shop.contractUrls) {
+                    let pictures = this.shop.contractUrls.split(",");
+                    pictures.map(item => {
+                        this.uploadList4.push({ url: item, status: "finished" });
+                    });
+                };
             }
         })
     },
 
     save(name) {
         this.$refs[name].validate(valid => {
+          debugger
             if (valid) {
                 this.submitDisabled = true;
                  if(this.shop.id) {
