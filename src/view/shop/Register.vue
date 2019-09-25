@@ -323,7 +323,7 @@
           <Col span="12"></Col>
           <Col :sm="8" :xs="24">
             <FormItem label="合同到期日期:" required>
-              <DatePicker v-model="shop.expiresTime" confirm format="yyyy/MM/dd" type="date" placeholder="请选择合同到期日期" style="width: 200px"></DatePicker>
+              <DatePicker v-model="shop.expiresTime" type="date" format="yyyy-MM-dd"  @on-change="shop.expiresTime=$event" placeholder="请选择合同到期日期" style="width: 200px"></DatePicker>
             </FormItem>
           </Col>
           <Col span="12"></Col>
@@ -363,6 +363,7 @@
 </template>
 <script>
 import { sendSms, queryQualityShop, saveQualityShop, updateQualityShop} from "@/api/shop";
+import { formatSecondTime } from "@/libs/filters";
 export default {
   name: "Register",
   data() {
@@ -752,7 +753,6 @@ export default {
 
     save(name) {
         this.$refs[name].validate(valid => {
-          debugger
             if (valid) {
                 this.submitDisabled = true;
                  if(this.shop.id) {
