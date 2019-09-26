@@ -19,3 +19,30 @@ export const paymentRecord = (params) => {
       headers: { 'content-type': 'application/x-www-form-urlencoded' },
   })
 }
+
+// 查询交易订单列表
+export const queryOrderList = (params) => {
+  return axios.request({
+      url: '/car/order/queryOrderList',
+      params: params,
+      method: 'get'
+  })
+}
+
+// 查询交易订单详情
+export const queryOrderInfo = (params) => {
+  return axios.request({
+      url: '/car/order/queryOrderInfo',
+      params: params,
+      method: 'get'
+  })
+}
+
+// 订单发货
+export const deliveryGoods = (params) => {
+  return axios.request({
+      url: '/car/order/deliveryGoods',
+      data: params,
+      method: 'post'
+  })
+}

@@ -148,16 +148,16 @@ export default [{
       },
       component: Main,
       children: [
-        // {
-        //       path: 'OrderList',
-        //       name: 'OrderList',
-        //       meta: {
-        //           title: '订单列表',
-        //           pageTitle: '订单列表'
-        //       },
-        //       component: () =>
-        //           import ('@/view/order/OrderList.vue')
-        // },
+        {
+              path: 'OrderList',
+              name: 'OrderList',
+              meta: {
+                  title: '订单列表',
+                  pageTitle: '订单列表'
+              },
+              component: () =>
+                  import ('@/view/order/OrderList.vue')
+        },
         {
             path: 'PaymentRecordList',
             name: 'PaymentRecordList',
