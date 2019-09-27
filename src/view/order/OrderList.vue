@@ -19,7 +19,7 @@
         </Col>
         <Col :sm="8" :xs="24">
             <FormItem label="下单时间:" required>
-              <DatePicker v-model="searchForm.createTime" type="daterange" format="yyyy-MM-dd"   placeholder="请选择下单时间"></DatePicker>
+              <DatePicker v-model="createTime" type="daterange" placement="bottom-end" placeholder="请选择下单时间"></DatePicker>
             </FormItem>
         </Col>
         <Col :sm="8" :xs="24">
@@ -97,7 +97,7 @@
 
 <script>
 import { queryOrderList, queryOrderInfo, deliveryGoods } from "@/api/order";
-import { formatDate, formatPrice } from "@/libs/util";
+import { formatDate, formatSeconds, formatPrice } from "@/libs/util";
 export default {
   name: "OrderList",
   data() {
@@ -106,12 +106,14 @@ export default {
       pageNum: 1,
       total: 0,
       pageSize: 10,
+      createTime: [],
       searchForm: {
         orderNo: "",
         userName: "",
         commodityCode: "",
         payStatus: "",
-        createTime: ""
+        startCreateTime: "",
+        endCreateTime: "",
       },
       modal: false,
       modalTitle: '确认打款?',
@@ -166,12 +168,12 @@ export default {
         {
           title: "商品编号",
           key: "commodityCode",
-          minWidth: 50
+          minWidth: 80
         },
         {
           title: "商品名称",
           key: "commodityName",
-          minWidth: 50
+          minWidth: 100
         },
         {
           title: "买家名称",
@@ -181,7 +183,7 @@ export default {
         {
           title: "付款总金额(元)",
           key: "payMoney",
-          minWidth: 100,
+          minWidth: 50,
           render: (h, data) => {
               return h("span", formatPrice(data.row.payMoney));
           }
@@ -201,43 +203,51 @@ export default {
         {
           title: "下单时间",
           key: "createTime",
-          minWidth: 50,
+          minWidth: 120,
           render: (h, data) => {
-              return h("span", formatDate(data.row.createTime));
+            if(data.row.createTime) {
+              return h("span", formatSeconds(data.row.createTime));
+            }
           }
         },
         {
           title: "付款时间",
           key: "payDate",
-          minWidth: 50,
+          minWidth: 120,
           render: (h, data) => {
-              return h("span", formatDate(data.row.payDate));
+            if(data.row.payDate) {
+              return h("span", formatSeconds(data.row.payDate));
+            }
           }
         },
         {
           title: "发货时间",
           key: "deliveryTime",
-          minWidth: 50,
+          minWidth: 120,
           render: (h, data) => {
-              return h("span", formatDate(data.row.deliveryTime));
+             if(data.row.deliveryTime) {
+              return h("span", formatSeconds(data.row.deliveryTime));
+             }
           }
         },
         {
           title: "收货地址",
           key: "receiveAddress",
-          minWidth: 100
+          minWidth: 120
         },
         {
           title: "物流单号",
           key: "logisticsCode",
-          minWidth: 50
+          minWidth: 100
         },
         {
           title: "确认收货时间",
           key: "receiptTime",
-          minWidth: 60,
+          minWidth: 120,
           render: (h, data) => {
-              return h("span", formatDate(data.row.receiptTime));
+            if(data.row.receiptTime) {
+              return h("span", formatSeconds(data.row.receiptTime));
+            }
           }
         },
         {
@@ -270,14 +280,18 @@ export default {
   },
   methods: {
     search: function() {
+      this.searchForm.startCreateTime = this.createTime[0] ? formatDate(this.createTime[0]):'';
+      this.searchForm.endCreateTime = this.createTime[1] ? formatDate(this.createTime[1]):'';
       this.queryOrderList(1, 10);
     },
     reset: function() {
+      this.createTime = [],
       this.searchForm.orderNo = "",
       this.searchForm.userName = "",
       this.searchForm.commodityCode = "",
-      this.paymentForm.payStatus = "",
-      this.searchForm.createTime = ""
+      this.searchForm.payStatus = "",
+      this.searchForm.startCreateTime = "",
+      this.searchForm.endCreateTime = ""
     },
     submit: function() {
       this.submitDisabled = true;
@@ -303,13 +317,15 @@ export default {
         }, 1000);
       });
     },
+
     queryOrderList: function(pageNo, numPerPage) {
       let data = {
         orderNo: this.searchForm.orderNo,
         userName: this.searchForm.userName,
         commodityCode: this.searchForm.commodityCode,
         payStatus: this.searchForm.payStatus,
-        createTime: this.searchForm.createTime,
+        startCreateTime: this.searchForm.startCreateTime,
+        startCreateTime: this.searchForm.startCreateTime,
         pageNo: pageNo,
         numPerPage: numPerPage,
         isPage: 1
@@ -323,12 +339,15 @@ export default {
         }
       });
     },
+
     cancel: function() {
         this.modal = false;
     },
+
     pageChange: function(value) {
       this.queryOrderList(value, this.pageSize);
     },
+
     pageSizeChange: function(value) {
       this.queryOrderList(this.pageNum, value);
     }
