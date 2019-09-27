@@ -29,10 +29,10 @@
               <Option :value="1">已付款</Option>
               <Option :value="2">已发货</Option>
               <Option :value="3">已收货</Option>
-              <Option :value="4">待退款</Option>
+              <Option :value="4">退款审核中</Option>
               <Option :value="5">退款中</Option>
               <Option :value="6">已退款</Option>
-              <Option :value="7">退款拒绝</Option>
+              <Option :value="7">退款已拒绝</Option>
               <Option :value="9">已取消</Option>
               <Option :value="10">已删除</Option>
             </Select>
@@ -134,35 +134,52 @@ export default {
         {
           title: "订单状态",
           key: "payStatus",
-          minWidth: 50,
+          minWidth: 80,
           render: (h, data) => {
-            if (data.row.payStatus == "0") {
-              return h("span", "待付款");
-            } else if (data.row.payStatus == "1") {
-              return h("span", "已付款");
-            } else if (data.row.payStatus == "2") {
-              return h("span", "已发货");
+            let statusText = "", statusClass="";
+            switch(data.row.payStatus) {
+                case 0:
+                    statusText = "待付款";
+                    statusClass = "ivu-tag-warning";
+                    break;
+                case 1:
+                    statusText = "已付款";
+                    statusClass = "ivu-tag-cyan";
+                    break;
+                case 2:
+                    statusText = "已发货";
+                    statusClass = "ivu-tag-orange";
+                    break;
+                case 3:
+                    statusText = "已收货";
+                    statusClass = "ivu-tag-success";
+                    break;
+                case 4:
+                    statusText = "退款审核中";
+                    statusClass = "ivu-tag-geekblue";
+                    break;
+                case 5:
+                    statusText = "退款中";
+                    statusClass = "ivu-tag-volcano";
+                    break;
+                case 6:
+                    statusText = "已退款";
+                    statusClass = "ivu-tag-purple";
+                    break;
+                case 7:
+                    statusText = "退款已拒绝";
+                    statusClass = "ivu-tag-red";
+                    break;
+                case 9:
+                    statusText = "已取消";
+                    statusClass = "ivu-tag-default";
+                    break;
+                case 10:
+                    statusText = "已删除";
+                    statusClass = "ivu-tag-magenta";
+                    break;
             }
-            else if (data.row.payStatus == "3") {
-              return h("span", "已收货");
-            }
-            else if (data.row.payStatus == "4") {
-              return h("span", "待退款");
-            }
-            else if (data.row.payStatus == "5") {
-              return h("span", "退款中");
-            }
-            else if (data.row.payStatus == "6") {
-              return h("span", "已退款");
-            }
-            else if (data.row.payStatus == "7") {
-              return h("span", "退款拒绝");
-            } else if (data.row.payStatus == "9") {
-              return h("span", "已取消");
-            }
-            else if (data.row.payStatus == "10") {
-              return h("span", "已删除");
-            }
+            return h("Tag", {class: statusClass}, statusText);
           }
         },
         {
@@ -256,22 +273,28 @@ export default {
           fixed: "right",
           minWidth: 100,
           render: (h, data) => {
-            if(data.row.status == 0) {
+            if(data.row.payStatus == 1) {
               return h("span",
                 {
                   class: "tb-link margin-right-10",
                   on: {
                     click: () => {
-                        this.paymentForm.paymentRecordId = data.row.id;
-                        this.paymentForm.orderNo = data.row.orderNo;
-                        this.paymentForm.money = formatPrice(data.row.money);
-                        this.paymentForm.payeeRealName = data.row.payeeRealName;
-                        this.paymentForm.payeeType = data.row.payeeType == 0 ? "商品卖家" : "质检商家";
-                        this.modal = true;
+
                     }
                   }
                 },
-              "打款");
+              "发货");
+            }else if(data.row.payStatus == 5 ) {
+              return h("span",
+                {
+                  class: "tb-link margin-right-10",
+                  on: {
+                    click: () => {
+
+                    }
+                  }
+                },
+              "退款");
             }
           }
         }
@@ -292,30 +315,6 @@ export default {
       this.searchForm.payStatus = "",
       this.searchForm.startCreateTime = "",
       this.searchForm.endCreateTime = ""
-    },
-    submit: function() {
-      this.submitDisabled = true;
-      let data = {
-        paymentRecordId: this.paymentForm.paymentRecordId
-      };
-      paymentRecord(data).then(res => {
-        if (res.data.code == "200") {
-          this.$Message.success({
-            content: "打款成功",
-            duration: 1
-          });
-          this.modal = false;
-          this.queryPaymentRecordList(this.pageNum, this.pageSize);
-        } else {
-          this.$Message.error({
-            content: res.data.msg,
-            duration: 1
-          });
-        }
-        setTimeout(() => {
-          this.submitDisabled = false;
-        }, 1000);
-      });
     },
 
     queryOrderList: function(pageNo, numPerPage) {
