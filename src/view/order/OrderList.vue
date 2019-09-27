@@ -393,15 +393,15 @@ export default {
     },
 
     delivery() {
-      if(this.orderInfo.freight) {
+      if(this.orderInfo.freight == null || this.orderInfo.freight == "") {
         this.$Message.error("请填写运费!");
         return;
       }
-      if(this.orderInfo.logisticsCode) {
+      if(this.orderInfo.logisticsCode == null || this.orderInfo.logisticsCode == "") {
          this.$Message.error("请填写物流单号!");
         return;
       }
-      if(this.orderInfo.freightPicturesUrls) {
+      if(this.orderInfo.freightPicturesUrls == null || this.orderInfo.freightPicturesUrls == "") {
          this.$Message.error("请上传运费发票!");
         return;
       }
@@ -415,6 +415,9 @@ export default {
          if (res.data.code == "200") {
           this.$Message.info("订单发货成功!");
           window.location.reload();
+          this.$router.push({
+            name: "OrderList",
+          });
         }else {
           this.$Message.error("订单发货失败" + res.data.msg);
         }
