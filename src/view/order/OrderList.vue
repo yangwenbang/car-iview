@@ -71,24 +71,91 @@
           simple
         />
       </div>
-      <Modal ref="modal" v-model="modal" :title="modalTitle" style="text-align:center" @on-ok="submit">
-            <Form :model="paymentForm" :label-width="100">
-                <FormItem label="商品订单号:">
-                    <Input v-model="paymentForm.orderNo" readonly></Input>
-                </FormItem>
-                <FormItem label="打款金额:">
-                    <Input v-model="paymentForm.money" readonly></Input>
-                </FormItem>
-                <FormItem label="收款人真实姓名:">
-                    <Input v-model="paymentForm.payeeRealName" readonly></Input>
-                </FormItem>
-                <FormItem label="收款人类型:">
-                    <Input v-model="paymentForm.payeeType" readonly></Input>
-                </FormItem>
-            </Form>
+      <Modal ref="modal" v-model="modal" :title="modalTitle" width="40%" style="text-align:center;" @on-ok="delivery">
+            <Form :model="orderInfo" :label-width="100">
+              <Row type="flex" justify="space-between">
+                <Col :span="12">
+                  <div class="img-upload">
+                    <div class="demo-upload-list" v-for="item in uploadList">
+                      <template v-if="item.status === 'finished'">
+                        <img :src="item.url">
+                        <div class="demo-upload-list-cover">
+                          <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                          <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+                        </div>
+                      </template>
+                      <template v-else>
+                        <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
+                      </template>
+                    </div>
+                    <Upload
+                      ref="upload"
+                      :show-upload-list="false"
+                      :on-success="handleSuccess"
+                      :format="['jpg','jpeg','png']"
+                      :max-size="8*1024"
+                      :on-format-error="handleFormatError"
+                      :on-exceeded-size="handleMaxSize"
+                      :before-upload="handleBeforeUpload"
+                      type="drag"
+                      action="/car/qualityshop/uploadPicture"
+                      style="display: inline-block;width:150px;"
+                    >
+                      <div style="width: 150px;height:150px;line-height:148px;">
+                        <Icon type="ios-camera" size="24"></Icon>
+                         <span>上传运费发票</span>
+                      </div>
+                    </Upload>
+                  </div>
+                </Col>
+                <Col :span="12">
+                  <FormItem label="商品订单号:">
+                      <Input v-model="orderInfo.orderNo" readonly></Input>
+                  </FormItem>
+                  <FormItem label="买家用户名:">
+                      <Input v-model="orderInfo.userName" readonly></Input>
+                  </FormItem>
+                  <template v-for="commodity in orderInfo.commodityInfos">
+                    <FormItem label="商品标题:">
+                        <Input v-model="commodity.commodityName" readonly></Input>
+                    </FormItem>
+                    <FormItem label="一口价:">
+                      <div class="input-price">
+                        <Input v-model="commodity.price" readonly></Input>
+                        <span class="tr-span">￥</span>
+                      </div>
+                    </FormItem>
+                  </template>
+                  <FormItem label="付款金额:">
+                    <div class="input-price">
+                      <Input v-model="orderInfo.payMoney" readonly></Input>
+                      <span class="tr-span">￥</span>
+                    </div>
+                  </FormItem>
+                  <FormItem label="收货人:">
+                      <Input v-model="orderInfo.receiptUserName" readonly></Input>
+                  </FormItem>
+                  <FormItem label="收货人手机号:">
+                      <Input v-model="orderInfo.receiptMobile" readonly></Input>
+                  </FormItem>
+                  <FormItem label="收货地址:">
+                      <Input v-model="orderInfo.receiveAddress" readonly></Input>
+                  </FormItem>
+                  <FormItem label="物流单号:" required>
+                      <Input v-model="orderInfo.logisticsCode"></Input>
+                  </FormItem>
+                  <FormItem label="运费:" required>
+                    <div class="input-price">
+                      <Input v-model="orderInfo.freight"></Input>
+                      <span class="tr-span">￥</span>
+                    </div>
+                  </FormItem>
+                  </Col>
+            </Row>
+              </Form>
             <div slot="footer" style="text-align:center">
                 <Button type="dashed"  @click="cancel">取消</Button>
-                <Button type="primary" @click="submit" style="background-color: #fbc647;border: #fbc647;" :disabled="submitDisabled">确认打款</Button>
+                <Button type="primary" @click="delivery" style="background-color: #fbc647;border: #fbc647;" :disabled="submitDisabled">发货</Button>
             </div>
         </Modal>
     </div>
@@ -116,14 +183,12 @@ export default {
         endCreateTime: "",
       },
       modal: false,
-      modalTitle: '确认打款?',
-      paymentForm: {
-        paymentRecordId: "",
-        orderNo: "",
-        money: "",
-        payeeRealName: "",
-        payeeType: ""
-      },
+      modalTitle: '订单发货',
+      imgName: "",
+      imgUrl: "",
+      visible: false,
+      uploadList: [],
+      orderInfo: {},
       tableData: [],
       tableColumns: [
         {
@@ -279,7 +344,17 @@ export default {
                   class: "tb-link margin-right-10",
                   on: {
                     click: () => {
-
+                      let params = {
+                        id: data.row.id
+                      }
+                      queryOrderInfo(params).then(response => {
+                         if (response.data.code == "200") {
+                           this.orderInfo = response.data.data;
+                           this.modal = true;
+                         }else {
+                           this.$Message.error("查询订单详情失败" + response.data.msg)
+                         }
+                      })
                     }
                   }
                 },
@@ -317,6 +392,36 @@ export default {
       this.searchForm.endCreateTime = ""
     },
 
+    delivery() {
+      if(this.orderInfo.freight) {
+        this.$Message.error("请填写运费!");
+        return;
+      }
+      if(this.orderInfo.logisticsCode) {
+         this.$Message.error("请填写物流单号!");
+        return;
+      }
+      if(this.orderInfo.freightPicturesUrls) {
+         this.$Message.error("请上传运费发票!");
+        return;
+      }
+      let params = {
+        freight: this.orderInfo.freight,
+        freightPicturesUrls: this.orderInfo.freightPicturesUrls,
+        id: this.orderInfo.id,
+        logisticsCode: this.orderInfo.logisticsCode
+      }
+      deliveryGoods(params).then(res => {
+         if (res.data.code == "200") {
+          this.$Message.info("订单发货成功!");
+          window.location.reload();
+        }else {
+          this.$Message.error("订单发货失败" + res.data.msg);
+        }
+      })
+
+    },
+
     queryOrderList: function(pageNo, numPerPage) {
       let data = {
         orderNo: this.searchForm.orderNo,
@@ -335,7 +440,46 @@ export default {
           this.total = res.data.data.totalCount;
           this.pageNum = res.data.data.currentPage;
           this.pageSize = res.data.data.numPerPage;
+        }else {
+          this.$Message.error("查询订单列表失败" + res.data.msg);
         }
+      });
+    },
+
+    handleView(item) {
+      this.imgName = item.name;
+      this.imgUrl = item.url;
+      this.visible = true;
+    },
+    handleRemove(file) {
+      this.uploadList.splice(this.uploadList.indexOf(file), 1);
+    },
+    handleSuccess(res, file) {
+      if (res.code == "200") {
+        file.url = "http://" + res.data;
+      } else {
+        this.$Message.error(res.msg);
+      }
+      this.uploadList.push(file);
+      this.orderInfo.freightPicturesUrls = file.url;
+    },
+    handleBeforeUpload() {
+      const check = this.uploadList.length < 1;
+      if (!check) {
+        this.$Message.info("最多上传1张运费发票图片.");
+      }
+      return check;
+    },
+    handleFormatError(file) {
+      this.$Notice.warning({
+        title: "文件格式不正确",
+        desc: "文件格式 " + file.name + " 不正确, 请选择 jpg 、jpeg 、 png文件."
+      });
+    },
+    handleMaxSize(file) {
+      this.$Notice.warning({
+        title: "文件大小超限",
+        desc: "文件  " + file.name + " 太大，上传文件大小不能超过8M."
       });
     },
 
@@ -360,5 +504,68 @@ export default {
 <style scoped>
 .device-manage >>> .table-delete td {
   background-color: #f0f2f5;
+}
+
+.tr-span {
+  position: absolute;
+  left: 6px;
+  top: 0px;
+  font-size: 14px;
+}
+
+.input-price /deep/ input {
+  padding: 5px 20px;
+}
+
+.img-upload /deep/ .ivu-icon-ios-camera {
+  vertical-align: middle;
+}
+
+.img-upload {
+    position: absolute;
+    display: inline-block;
+    top: 30%;
+    left: 30%;
+}
+
+.demo-upload-list {
+  display: inline-block;
+  width: 150px;
+  height: 150px;
+  text-align: center;
+  line-height: 150px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+  position: relative;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+  margin-right: 8px;
+}
+
+.demo-upload-list img {
+  width: 100%;
+  height: 100%;
+}
+
+.demo-upload-list-cover {
+  display: none;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.demo-upload-list:hover .demo-upload-list-cover {
+  display: block;
+}
+
+.demo-upload-list-cover i {
+  color: #fff;
+  font-size: 20px;
+  cursor: pointer;
+  margin: 0 2px;
 }
 </style>

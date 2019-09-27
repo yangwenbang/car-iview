@@ -853,12 +853,12 @@ export default {
   text-align: center;
   line-height: 100px;
   border: 1px solid transparent;
-  border-radius: 4px;
+  border-radius: 8px;
   overflow: hidden;
   background: #fff;
   position: relative;
-  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
-  margin-right: 4px;
+  box-shadow: 0 2px 2px rgba(0, 0, 0, 0.2);
+  margin-right: 8px;
 }
 
 .demo-upload-list img {
