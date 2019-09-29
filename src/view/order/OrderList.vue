@@ -164,7 +164,7 @@
 
 <script>
 import { queryOrderList, queryOrderInfo, deliveryGoods } from "@/api/order";
-import { formatDate, formatSeconds, formatPrice } from "@/libs/util";
+import { formatDate, formatSeconds, formatMinutes, formatPrice } from "@/libs/util";
 export default {
   name: "OrderList",
   data() {
@@ -288,7 +288,7 @@ export default {
           minWidth: 120,
           render: (h, data) => {
             if(data.row.createTime) {
-              return h("span", formatSeconds(data.row.createTime));
+              return h("span", formatMinutes(data.row.createTime));
             }
           }
         },
@@ -298,7 +298,7 @@ export default {
           minWidth: 120,
           render: (h, data) => {
             if(data.row.payDate) {
-              return h("span", formatSeconds(data.row.payDate));
+              return h("span", formatMinutes(data.row.payDate));
             }
           }
         },
@@ -308,7 +308,7 @@ export default {
           minWidth: 120,
           render: (h, data) => {
              if(data.row.deliveryTime) {
-              return h("span", formatSeconds(data.row.deliveryTime));
+              return h("span", formatMinutes(data.row.deliveryTime));
              }
           }
         },
@@ -328,7 +328,7 @@ export default {
           minWidth: 120,
           render: (h, data) => {
             if(data.row.receiptTime) {
-              return h("span", formatSeconds(data.row.receiptTime));
+              return h("span", formatMinutes(data.row.receiptTime));
             }
           }
         },
