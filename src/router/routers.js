@@ -167,6 +167,17 @@ export default [{
             },
             component: () =>
                 import ('@/view/order/PaymentRecordList.vue')
+        },
+        {
+            path: 'RefundAudit',
+            name: 'RefundAudit',
+            meta: {
+              title: '退款审核',
+              pageTitle: '退款审核',
+              hideInMenu: true,
+              activeName: 'OrderList'
+            },
+            component: () => import ('@/view/order/RefundAudit.vue')
         }
       ]
     },

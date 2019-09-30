@@ -163,7 +163,7 @@
 </template>
 
 <script>
-import { queryOrderList, queryOrderInfo, deliveryGoods } from "@/api/order";
+import { queryOrderList, queryOrderInfo, deliveryGoods, refund } from "@/api/order";
 import { formatDate, formatSeconds, formatMinutes, formatPrice } from "@/libs/util";
 export default {
   name: "OrderList",
@@ -359,7 +359,18 @@ export default {
                   }
                 },
               "发货");
-            }else if(data.row.payStatus == 5 ) {
+            }else if(data.row.payStatus == 4) {
+              return h("span",
+                {
+                  class: "tb-link margin-right-10",
+                  on: {
+                    click: () => {
+                      this.$router.push({name: 'RefundAudit', query: {id: data.row.id}});
+                    }
+                  }
+                },
+              "审核");
+            }else if(data.row.payStatus == 5) {
               return h("span",
                 {
                   class: "tb-link margin-right-10",

@@ -46,3 +46,30 @@ export const deliveryGoods = (params) => {
       method: 'post'
   })
 }
+
+// 查询退款交易订单信息
+export const queryReFundOrderInfo = (params) => {
+  return axios.request({
+      url: '/car/order/queryReFundOrderInfo',
+      params: params,
+      method: 'get'
+  })
+}
+
+// 退款审核
+export const auditRefund = (params) => {
+  return axios.request({
+      url: '/car/order/deliveryGoods',
+      data: params,
+      method: 'post'
+  })
+}
+
+// 确认退款
+export const refund = (params) => {
+  return axios.request({
+      url: '/car/order/refund',
+      params: params,
+      method: 'get'
+  })
+}
