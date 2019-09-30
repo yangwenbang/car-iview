@@ -239,7 +239,6 @@
 </template>
 <script>
 import { queryReFundOrderInfo, auditRefund } from "@/api/order";
-import { delimiter } from 'path';
 
 export default {
   name: "RefundAudit",
@@ -247,19 +246,22 @@ export default {
     return {
     }
   },
+
   created() {
   },
+
   mounted() {
-    debugger
     var that = this;
     let id = that.$router.query.id;
     this.getReFundOrderInfo(id);
   },
+
   methods: {
     getReFundOrderInfo: function(id)  {
 
     }
   }
+
 };
 </script>
 <style lang="less" scoped>
