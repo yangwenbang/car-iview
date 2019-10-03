@@ -13,226 +13,24 @@
       <Form
         :label-width="200"
         class="search-form"
-        ref="commodityform"
-        :model="commodity"
-        :rules="ruleValidate"
+        :model="refund"
       >
-        <div class="table-title">发布商品</div>
-        <hr class="line">
-        <Row type="flex" justify="space-between">
-          <Col :sm="12" :xs="24">
-            <FormItem label="商品编号:">
-              <Input
-                type="text"
-                v-model="commodity.commodityCode"
-                :maxlength="30"
-                @on-enter="queryCommodityCode"
-              ></Input>
-            </FormItem>
-          </Col>
-          <Col :sm="12" :xs="24">
-            <FormItem label="商品标题:" prop="commodityName">
-              <Input v-model="commodity.commodityName" :maxlength="30"></Input>
-            </FormItem>
-          </Col>
-          <Col :span="24">
-            <FormItem label="上传图片 :">
-              <div class="clearfix">
-                <div class="demo-upload-list" v-for="item in uploadList">
-                  <template v-if="item.status === 'finished'">
-                    <img :src="item.url">
-                    <div class="demo-upload-list-cover">
-                      <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
-                      <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+        <Col :span="24">
+            <FormItem label="退款图片 :">
+                <div class="img-upload">
+                    <div class="demo-upload-list" v-for="item in applicationPicture">
+                        <img :src="item.url">
+                        <div class="demo-upload-list-cover">
+                            <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                        </div>
                     </div>
-                  </template>
-                  <template v-else>
-                    <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
-                  </template>
+                    <Modal title="图片预览" v-model="visible">
+                        <img :src="imgUrl" v-if="visible" style="width: 100%">
+                    </Modal>
                 </div>
-                <Upload
-                  ref="upload"
-                  :show-upload-list="false"
-                  :default-file-list="defaultList"
-                  :on-success="handleSuccess"
-                  :format="['jpg','jpeg','png']"
-                  :max-size="50*1024"
-                  :on-format-error="handleFormatError"
-                  :on-exceeded-size="handleMaxSize"
-                  :before-upload="handleBeforeUpload"
-                  multiple
-                  type="drag"
-                  action="/car/qualityshop/uploadPicture"
-                  style="display: inline-block;width:100px;"
-                >
-                  <div style="width: 100px;height:100px;line-height: 100px;">
-                    <Icon type="ios-camera" size="20"></Icon>
-                  </div>
-                </Upload>
-                <Modal title="图片预览" v-model="visible">
-                  <img :src="imgUrl" v-if="visible" style="width: 100%">
-                </Modal>
-              </div>
             </FormItem>
-          </Col>
-          <Col  :span="24">
-            <FormItem label="商品描述:">
-              <Input
-                type="textarea"
-                :rows="4"
-                style="width: 500px"
-                placeholder="请输入商品描述"
-                v-model="commodity.description"
-                :maxlength="500"
-              ></Input>
-            </FormItem>
-          </Col>
-          <Col :span="24" style="margin-bottom: 10px;">
-            <FormItem label="产品分类:">
-              <RadioGroup v-model="commodity.commodityCategoryId" @on-change="categoryChange">
-                <Radio
-                  v-for="(category,index) in categoryList"
-                  :key="index"
-                  :label="category.id"
-                >{{category.categoryName}}</Radio>
-              </RadioGroup>
-            </FormItem>
-          </Col>
-          <Col :sm="12" :xs="24">
-            <FormItem label="一口价:" prop="price">
-              <div class="input-price">
-                <Input style="width: 200px;" v-model="commodity.price"></Input>
-                <span class="tr-span">￥</span>
-              </div>
-            </FormItem>
-          </Col>
-          <Col :sm="12" :xs="24">
-            <FormItem label="原厂/非原厂:">
-              <RadioGroup v-model="commodity.commodityType" @on-change="typeChange">
-                <Radio :label="0">原厂</Radio>
-                <Radio :label="1">非原厂</Radio>
-              </RadioGroup>
-              <template v-if="commodity.commodityType == 0">
-                <Input
-                  style="width: 200px;"
-                  v-model="attributeFirstWord"
-                  :maxlength="1"
-                  @input="typeChange"
-                />
-              </template>
-              <template v-else>
-                <Input
-                  style="width: 200px;"
-                  v-model="attributeFirstWord"
-                  :maxlength="1"
-                  @input="queryFactoryBrand()"
-                />
-              </template>
-            </FormItem>
-          </Col>
-          <Col :sm="12" :xs="24" v-if="commodity.commodityType == 1">
-            <FormItem label="适用车型:">
-               <Cascader :data="brandList" trigger="hover" :disabled="attributeFirstWord == ''? true : false" filterable change-on-select v-model="brandValue"  style="width: 200px;"></Cascader>
-            </FormItem>
-          </Col>
-          <Col :sm="12" :xs="24" v-for="(categoryAttribute, index) in categoryAttributeList" :key="index">
-            <FormItem :label="categoryAttribute.attributeName + ':'">
-              <template v-if="categoryAttribute.isManualInput == 0">
-                <Select
-                  label-in-value
-                  v-model="categoryAttribute.selectId"
-                  clearable
-                  filterable
-                  style="width: 200px;"
-                  @on-change="selectChange($event, index)"
-                >
-                  <Option
-                    v-for="attribute in categoryAttribute.childAttribute"
-                    :key="attribute.id"
-                    :value="attribute.id"
-                  >{{attribute.attributeName}}</Option>
-                </Select>
-                <Input
-                  style="width: 200px; margin-left: 10px;"
-                  v-if="categoryAttribute.inputContext != null"
-                  v-model="categoryAttribute.inputContext"
-                />
-              </template>
-              <template v-else>
-                <Input v-model="categoryAttribute.inputContext" style="width: 200px;"/>
-              </template>
-            </FormItem>
-            <FormItem label="请上传划痕图片: " v-if="categoryAttribute.attributeName.indexOf('划痕') > -1">
-              <div class="attrUploadPic">
-                <div class="demo-upload-list" v-for="item in uploadList1">
-                  <template v-if="item.status === 'finished'">
-                    <img :src="item.url">
-                    <div class="demo-upload-list-cover">
-                      <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
-                      <Icon type="ios-trash-outline" @click.native="handleRemove1(item)"></Icon>
-                    </div>
-                  </template>
-                  <template v-else>
-                    <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
-                  </template>
-                </div>
-                <Upload
-                  ref="upload1"
-                  :show-upload-list="false"
-                  :default-file-list="defaultList"
-                  :on-success="handleSuccess1"
-                  :format="['jpg','jpeg','png']"
-                  :max-size="50*1024"
-                  :on-format-error="handleFormatError"
-                  :on-exceeded-size="handleMaxSize"
-                  :before-upload="handleBeforeUpload1"
-                  multiple
-                  type="drag"
-                  action="/car/qualityshop/uploadPicture"
-                  style="display: inline-block;width:100px;"
-                >
-                  <div style="width: 100px;height:100px;line-height: 100px;">
-                    <Icon type="ios-camera" size="20"></Icon>
-                  </div>
-                </Upload>
-                <Modal title="图片预览" v-model="visible">
-                  <img :src="imgUrl" v-if="visible" style="width: 100%">
-                </Modal>
-              </div>
-            </FormItem>
-          </Col>
-          <Col :span="24">
-            <FormItem label="商家补充描述:" prop="additionalDescription">
-              <Input
-                type="textarea"
-                :rows="4"
-                style="width: 500px"
-                placeholder="请输入商家补充描述"
-                v-model="commodity.additionalDescription"
-                :maxlength="500"
-              ></Input>
-            </FormItem>
-          </Col>
-        </Row>
-        <div class="text-center margin-top-10">
-          <template v-if="commodity.commodityCode">
-            <Button
-              type="primary"
-              class="btn-common-width"
-              @click="save('commodityform', 1)"
-              :disabled="submitDisabled"
-            >上架</Button>
-            <Button type="dashed" class="btn-common-width" @click="save('commodityform', 2)">下架</Button>
-          </template>
-          <template v-else>
-            <Button
-              type="primary"
-              class="btn-common-width"
-              @click="save('commodityform', 1)"
-              :disabled="submitDisabled"
-            >上架</Button>
-          </template>
-        </div>
+        </Col>
+
       </Form>
     </div>
   </div>
@@ -244,21 +42,47 @@ export default {
   name: "RefundAudit",
   data() {
     return {
+        imgName: "",
+        imgUrl: "",
+        visible: false,
+        refund: {},
+        uploadList: []
     }
   },
 
   created() {
+      
   },
 
   mounted() {
-    var that = this;
-    let id = that.$router.query.id;
+    let id = this.$route.query.id;
     this.getReFundOrderInfo(id);
   },
 
   methods: {
-    getReFundOrderInfo: function(id)  {
+    handleView(item) {
+      this.imgName = item.name;
+      this.imgUrl = item.url;
+      this.visible = true;
+    },
 
+    getReFundOrderInfo: function(id)  {
+        let params = {
+            id: id
+        }
+        queryReFundOrderInfo(params).then(res => {
+            if (res.data.code == "200") {
+                this.refund = res.data.data;
+                if (this.refund.applicationPicture) {
+                    let pictures = this.refund.applicationPicture.split(",");
+                    pictures.map(item => {
+                        this.uploadList.push({ url: item, status: "finished" });
+                    });
+                };
+            }else {
+                this.$Message.error("查询退款订单失败" + res.data.msg);
+            }
+        })
     }
   }
 
