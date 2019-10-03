@@ -158,6 +158,34 @@
                 <Button type="primary" @click="delivery" style="background-color: #fbc647;border: #fbc647;" :disabled="submitDisabled">发货</Button>
             </div>
         </Modal>
+        <Modal ref="modal1" v-model="modal1" :title="modalTitle" width="40%" style="text-align:left;" @on-ok="submitRefund">
+            <Form  :model="orderInfo" :label-width="100">
+                <FormItem label="订单编号:">
+                    <Input v-model="orderInfo.orderNo" readonly></Input>
+                </FormItem>
+                <FormItem label="订单状态:">
+                    <Tag :class="statusClass">{{statusText}}</Tag>
+                </FormItem>
+                <template v-for="commodity in orderInfo.commodityInfos">
+                    <FormItem label="商品标题:">
+                        <Input v-model="commodity.commodityName" readonly></Input>
+                    </FormItem>
+                    <FormItem label="一口价:">
+                      <div class="input-price">
+                        <Input v-model="commodity.price" readonly></Input>
+                        <span class="tr-span">￥</span>
+                      </div>
+                    </FormItem>
+                </template>
+                <FormItem label="付款金额:">
+                    <Input v-model="orderInfo.payMoney" readonly></Input>
+                </FormItem>
+            </Form>
+            <div slot="footer">
+                <Button type="text" size="large" @click="cancel">取消</Button>
+                <Button type="primary" size="large" @click="submitRefund" :disabled="submitDisabled">确定</Button>
+            </div>
+        </Modal>
     </div>
   </div>
 </template>
@@ -182,8 +210,11 @@ export default {
         startCreateTime: "",
         endCreateTime: "",
       },
+      statusText: '',
+      statusClass: '',
       modal: false,
-      modalTitle: '订单发货',
+      modal1: false,
+      modalTitle: '',
       imgName: "",
       imgUrl: "",
       visible: false,
@@ -351,6 +382,7 @@ export default {
                          if (response.data.code == "200") {
                            this.orderInfo = response.data.data;
                            this.modal = true;
+                           this.modalTitle = '订单发货';
                          }else {
                            this.$Message.error("查询订单详情失败" + response.data.msg)
                          }
@@ -376,7 +408,63 @@ export default {
                   class: "tb-link margin-right-10",
                   on: {
                     click: () => {
-                        
+                        let params = {
+                            id: data.row.id
+                        }
+                        queryOrderInfo(params).then(response => {
+                            if (response.data.code == "200") {
+                                this.orderInfo = response.data.data;
+                                this.modal1 = true;
+                                this.modalTitle = '订单退款';
+                                let statusText = "", statusClass="";
+                                switch(this.orderInfo.payStatus) {
+                                    case 0:
+                                        statusText = "待付款";
+                                        statusClass = "ivu-tag-warning";
+                                        break;
+                                    case 1:
+                                        statusText = "已付款";
+                                        statusClass = "ivu-tag-cyan";
+                                        break;
+                                    case 2:
+                                        statusText = "已发货";
+                                        statusClass = "ivu-tag-orange";
+                                        break;
+                                    case 3:
+                                        statusText = "已收货";
+                                        statusClass = "ivu-tag-success";
+                                        break;
+                                    case 4:
+                                        statusText = "退款审核中";
+                                        statusClass = "ivu-tag-geekblue";
+                                        break;
+                                    case 5:
+                                        statusText = "退款中";
+                                        statusClass = "ivu-tag-volcano";
+                                        break;
+                                    case 6:
+                                        statusText = "已退款";
+                                        statusClass = "ivu-tag-purple";
+                                        break;
+                                    case 7:
+                                        statusText = "退款已拒绝";
+                                        statusClass = "ivu-tag-red";
+                                        break;
+                                    case 9:
+                                        statusText = "已取消";
+                                        statusClass = "ivu-tag-default";
+                                        break;
+                                    case 10:
+                                        statusText = "已删除";
+                                        statusClass = "ivu-tag-magenta";
+                                        break;
+                                }
+                                this.statusText = statusText;
+                                this.statusClass = statusClass;
+                            }else {
+                                this.$Message.error("查询订单详情失败" + response.data.msg)
+                            }
+                        })
                     }
                   }
                 },
@@ -499,6 +587,8 @@ export default {
 
     cancel: function() {
         this.modal = false;
+        this.modal1 = false;
+        this.modalTitle = "";
     },
 
     pageChange: function(value) {
@@ -507,6 +597,20 @@ export default {
 
     pageSizeChange: function(value) {
       this.queryOrderList(this.pageNum, value);
+    },
+
+    submitRefund() {
+        let params = {
+            orderId: this.orderInfo.id
+        }
+        refund(params).then(res => {
+            if(res.data.code == '200') {
+                this.$Message.success("订单退款成功: " + res.data.msg);
+                this.$route.push({name: 'OrderList'});
+            }else {
+                this.$Message.error("订单退款失败: " + res.data.msg);
+            }
+        })
     }
   },
   mounted: function() {
@@ -582,4 +686,5 @@ export default {
   cursor: pointer;
   margin: 0 2px;
 }
+
 </style>
