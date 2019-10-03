@@ -376,7 +376,7 @@ export default {
                   class: "tb-link margin-right-10",
                   on: {
                     click: () => {
-
+                        
                     }
                   }
                 },

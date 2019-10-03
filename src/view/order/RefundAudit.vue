@@ -18,7 +18,7 @@
         <Col :span="24">
             <FormItem label="退款图片 :">
                 <div class="img-upload">
-                    <div class="demo-upload-list" v-for="item in applicationPicture">
+                    <div class="demo-upload-list" v-for="item in uploadList">
                         <img :src="item.url">
                         <div class="demo-upload-list-cover">
                             <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
@@ -30,8 +30,115 @@
                 </div>
             </FormItem>
         </Col>
-
-      </Form>
+        <Col :span="24">
+            <FormItem label="退款原因 :">
+                <Input v-model="refund.applicationReason" style="width: 200px;" readonly></Input>
+            </FormItem>
+        </Col>
+        <Col :span="24">
+            <FormItem label="退款状态 :">
+                <span>
+                    <template v-if="refund.applicationStatus == '0'">
+                        未处理
+                    </template>
+                    <template v-else-if="refund.applicationStatus == '1'">
+                        申请通过
+                    </template>
+                    <template v-else-if="refund.applicationStatus == '2'">
+                        申请拒绝
+                    </template>
+                </span>
+            </FormItem>
+        </Col>
+        <Col :span="24">
+            <FormItem label="退款类型:">
+                <Select v-model="refund.applicationType" style="width: 200px;" disabled>
+                    <Option :value="0">退款不退货</Option>
+                    <Option :value="1">退款退货</Option>
+                </Select>
+            </FormItem>
+        </Col>
+        <Col :span="24">
+            <FormItem label="订单号:">
+                <Input v-model="refund.orderNo" style="width: 200px;" readonly></Input>
+            </FormItem>
+        </Col>
+          <Col :span="24">
+            <FormItem label="买家用户名称:">
+                <Input v-model="refund.userName" style="width: 200px;" readonly></Input>
+            </FormItem>
+        </Col>
+        <Col :span="24">
+            <template v-for="commodity in refund.commodityInfos">
+                <FormItem label="商品标题:">
+                    <Input v-model="commodity.commodityName" style="width: 200px;" readonly></Input>
+                </FormItem>
+                <FormItem label="一口价:">
+                    <div class="input-price">
+                    <Input v-model="commodity.price" style="width: 200px;" readonly></Input>
+                    <span class="tr-span">￥</span>
+                    </div>
+                </FormItem>
+            </template>
+        </Col>
+         <Col :span="24">
+            <FormItem label="付款金额:">
+                <Input v-model="refund.payMoney" style="width: 200px;" readonly></Input>
+            </FormItem>
+        </Col>
+        <Col :span="24">
+            <FormItem label="联系方式:">
+                <Input v-model="refund.contactWay" style="width: 200px;" readonly></Input>
+            </FormItem>
+        </Col>
+        <Col :span="24">
+            <FormItem label="订单状态:">
+                <Select v-model="refund.payStatus" style="width: 200px;" disabled>
+                    <Option :value="0">待付款</Option>
+                    <Option :value="1">已付款</Option>
+                    <Option :value="2">已发货</Option>
+                    <Option :value="3">已收货</Option>
+                    <Option :value="4">退款审核中</Option>
+                    <Option :value="5">退款中</Option>
+                    <Option :value="6">已退款</Option>
+                    <Option :value="7">退款已拒绝</Option>
+                    <Option :value="9">已取消</Option>
+                    <Option :value="10">已删除</Option>
+                </Select>
+            </FormItem>
+        </Col>
+        <Col :span="24">
+            <FormItem label="退款审核:">
+              <RadioGroup v-model="refund.status">
+                <Radio :label="1">通过</Radio>
+                <Radio :label="2">拒绝</Radio>
+              </RadioGroup>
+            </FormItem>
+        </Col>
+        <Col :span="24">
+            <FormItem label="退款地址:">
+                <Input v-model="refund.returnAddress" style="width: 300px;"></Input>
+            </FormItem>
+        </Col>
+        <Col :span="24">
+            <FormItem label="退款拒绝原因:">
+                <Input type="textarea"
+                :rows="4"
+                style="width: 500px"
+                placeholder="请输入退款拒绝原因" 
+                :maxlength="500"
+                v-model="refund.refuseResaon" ></Input>
+            </FormItem>
+        </Col>
+        </Form>
+        <div class="text-center margin-top-10">
+            <Button
+              type="primary"
+              class="btn-common-width"
+              @click="save"
+              :disabled="submitDisabled"
+            >提交</Button>
+        </div>
     </div>
   </div>
 </template>
@@ -46,7 +153,8 @@ export default {
         imgUrl: "",
         visible: false,
         refund: {},
-        uploadList: []
+        uploadList: [],
+        submitDisabled: false
     }
   },
 
@@ -60,6 +168,7 @@ export default {
   },
 
   methods: {
+
     handleView(item) {
       this.imgName = item.name;
       this.imgUrl = item.url;
@@ -67,21 +176,53 @@ export default {
     },
 
     getReFundOrderInfo: function(id)  {
+        let that = this;
         let params = {
             id: id
         }
         queryReFundOrderInfo(params).then(res => {
             if (res.data.code == "200") {
-                this.refund = res.data.data;
-                if (this.refund.applicationPicture) {
-                    let pictures = this.refund.applicationPicture.split(",");
-                    pictures.map(item => {
-                        this.uploadList.push({ url: item, status: "finished" });
+                that.refund = res.data.data;
+                that.refund.status = 1;
+                if (res.data.data.applicationPicture) {
+                    let pictures = res.data.data.applicationPicture.split(",");
+                    pictures.forEach(element => {
+                        that.uploadList.push({ url: element, status: "finished" });
                     });
                 };
             }else {
                 this.$Message.error("查询退款订单失败" + res.data.msg);
             }
+        });
+    },
+
+    save() {
+        if(this.refund.status == 1) {
+            if(this.refund.returnAddress == null || this.refund.returnAddress == '') {
+                this.$Message.error("请填写退款地址!");
+                return;
+            }
+        }else if(this.refund.status == 2){
+             if(this.refund.refuseResaon == null || this.refund.refuseResaon == '') {
+                this.$Message.error("请填写退款拒绝原因!")
+                return;
+            }
+        }
+        this.submitDisabled = true;
+        let params = {
+            orderId: this.refund.id,
+            status: this.refund.status,
+            refuseResaon: this.refund.refuseResaon,
+            returnAddress: this.refund.returnAddress
+        }
+        auditRefund(params).then(res => {
+            if (res.data.code == "200") {
+                this.$Message.success("退款审核成功");
+                this.$router.push({name: 'OrderList'});
+            }else {
+                 this.$Message.error("退款审核失败: " + res.data.msg);
+            }
+            this.submitDisabled = false;
         })
     }
   }
