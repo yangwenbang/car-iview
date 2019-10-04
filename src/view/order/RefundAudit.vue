@@ -75,15 +75,18 @@
                 </FormItem>
                 <FormItem label="一口价:">
                     <div class="input-price">
-                    <Input v-model="commodity.price" style="width: 200px;" readonly></Input>
-                    <span class="tr-span">￥</span>
+                        <Input v-model="commodity.price" style="width: 200px;" readonly></Input>
+                        <span class="tr-span">￥</span>
                     </div>
                 </FormItem>
             </template>
         </Col>
          <Col :span="24">
             <FormItem label="付款金额:">
-                <Input v-model="refund.payMoney" style="width: 200px;" readonly></Input>
+                <div class="input-price">
+                    <Input v-model="refund.payMoney" style="width: 200px;" readonly></Input>
+                    <span class="tr-span">￥</span>
+                </div>
             </FormItem>
         </Col>
         <Col :span="24">
