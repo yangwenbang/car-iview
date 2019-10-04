@@ -116,7 +116,7 @@
             </FormItem>
         </Col>
         <Col :span="24">
-            <FormItem label="退款地址:">
+            <FormItem label="退货地址:">
                 <Input v-model="refund.returnAddress" style="width: 300px;"></Input>
             </FormItem>
         </Col>
@@ -189,6 +189,7 @@ export default {
                     pictures.forEach(element => {
                         that.uploadList.push({ url: element, status: "finished" });
                     });
+                    that.uploadList = Object.assign([], that.uploadList);
                 };
             }else {
                 this.$Message.error("查询退款订单失败" + res.data.msg);

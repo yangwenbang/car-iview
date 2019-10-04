@@ -20,9 +20,9 @@ import { setToken, getToken } from '@/libs/util'
  * }
  */
 var hideMenu = true;
- if(getToken()) {
-  hideMenu = JSON.parse(getToken()).isAdmin == 1 ? false : true;
- }
+if (getToken()) {
+    hideMenu = JSON.parse(getToken()).isAdmin == 1 ? false : true;
+}
 
 export default [{
         path: '/login',
@@ -60,9 +60,9 @@ export default [{
         path: '/qualityShop',
         name: 'qualityShop',
         meta: {
-          title: '质检商家',
-          icon: 'ios-speedometer-outline',
-          hideInMenu:  hideMenu
+            title: '质检商家',
+            icon: 'ios-speedometer-outline',
+            hideInMenu: hideMenu
         },
         component: Main,
         children: [{
@@ -121,7 +121,7 @@ export default [{
                 meta: {
                     title: '产品分类',
                     pageTitle: '产品分类',
-                    hideInMenu:  hideMenu
+                    hideInMenu: hideMenu
                 },
                 component: () =>
                     import ('@/view/commodity/CategoryList.vue')
@@ -132,7 +132,7 @@ export default [{
                 meta: {
                     title: '分类属性',
                     pageTitle: '分类属性',
-                    hideInMenu:  hideMenu
+                    hideInMenu: hideMenu
                 },
                 component: () =>
                     import ('@/view/commodity/CategoryTree.vue')
@@ -140,46 +140,47 @@ export default [{
         ]
     },
     {
-      path: '/order',
-      name: 'order',
-      meta: {
-          icon: 'ios-list-box-outline',
-          title: '订单管理'
-      },
-      component: Main,
-      children: [
-        {
-              path: 'OrderList',
-              name: 'OrderList',
-              meta: {
-                  title: '订单列表',
-                  pageTitle: '订单列表'
-              },
-              component: () =>
-                  import ('@/view/order/OrderList.vue')
+        path: '/order',
+        name: 'order',
+        meta: {
+            icon: 'ios-list-box-outline',
+            title: '订单管理'
         },
-        {
-            path: 'PaymentRecordList',
-            name: 'PaymentRecordList',
-            meta: {
-                title: '打款列表',
-                pageTitle: '打款列表'
+        component: Main,
+        children: [{
+                path: 'OrderList',
+                name: 'OrderList',
+                meta: {
+                    title: '订单列表',
+                    pageTitle: '订单列表'
+                },
+                component: () =>
+                    import ('@/view/order/OrderList.vue')
             },
-            component: () =>
-                import ('@/view/order/PaymentRecordList.vue')
-        },
-        {
-            path: 'RefundAudit',
-            name: 'RefundAudit',
-            meta: {
-              title: '退款审核',
-              pageTitle: '退款审核',
-              hideInMenu: true,
-              activeName: 'OrderList'
+            {
+                path: 'PaymentRecordList',
+                name: 'PaymentRecordList',
+                meta: {
+                    title: '打款列表',
+                    pageTitle: '打款列表',
+                    hideInMenu: hideMenu
+                },
+                component: () =>
+                    import ('@/view/order/PaymentRecordList.vue')
             },
-            component: () => import ('@/view/order/RefundAudit.vue')
-        }
-      ]
+            {
+                path: 'RefundAudit',
+                name: 'RefundAudit',
+                meta: {
+                    title: '退款审核',
+                    pageTitle: '退款审核',
+                    hideInMenu: true,
+                    activeName: 'OrderList'
+                },
+                component: () =>
+                    import ('@/view/order/RefundAudit.vue')
+            }
+        ]
     },
     {
         path: '/user',
@@ -187,7 +188,7 @@ export default [{
         meta: {
             icon: 'md-contacts',
             title: '账号管理',
-            hideInMenu:  hideMenu
+            hideInMenu: hideMenu
         },
         component: Main,
         children: [{
