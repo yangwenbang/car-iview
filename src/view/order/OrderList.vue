@@ -252,7 +252,7 @@ export default {
                     break;
                 case 4:
                     statusText = "退款审核中";
-                    statusClass = "ivu-tag-geekblue";
+                    statusClass = "ivu-tag-gold";
                     break;
                 case 5:
                     statusText = "退款中";
@@ -436,7 +436,7 @@ export default {
                                         break;
                                     case 4:
                                         statusText = "退款审核中";
-                                        statusClass = "ivu-tag-geekblue";
+                                        statusClass = "ivu-tag-gold";
                                         break;
                                     case 5:
                                         statusText = "退款中";
