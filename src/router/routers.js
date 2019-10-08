@@ -192,14 +192,24 @@ export default [{
         },
         component: Main,
         children: [{
-            path: 'ShopAccount',
-            name: 'ShopAccount',
-            meta: {
-                title: '商家账号',
-                pageTitle: '商家账号'
-            },
-            component: () =>
-                import ('@/view/account/ShopAccount.vue')
+          path: 'ShopAccount',
+          name: 'ShopAccount',
+          meta: {
+              title: '商家账号',
+              pageTitle: '商家账号'
+          },
+          component: () =>
+              import ('@/view/account/ShopAccount.vue')
+        },
+        {
+          path: 'UserList',
+          name: 'UserList',
+          meta: {
+              title: '用户列表',
+              pageTitle: '用户列表'
+          },
+          component: () =>
+              import ('@/view/account/UserList.vue')
         }]
     },
     {

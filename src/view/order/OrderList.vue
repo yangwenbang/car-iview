@@ -18,7 +18,7 @@
           </FormItem>
         </Col>
         <Col :sm="8" :xs="24">
-            <FormItem label="下单时间:" required>
+            <FormItem label="下单时间:">
               <DatePicker v-model="createTime" type="daterange" placement="bottom-end" placeholder="请选择下单时间"></DatePicker>
             </FormItem>
         </Col>

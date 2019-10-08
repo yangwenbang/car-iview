@@ -128,7 +128,7 @@
                 <Input type="textarea"
                 :rows="4"
                 style="width: 500px"
-                placeholder="请输入退款拒绝原因" 
+                placeholder="请输入退款拒绝原因"
                 :maxlength="500"
                 v-model="refund.refuseResaon" ></Input>
             </FormItem>
@@ -162,7 +162,7 @@ export default {
   },
 
   created() {
-      
+
   },
 
   mounted() {
@@ -201,16 +201,11 @@ export default {
     },
 
     save() {
-        if(this.refund.status == 1) {
-            if(this.refund.returnAddress == null || this.refund.returnAddress == '') {
-                this.$Message.error("请填写退款地址!");
-                return;
-            }
-        }else if(this.refund.status == 2){
-             if(this.refund.refuseResaon == null || this.refund.refuseResaon == '') {
-                this.$Message.error("请填写退款拒绝原因!")
-                return;
-            }
+        if(this.refund.status == 2){
+          if(this.refund.refuseResaon == null || this.refund.refuseResaon == '') {
+              this.$Message.error("请填写退款拒绝原因!")
+              return;
+          }
         }
         this.submitDisabled = true;
         let params = {
