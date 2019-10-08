@@ -524,7 +524,7 @@ export default {
           that.commodity.id = rdata.data.id;
           that.categoryAttributeList = rdata.data.commidityAttributeDetail;
           that.categoryAttributeList.forEach(item => {
-            if(item.attributeName.indexOf('划痕') > -1) {
+            if(item.attributeName.indexOf('划痕') > -1 && item.pictureUrls != null) {
               let imgUrls = item.pictureUrls.split(',');
               imgUrls.map(url => {
                 that.uploadList1.push({ url: url, status: "finished" });
