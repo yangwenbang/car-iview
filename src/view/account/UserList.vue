@@ -3,19 +3,19 @@
     <Form :label-width="150" class="search-form">
       <Row type="flex" justify="space-between">
         <Col :sm="8" :xs="24">
-          <FormItem label="用户名:">
-            <Input v-model="searchForm.userName" placeholder="请输入用户名"></Input>
+          <FormItem label="用户类型:">
+            <Select v-model="searchForm.userType" clearable>
+              <Option :value="0">终端用户</Option>
+              <Option :value="1">商家用户</Option>
+              <!-- <Option :value="2">系统用户</Option> -->
+              <Option :value="3">管理员</Option>
+            </Select>
           </FormItem>
         </Col>
         <Col :sm="8" :xs="24">
-          <FormItem label="手机号:">
-            <Input v-model="searchForm.mobile" placeholder="请输入手机号"></Input>
-          </FormItem>
-        </Col>
-        <Col :sm="8" :xs="24">
-          <FormItem label="质检商家店面名称:">
-            <Input v-model="searchForm.shopName" placeholder="请输入质检店面名称"></Input>
-          </FormItem>
+            <FormItem label="创建时间:">
+              <DatePicker v-model="createTime" type="daterange" placement="bottom-end" placeholder="请选择创建时间"></DatePicker>
+            </FormItem>
         </Col>
         <Col :span="24" class="text-right">
           <FormItem>
@@ -59,24 +59,24 @@
 </template>
 
 <script>
-import { queryAccountList, resetPassword } from "@/api/user";
+import { queryUserList } from "@/api/user";
 import { formatDate } from "@/libs/util";
 export default {
   name: "UserList",
   data() {
     return {
-      submitDisabled: false,
       pageNum: 1,
       total: 0,
       pageSize: 10,
+      createTime: [],
       searchForm: {
-        userName: "",
-        mobile: "",
-        shopName: ""
+        userType: "",
+        startDate: "",
+        endDate: ""
       },
       tableData: [],
       tableColumns: [
-          {
+        {
           title: "用户名称",
           key: "userName",
           minWidth: 50
@@ -86,65 +86,35 @@ export default {
           key: "mobile",
           minWidth: 100
         },
-         {
-          title: "支付宝账号",
-          key: "alipayAccount",
-          minWidth: 100
+        {
+          title: "创建时间",
+          key: "createTime",
+          minWidth: 100,
         },
         {
-          title: "微信账号",
-          key: "wechatAccount",
-          minWidth: 100
-        },
-        {
-          title: "质检商家店面名称",
-          key: "shopName",
-          minWidth: 50
-        },
-        {
-          title: "店面地址",
-          key: "address",
-          minWidth: 100
-        },
-        {
-          title: "操作",
-          key: "",
-          fixed: "right",
-          minWidth: 140,
+          title: "用户类型",
+          key: "userType",
+          minWidth: 100,
           render: (h, data) => {
-            return h(
-              "span",
-              {
-                class: "tb-link margin-right-10",
-                on: {
-                  click: () => {
-                     this.$Modal.confirm({
-                        title: '重置密码',
-                        content: '是否要重置该质检商家账号密码？',
-                        onOk: () => {
-                            let params = {
-                                userId: data.row.userId
-                            }
-                            resetPassword(params).then(res => {
-                                if (res.data.code == "200") {
-                                    this.$Message.success({
-                                        content: '重置密码成功',
-                                        duration: 1
-                                    });
-                                    this.getAccountList(this.pageNum, this.pageSize)
-                                } else {
-                                    this.$Message.error({
-                                        content: res.data.msg,
-                                        duration: 1
-                                    });
-                                }
-                            })
-                        }
-                    })
-                  }
-                }
-              },
-              "重置密码");
+            if (data.row.userType == "0") {
+              return h("span", "终端用户");
+            } else if (data.row.userType == "1") {
+              return h("span", "商家用户");
+            } else if (data.row.userType == "3") {
+              return h("span", "管理员");
+            }
+          }
+        },
+        {
+          title: "是否是超管",
+          key: "isAdmin",
+          minWidth: 100,
+          render: (h, data) => {
+            if (data.row.isAdmin == "0") {
+              return h("span", "否");
+            } else if (data.row.isAdmin == "1") {
+              return h("span", "是");
+            }
           }
         }
       ]
@@ -152,24 +122,28 @@ export default {
   },
   methods: {
     search: function() {
-      this.getAccountList(1, 10);
-    },
-    reset: function() {
-        this.searchForm.userName = "",
-        this.searchForm.mobile = "",
-        this.searchForm.shopName = ""
+      this.searchForm.startDate = this.createTime[0] ? formatDate(this.createTime[0]) : '';
+      this.searchForm.endDate = this.createTime[1] ? formatDate(this.createTime[1]) : '';
+      this.getUserList(1, 10);
     },
 
-    getAccountList: function(pageNo, numPerPage) {
+    reset: function() {
+        this.createTime = [],
+        this.searchForm.userType = "",
+        this.searchForm.startDate = "",
+        this.searchForm.endDate = ""
+    },
+
+    getUserList: function(pageNo, numPerPage) {
       let params = {
-        userName: this.searchForm.userName,
-        mobile: this.searchForm.mobile,
-        shopName: this.searchForm.shopName,
+        userType: this.searchForm.userType,
+        startDate: this.searchForm.startDate,
+        endDate: this.searchForm.endDate,
         pageNo: pageNo,
         numPerPage: numPerPage,
         isPage: 1
       };
-      queryAccountList(params).then(res => {
+      queryUserList(params).then(res => {
         if (res.data.code == "200") {
           this.tableData = res.data.data.recordList;
           this.total = res.data.data.totalCount;
@@ -178,15 +152,18 @@ export default {
         }
       });
     },
+
     pageChange: function(value) {
-      this.getAccountList(value, this.pageSize);
+      this.getUserList(value, this.pageSize);
     },
+
     pageSizeChange: function(value) {
-      this.getAccountList(this.pageNum, value);
+      this.getUserList(this.pageNum, value);
     },
   },
+
   mounted: function() {
-    this.getAccountList(1, 10);
+    this.getUserList(1, 10);
   }
 };
 </script>
