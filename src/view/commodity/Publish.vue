@@ -202,6 +202,14 @@
             </FormItem>
           </Col>
           <Col :span="24">
+            <FormItem label="运费方式:">
+              <Select v-model="commodity.freightType" style="width: 200px;">
+                <Option :value="0">包邮 </Option>
+                <Option :value="1">到付</Option>
+              </Select>
+            </FormItem>
+          </col>
+          <Col :span="24">
             <FormItem label="商家补充描述:" prop="additionalDescription">
               <Input
                 type="textarea"
@@ -262,6 +270,7 @@ export default {
         additionalDescription: "",
         commodityCategoryId: "",
         price: "",
+        freightType: 0,
         commidityAttributeDetail: []
       },
       // 原厂属性首字母
@@ -535,6 +544,7 @@ export default {
           that.commodityCategoryId = rdata.data.commodityCategoryId;
           that.commodity.commodityType = rdata.data.commodityType;
           that.commodity.commodityName = rdata.data.commodityName;
+          that.commodity.freightType = rdata.data.freightType;
           that.commodity.description = rdata.data.description;
           that.commodity.additionalDescription = rdata.data.additionalDescription;
           that.commodity.price = rdata.data.price;
