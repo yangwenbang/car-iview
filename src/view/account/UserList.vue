@@ -87,7 +87,7 @@ export default {
           minWidth: 100
         },
         {
-          title: "创建时间",
+          title: "注册时间",
           key: "createTime",
           minWidth: 100,
         },
