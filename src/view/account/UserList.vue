@@ -24,6 +24,9 @@
           </FormItem>
         </Col>
       </Row>
+      <Modal title="图片预览" v-model="visible">
+          <img :src="imgUrl" v-if="visible" style="width: 100%">
+        </Modal>
     </Form>
     <Table
       :columns="tableColumns"
@@ -68,6 +71,8 @@ export default {
       pageNum: 1,
       total: 0,
       pageSize: 10,
+      imgUrl: "",
+      visible: false,
       createTime: [],
       searchForm: {
         userType: "",
@@ -89,13 +94,19 @@ export default {
           render: (h, data) => {
             return h('div', [
                         h('img', {
-                            style: {
-                                width: "30px",
-                                verticalAlign: "middle"
-                            },
-                            attrs: {
-                                src: data.row.userPicture
-                            }
+                          class: ['img-pointer'],
+                          style: {
+                              width: "30px",
+                              verticalAlign: "middle",
+                          },
+                          attrs: {
+                              src: data.row.userPicture
+                          },
+                          on: {
+                              click: () => {
+                                this.handleView(data.row)
+                              }
+                          }
                         })
                     ], '');
             }
@@ -196,6 +207,11 @@ export default {
     pageSizeChange: function(value) {
       this.getUserList(this.pageNum, value);
     },
+
+    handleView(item) {
+      this.imgUrl = item.userPicture;
+      this.visible = true;
+    },
   },
 
   mounted: function() {
@@ -207,5 +223,9 @@ export default {
 <style scoped>
 .device-manage >>> .table-delete td {
   background-color: #f0f2f5;
+}
+
+.img-pointer:hover {
+  cursor: pointer;
 }
 </style>
