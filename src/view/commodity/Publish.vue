@@ -69,9 +69,6 @@
                     <Icon type="ios-camera" size="20"></Icon>
                   </div>
                 </Upload>
-                <Modal title="图片预览" v-model="visible">
-                  <img :src="imgUrl" v-if="visible" style="width: 100%">
-                </Modal>
               </div>
             </FormItem>
           </Col>
@@ -195,9 +192,6 @@
                     <Icon type="ios-camera" size="20"></Icon>
                   </div>
                 </Upload>
-                <Modal title="图片预览" v-model="visible">
-                  <img :src="imgUrl" v-if="visible" style="width: 100%">
-                </Modal>
               </div>
             </FormItem>
           </Col>
@@ -241,6 +235,9 @@
             >上架</Button>
           </template>
         </div>
+        <Modal title="图片预览" v-model="visible" footer-hide>
+          <img :src="imgUrl" v-if="visible" style="width: 100%">
+        </Modal>
       </Form>
     </div>
   </div>
