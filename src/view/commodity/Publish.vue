@@ -235,7 +235,7 @@
             >上架</Button>
           </template>
         </div>
-        <Modal title="图片预览" v-model="visible" footer-hide>
+        <Modal title="图片预览" v-model="visible">
           <img :src="imgUrl" v-if="visible" style="width: 100%">
         </Modal>
       </Form>
