@@ -82,6 +82,42 @@ export default {
           minWidth: 50
         },
         {
+          title: "用户头像",
+          key: "userPicture",
+          minWidth: 50,
+          align: 'center',
+          render: (h, data) => {
+            return h('div', [
+                        h('img', {
+                            style: {
+                                width: "30px",
+                                verticalAlign: "middle"
+                            },
+                            attrs: {
+                                src: data.row.userPicture
+                            }
+                        })
+                    ], '');
+            }
+        },
+        {
+          title: "设备类型",
+          key: "equipmentType",
+          minWidth: 50,
+          render: (h, data) => {
+            if (data.row.equipmentType == "0") {
+              return h("span", "安卓");
+            } else if (data.row.equipmentType == "1") {
+              return h("span", "苹果");
+            }
+          }
+        },
+        {
+          title: "设备型号",
+          key: "equipmentModel",
+          minWidth: 50
+        },
+        {
           title: "联系方式",
           key: "mobile",
           minWidth: 100
