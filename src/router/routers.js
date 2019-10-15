@@ -213,6 +213,26 @@ export default [{
         }]
     },
     {
+      path: '/post',
+      name: 'post',
+      meta: {
+          icon: 'ios-create-outline',
+          title: '发帖管理',
+          hideInMenu: hideMenu
+      },
+      component: Main,
+      children: [{
+        path: 'PostList',
+        name: 'PostList',
+        meta: {
+            title: '发帖列表',
+            pageTitle: '发帖列表'
+        },
+        component: () =>
+            import ('@/view/post/PostList.vue')
+      }]
+    },
+    {
         path: '/error_401',
         name: 'error_401',
         component: Main,
