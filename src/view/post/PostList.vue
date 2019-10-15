@@ -8,10 +8,11 @@
             </FormItem>
         </Col>
         <Col :sm="8" :xs="24">
-            <FormItem label="发布人名字:">
+            <FormItem label="发布人名称:">
               <Input v-model="searchForm.publishUserName"></Input>
             </FormItem>
         </Col>
+        <Col :sm="8" :xs="24"></Col>
         <Col :span="24" class="text-right">
           <FormItem>
             <Button type="primary" @click="search">查询</Button>
@@ -140,6 +141,64 @@ export default {
           title: "发布时间",
           key: "publishTime",
           minWidth: 100,
+        },
+        {
+          title: "操作",
+          key: "",
+          fixed: "right",
+          minWidth: 140,
+          render: (h, data) => {
+            return h("div", [
+              h("span",{
+                class: "tb-link margin-right-10",
+                on: {
+                  click: () => {
+                  }
+                }
+              },
+              "查看"),
+              h("span",{
+                class: "tb-link margin-right-10",
+                on: {
+                  click: () => {
+
+                  }
+                }
+              },
+              "修改"),
+              h("span",{
+                class: "tb-link margin-right-10",
+                on: {
+                  click: () => {
+                     this.$Modal.confirm({
+                        title: '删除帖子',
+                        content: '是否要删除该帖子？',
+                        onOk: () => {
+                            let params = {
+                                id: data.row.id
+                            }
+                            deletePublishPost(params).then(res => {
+                                if (res.data.code == "200") {
+                                    this.$Message.success({
+                                        content: '删除成功',
+                                        duration: 1
+                                    });
+                                    this.queryPublishPostList(this.pageNum, this.pageSize)
+                                } else {
+                                    this.$Message.error({
+                                        content: res.data.msg,
+                                        duration: 1
+                                    });
+                                }
+                            })
+                        }
+                    })
+                  }
+                }
+              },
+              "删除"),
+            ]);
+          }
         }
       ]
     };
