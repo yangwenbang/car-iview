@@ -68,6 +68,12 @@
                   </Upload>
                 </div>
               </FormItem>
+              <FormItem label="发贴地址:">
+                <al-cascader v-model="addressArray" level="2" style="width: 300px;"/>
+              </FormItem>
+              <FormItem label="详细地址">
+                <Input v-model="changeForm.detailAddress" style="width: 300px;"></Input>
+              </FormItem>
               <FormItem label="是否置顶:" style="width: 200px;">
                 <Select v-model="changeForm.isTop">
                   <Option :value="0">否</Option>
@@ -132,11 +138,14 @@ export default {
       modal: false,
       modalTitle: '修改帖子',
       uploadList: [],
+      addressArray: [],
       changeForm: {
         id: "",
         publishTitle: "",
         publishContent: "",
         publishPicture: "",
+        publishAddress: "",
+        detailAddress: "",
         isTop: 0
       },
       searchForm: {
@@ -397,10 +406,18 @@ export default {
     },
 
     submit: function() {
-      debugger
       this.$refs.formValidate.validate(valid => {
           if(valid){
             this.submitDisabled = true;
+            let address = '';
+            for(let i = 0; i != this.addressArray.length; i ++) {
+                if(i != this.addressArray.length - 1) {
+                    address += this.addressArray[i].name + ",";
+                }else {
+                    address += this.addressArray[i].name;
+                }
+            };
+            this.changeForm.publishAddress = address;
             saveOrUpdatePost(this.changeForm).then(res=>{
                 if(res.data.code=="200"){
                     this.$Message.success({
