@@ -28,11 +28,19 @@
       </Modal>
       <Modal ref="modal" v-model="modal" width="800px" :title="modalTitle" @on-ok="submit">
           <Form ref="formValidate" :model="changeForm" :rules="ruleValidate" :label-width="100">
-              <FormItem label="发帖标题:" prop="publishTitle">
-                <Input v-model="changeForm.publishTitle" placeholder="请输入帖子标题" :maxlength="20"></Input>
+              <FormItem label="发帖标题:" prop="publishTitle" >
+                <Input v-model="changeForm.publishTitle" style="width: 500px;" placeholder="请输入帖子标题" :maxlength="20"></Input>
               </FormItem>
-              <FormItem label="发帖内容:">
-                <div ref="editorElem" style="text-align:left;"></div>
+              <FormItem label="发帖内容:" prop="publishContent">
+                <!-- <div ref="editorElem" style="text-align:left;"></div> -->
+                <Input
+                type="textarea"
+                :rows="4"
+                style="width: 500px"
+                placeholder="请输入发帖内容"
+                v-model="changeForm.publishContent"
+                :maxlength="500"
+                ></Input>
               </FormItem>
               <FormItem label="上传图片 :">
                 <div class="clearfix">
@@ -294,6 +302,9 @@ export default {
       ruleValidate: {
           publishTitle: [
               { required: true, message: '发帖标题不能为空', trigger: 'blur' }
+          ],
+          publishContent: [
+              { required: true, message: '发帖内容不能为空', trigger: 'blur'}
           ]
       }
     };
@@ -461,12 +472,12 @@ export default {
   mounted: function() {
     this.queryPublishPostList(1, 10);
 
-    this.editor = new E(this.$refs.editorElem);
-      // 编辑器的事件，每次改变会获取其html内容
-    this.editor.customConfig.onchange = (html) => {
-      this.changeForm.publishContent = html;
-    };
-    this.editor.create(); // 创建富文本实例
+    // this.editor = new E(this.$refs.editorElem);
+    //   // 编辑器的事件，每次改变会获取其html内容
+    // this.editor.customConfig.onchange = (html) => {
+    //   this.changeForm.publishContent = html;
+    // };
+    // this.editor.create(); // 创建富文本实例
   }
 };
 </script>
