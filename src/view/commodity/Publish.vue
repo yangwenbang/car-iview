@@ -111,7 +111,7 @@
               </RadioGroup>
               <template v-if="commodity.commodityType == 0">
                 <Input
-                  style="width: 200px;"
+                  style="width: 50px;"
                   v-model="attributeFirstWord"
                   :maxlength="1"
                   @input="typeChange"
@@ -119,12 +119,13 @@
               </template>
               <template v-else>
                 <Input
-                  style="width: 200px;"
+                  style="width: 50px;"
                   v-model="attributeFirstWord"
                   :maxlength="1"
                   @input="queryFactoryBrand()"
                 />
               </template>
+              (汽车品牌名称首字母,不区分大小写)
             </FormItem>
           </Col>
           <Col :sm="12" :xs="24" v-if="commodity.commodityType == 1">

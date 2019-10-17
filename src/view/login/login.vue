@@ -15,6 +15,9 @@
         <FormItem>
           <Button @click="handleSubmit" type="primary" long>登&nbsp;录</Button>
         </FormItem>
+        <FormItem>
+            <div style="text-align: center;">建议使用chrome浏览器(<a href="https://www.google.cn/chrome/" target="_blank">点击下载</a>)</div>
+        </FormItem>
       </Form>
       </Col>
     </Row>
