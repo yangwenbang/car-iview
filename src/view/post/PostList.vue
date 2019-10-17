@@ -23,77 +23,6 @@
           </FormItem>
         </Col>
       </Row>
-      <Modal title="头像预览" v-model="visible">
-          <img :src="imgUrl" v-if="visible" style="width: 100%">
-      </Modal>
-      <Modal ref="modal" v-model="modal" width="800px" :title="modalTitle" @on-ok="submit">
-          <Form ref="formValidate" :model="changeForm" :rules="ruleValidate" :label-width="100">
-              <FormItem label="发帖标题:" prop="publishTitle" >
-                <Input v-model="changeForm.publishTitle" style="width: 500px;" placeholder="请输入帖子标题" :maxlength="20"></Input>
-              </FormItem>
-              <FormItem label="发帖内容:" prop="publishContent">
-                <!-- <div ref="editorElem" style="text-align:left;"></div> -->
-                <Input
-                type="textarea"
-                :rows="4"
-                style="width: 500px"
-                placeholder="请输入发帖内容"
-                v-model="changeForm.publishContent"
-                :maxlength="500"
-                ></Input>
-              </FormItem>
-              <FormItem label="上传图片 :">
-                <div class="clearfix">
-                  <div class="demo-upload-list" v-for="item in uploadList">
-                    <template v-if="item.status === 'finished'">
-                      <img :src="item.url">
-                      <div class="demo-upload-list-cover">
-                        <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
-                        <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
-                      </div>
-                    </template>
-                    <template v-else>
-                      <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
-                    </template>
-                  </div>
-                  <Upload
-                    ref="upload"
-                    :show-upload-list="false"
-                    :on-success="handleSuccess"
-                    :format="['jpg','jpeg','png']"
-                    :max-size="50*1024"
-                    :on-format-error="handleFormatError"
-                    :on-exceeded-size="handleMaxSize"
-                    :before-upload="handleBeforeUpload"
-                    multiple
-                    type="drag"
-                    action="/car/qualityshop/uploadPicture"
-                    style="display: inline-block;width:100px;"
-                  >
-                    <div style="width: 100px;height:100px;line-height: 100px;">
-                      <Icon type="ios-camera" size="20"></Icon>
-                    </div>
-                  </Upload>
-                </div>
-              </FormItem>
-              <FormItem label="发贴地址:">
-                <al-cascader v-model="addressArray" level="2" style="width: 300px;"/>
-              </FormItem>
-              <FormItem label="详细地址">
-                <Input v-model="changeForm.detailAddress" style="width: 300px;"></Input>
-              </FormItem>
-              <FormItem label="是否置顶:" style="width: 200px;">
-                <Select v-model="changeForm.isTop">
-                  <Option :value="0">否</Option>
-                  <Option :value="1">是</Option>
-                </Select>
-              </FormItem>
-          </Form>
-          <div slot="footer">
-              <Button type="text" size="large" @click="cancel">取消</Button>
-              <Button type="primary" size="large" @click="submit" :disabled="submitDisabled">确定</Button>
-          </div>
-      </Modal>
     </Form>
     <Table
       :columns="tableColumns"
@@ -125,6 +54,79 @@
         />
       </div>
     </div>
+    <Modal title="图片预览" v-model="visible">
+      <img :src="imgUrl" v-if="visible" style="width: 100%">
+    </Modal>
+    <Modal ref="modal" v-model="modal" width="800px" :title="modalTitle" @on-ok="submit">
+      <Form ref="formValidate" :model="changeForm" :rules="ruleValidate" :label-width="100">
+          <FormItem label="发帖标题:" prop="publishTitle" >
+            <Input v-model="changeForm.publishTitle" v-bind:readonly="isReadOnly" style="width: 500px;" placeholder="请输入帖子标题" :maxlength="20"></Input>
+          </FormItem>
+          <FormItem label="发帖内容:" prop="publishContent">
+            <!-- <div ref="editorElem" style="text-align:left;"></div> -->
+            <Input
+            v-bind:readonly="isReadOnly"
+            type="textarea"
+            :rows="4"
+            style="width: 500px"
+            placeholder="请输入发帖内容"
+            v-model="changeForm.publishContent"
+            :maxlength="500"
+            ></Input>
+          </FormItem>
+          <FormItem label="上传图片 :">
+            <div class="clearfix">
+              <div class="demo-upload-list" v-for="item in uploadList">
+                <template v-if="item.status === 'finished'">
+                  <img :src="item.url">
+                  <div class="demo-upload-list-cover">
+                    <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
+                    <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+                  </div>
+                </template>
+                <template v-else>
+                  <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
+                </template>
+              </div>
+              <Upload
+                v-bind:disabled="isReadOnly"
+                ref="upload"
+                :show-upload-list="false"
+                :on-success="handleSuccess"
+                :format="['jpg','jpeg','png']"
+                :max-size="50*1024"
+                :on-format-error="handleFormatError"
+                :on-exceeded-size="handleMaxSize"
+                :before-upload="handleBeforeUpload"
+                multiple
+                type="drag"
+                action="/car/qualityshop/uploadPicture"
+                style="display: inline-block;width:100px;"
+              >
+                <div style="width: 100px;height:100px;line-height: 100px;">
+                  <Icon type="ios-camera" size="20"></Icon>
+                </div>
+              </Upload>
+            </div>
+          </FormItem>
+          <FormItem label="发贴地址:">
+            <al-cascader v-model="addressArray" v-bind:disabled="isReadOnly" level="2" style="width: 300px;"/>
+          </FormItem>
+          <FormItem label="详细地址">
+            <Input v-model="changeForm.detailAddress" v-bind:readonly="isReadOnly" style="width: 300px;"></Input>
+          </FormItem>
+          <FormItem label="是否置顶:" style="width: 200px;">
+            <Select v-model="changeForm.isTop" v-bind:disabled="isReadOnly">
+              <Option :value="0">否</Option>
+              <Option :value="1">是</Option>
+            </Select>
+          </FormItem>
+      </Form>
+      <div slot="footer">
+          <Button type="text" size="large" @click="cancel">取消</Button>
+          <Button type="primary" size="large" @click="submit" :disabled="submitDisabled">确定</Button>
+      </div>
+    </Modal>
   </div>
 </template>
 
@@ -138,6 +140,7 @@ export default {
     return {
       editor: null,
       submitDisabled: false,
+      isReadOnly: false,
       pageNum: 1,
       total: 0,
       pageSize: 10,
@@ -251,6 +254,25 @@ export default {
                 class: "tb-link margin-right-10",
                 on: {
                   click: () => {
+                    this.modal = true;
+                    this.modalTitle = "查看帖子";
+                    this.isReadOnly = true;
+                    this.submitDisabled = true;
+                    this.changeForm.id = data.row.id;
+                    this.changeForm.publishTitle = data.row.publishTitle;
+                    this.changeForm.publishContent = data.row.publishContent;
+                    this.changeForm.publishPicture = data.row.publishPicture;
+                    if (data.row.publishPicture) {
+                      this.uploadList = [];
+                      let pictures = data.row.publishPicture.split(",");
+                      pictures.map(item => {
+                          this.uploadList.push({ url: item, status: "finished" });
+                      });
+                    };
+                    this.changeForm.publishAddress = data.row.publishAddress;
+                    this.addressArray = data.row.publishAddress.split(",");
+                    this.changeForm.detailAddress = data.row.detailAddress;
+                    this.changeForm.isTop = data.row.isTop;
                   }
                 }
               },
@@ -259,7 +281,25 @@ export default {
                 class: "tb-link margin-right-10",
                 on: {
                   click: () => {
-
+                    this.modal = true;
+                    this.modalTitle = "修改帖子";
+                    this.isReadOnly = false;
+                    this.submitDisabled = false;
+                    this.changeForm.id = data.row.id;
+                    this.changeForm.publishTitle = data.row.publishTitle;
+                    this.changeForm.publishContent = data.row.publishContent;
+                    this.changeForm.publishPicture = data.row.publishPicture;
+                    if (data.row.publishPicture) {
+                      this.uploadList = [];
+                      let pictures = data.row.publishPicture.split(",");
+                      pictures.map(item => {
+                          this.uploadList.push({ url: item, status: "finished" });
+                      });
+                    };
+                    this.changeForm.publishAddress = data.row.publishAddress;
+                    this.addressArray = data.row.publishAddress.split(",");
+                    this.changeForm.detailAddress = data.row.detailAddress;
+                    this.changeForm.isTop = data.row.isTop;
                   }
                 }
               },
@@ -309,7 +349,9 @@ export default {
       }
     };
   },
+
   methods: {
+
     handleView(item) {
       this.imgName = item.name;
       this.imgUrl = item.url;
@@ -411,9 +453,15 @@ export default {
       this.changeForm.publishTitle = "";
       this.changeForm.publishContent = "";
       this.changeForm.publishPicture = "";
+      this.changeForm.publishAddress = "";
+      this.changeForm.detailAddress = "";
       this.changeForm.isTop = 0;
+      this.addressArray = "";
+      this.uploadList = [];
       this.modal = true;
       this.modalTitle = "新增发帖";
+      this.isReadOnly = false;
+      this.submitDisabled = false;
     },
 
     submit: function() {
@@ -430,9 +478,13 @@ export default {
             };
             this.changeForm.publishAddress = address;
             saveOrUpdatePost(this.changeForm).then(res=>{
-                if(res.data.code=="200"){
+                if(res.data.code=="200") {
+                    let content = "新增发帖成功";
+                    if(this.changeForm.id) {
+                      content = "修改发帖成功";
+                    }
                     this.$Message.success({
-                        content:'新增发帖成功',
+                        content:content,
                         duration:1
                     });
                     this.modal=false;
