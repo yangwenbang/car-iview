@@ -1,5 +1,6 @@
 import { carLogin, loginOut } from '@/api/login'
 import { setToken, getToken } from '@/libs/util'
+import { encrypt, decrypt } from '@/libs/aes'
 
 export default {
     state: {
@@ -19,7 +20,8 @@ export default {
     actions: {
         // 登录
         handleLogin({ commit }, { userName, password }) {
-            userName = userName.trim()
+            userName = userName.trim();
+            password = encrypt(password)
             return new Promise((resolve, reject) => {
                 carLogin({
                     userName,
