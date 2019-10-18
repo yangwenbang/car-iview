@@ -126,7 +126,7 @@
               </div>
             </FormItem>
           </Col>
-           <Col :span="12">
+           <!-- <Col :span="12">
             <FormItem label="上传合同 :" required>
               <div class="clearfix">
                 <div class="demo-upload-list" v-for="item in uploadList4">
@@ -160,7 +160,7 @@
                 </Upload>
               </div>
             </FormItem>
-          </Col>
+          </Col> -->
           <Col :span="24">
             <FormItem label="公司名称:" prop="companyName">
               <Input
@@ -306,7 +306,7 @@
               <Input v-model="shop.detailAddress" style="width: 300px;"></Input>
             </FormItem>
           </Col>
-          <Col span="12">
+          <Col span="24">
             <FormItem label="营业时间:" required>
               <TimePicker
                 v-model="businessTimeArray"
@@ -318,11 +318,11 @@
               ></TimePicker >
             </FormItem>
           </Col>
-          <Col span="12">
+          <!-- <Col span="12">
             <FormItem label="合同到期日期:" required>
               <DatePicker v-model="shop.expiresTime" type="date" format="yyyy-MM-dd"  @on-change="shop.expiresTime=$event" placeholder="请选择合同到期日期" style="width: 200px"></DatePicker>
             </FormItem>
-          </Col>
+          </Col> -->
           <Col span="12">
             <FormItem label="输入手机号码:" prop="verificationTelephone" required>
               <Input v-model="shop.verificationTelephone" placeholder="请输入手机号码"></Input>
@@ -338,7 +338,7 @@
           </Col>
         </Row>
         <div class="text-center margin-top-10">
-              <Button type="primary" class="btn-common-width" @click="save('shopform')" :disabled="submitDisabled">新增</Button>
+              <Button type="primary" class="btn-common-width" @click="save('shopform')" :disabled="submitDisabled">注册</Button>
         </div>
         <Modal title="图片预览" v-model="visible">
           <img :src="imgUrl" v-if="visible" style="width: 100%">
@@ -349,7 +349,7 @@
   </div>
 </template>
 <script>
-import { sendSms, queryQualityShop, saveQualityShop, updateQualityShop} from "@/api/shop";
+import { sendSms, selfSaveQualityShop } from "@/api/shop";
 import { formatSecondTime } from "@/libs/filters";
 export default {
   name: "ShelfRegister",
@@ -361,7 +361,7 @@ export default {
         headPortraitUrls: '',
         shopPicture: '',
         businessLicenseUrls: '',
-        contractUrls: '',
+        // contractUrls: '',
         companyName: '',
         legalPerson: '',
         legalPersonCardUrls: '',
@@ -377,9 +377,10 @@ export default {
         addressCode: '',
         detailAddress: '',
         businessTime: '',
-        expiresTime: '',
+        // expiresTime: '',
         verificationTelephone: '',
-        mobileVerificationCode: ''
+        mobileVerificationCode: '',
+        isSelfRegistration: 1
       },
       addressArray: [],
       businessTimeArray: [],
@@ -391,7 +392,7 @@ export default {
       uploadList1: [],
       uploadList2: [],
       uploadList3: [],
-      uploadList4: [],
+      // uploadList4: [],
       second: 60,
       buttonMsg: '获取验证码',
       buttonDisabled: false,
@@ -490,14 +491,7 @@ export default {
       }
     };
   },
-  created() {
-      let shopId = this.$route.query.id;
-      if(shopId) {
-          this.shop.id = shopId;
-          this.queryQualityShop(shopId);
-      }
-  },
-  mounted() {},
+
   methods: {
     handleView(item) {
       this.imgName = item.name;
@@ -516,9 +510,9 @@ export default {
     handleRemove3(file) {
       this.uploadList3.splice(this.uploadList3.indexOf(file), 1);
     },
-    handleRemove4(file) {
-      this.uploadList4.splice(this.uploadList4.indexOf(file), 1);
-    },
+    // handleRemove4(file) {
+    //   this.uploadList4.splice(this.uploadList4.indexOf(file), 1);
+    // },
     handleSuccess(res, file) {
       if (res.code == "200") {
         file.url = "http://" + res.data;
@@ -575,25 +569,25 @@ export default {
       }
       this.shop.legalPersonCardUrls = urls;
     },
-    handleSuccess4(res, file) {
-      if (res.code == "200") {
-        file.url = "http://" + res.data;
-      } else {
-        this.$Message.error(res.msg);
-      }
-      this.uploadList4.push(file);
-      var urls = "";
-      if (this.uploadList4 != null && this.uploadList4.length > 0) {
-        for (var i = 0; i < this.uploadList4.length; i++) {
-          if (i != this.uploadList4.length - 1) {
-            urls += this.uploadList4[i].url + ",";
-          } else {
-            urls += this.uploadList4[i].url;
-          }
-        }
-      }
-      this.shop.contractUrls = urls;
-    },
+    // handleSuccess4(res, file) {
+    //   if (res.code == "200") {
+    //     file.url = "http://" + res.data;
+    //   } else {
+    //     this.$Message.error(res.msg);
+    //   }
+    //   this.uploadList4.push(file);
+    //   var urls = "";
+    //   if (this.uploadList4 != null && this.uploadList4.length > 0) {
+    //     for (var i = 0; i < this.uploadList4.length; i++) {
+    //       if (i != this.uploadList4.length - 1) {
+    //         urls += this.uploadList4[i].url + ",";
+    //       } else {
+    //         urls += this.uploadList4[i].url;
+    //       }
+    //     }
+    //   }
+    //   this.shop.contractUrls = urls;
+    // },
     handleBeforeUpload() {
       const check = this.uploadList.length < 1;
       if (!check) {
@@ -622,13 +616,13 @@ export default {
       }
       return check;
     },
-    handleBeforeUpload4() {
-      const check = this.uploadList4.length < 2;
-      if (!check) {
-        this.$Message.info("最多上传2张合同图片.");
-      }
-      return check;
-    },
+    // handleBeforeUpload4() {
+    //   const check = this.uploadList4.length < 2;
+    //   if (!check) {
+    //     this.$Message.info("最多上传2张合同图片.");
+    //   }
+    //   return check;
+    // },
     handleFormatError(file) {
       this.$Notice.warning({
         title: "文件格式不正确",
@@ -680,119 +674,34 @@ export default {
       }
     },
 
-    queryQualityShop(id) {
-        let params = {
-            id: id
-        }
-        queryQualityShop(params).then(response => {
-            var rdata = response.data;
-            if (rdata.code == 200) {
-                this.addressArray = [];
-                this.businessTimeArray = [];
-                this.shop = Object.assign({}, rdata.data);
-                let address = this.shop.address.split(",");
-                let addressCode = this.shop.addressCode.split(",");
-                for(var i = 0; i < address.length; i++) {
-                    this.addressArray.push(address[i])
-                }
-                this.shop.businessTime.split("-").forEach(item => {
-                    this.businessTimeArray.push(item);
-                });
-                 // 图片回显
-                this.uploadList = [];
-                if (this.shop.headPortraitUrls) {
-                    let pictures = this.shop.headPortraitUrls.split(",");
-                    pictures.map(item => {
-                        this.uploadList.push({ url: item, status: "finished" });
-                    });
-                };
-                this.uploadList1 = [];
-                if (this.shop.shopPicture) {
-                    let pictures = this.shop.shopPicture.split(",");
-                    pictures.map(item => {
-                        this.uploadList1.push({ url: item, status: "finished" });
-                    });
-                };
-                this.uploadList2 = [];
-                if (this.shop.businessLicenseUrls) {
-                    let pictures = this.shop.businessLicenseUrls.split(",");
-                    pictures.map(item => {
-                        this.uploadList2.push({ url: item, status: "finished" });
-                    });
-                };
-                this.uploadList3 = [];
-                if (this.shop.legalPersonCardUrls) {
-                    let pictures = this.shop.legalPersonCardUrls.split(",");
-                    pictures.map(item => {
-                        this.uploadList3.push({ url: item, status: "finished" });
-                    });
-                };
-                this.uploadList4 = [];
-                if (this.shop.contractUrls) {
-                    let pictures = this.shop.contractUrls.split(",");
-                    pictures.map(item => {
-                        this.uploadList4.push({ url: item, status: "finished" });
-                    });
-                };
-            }
-        })
-    },
-
     save(name) {
         this.$refs[name].validate(valid => {
             if (valid) {
                 this.submitDisabled = true;
-                 if(this.shop.id) {
-                    let address = '';
-                    let addressCode = '';
-                    for(let i = 0; i != this.addressArray.length; i ++) {
-                        if(i != this.addressArray.length - 1) {
-                            address += this.addressArray[i].name + ",";
-                            addressCode += this.addressArray[i].code + ","
-                        }else {
-                            address += this.addressArray[i].name;
-                            addressCode += this.addressArray[i].code + ","
-                        }
+                let address = '';
+                let addressCode = '';
+                for(let i = 0; i != this.addressArray.length; i ++) {
+                    if(i != this.addressArray.length - 1) {
+                        address += this.addressArray[i].name + ",";
+                        addressCode += this.addressArray[i].code + ","
+                    }else {
+                        address += this.addressArray[i].name;
+                        addressCode += this.addressArray[i].code;
                     }
-                    this.shop.address = address;
-                    this.shop.addressCode = addressCode;
-                    this.shop.businessTime = this.businessTimeArray.join("-");
-                    updateQualityShop(this.shop).then(response => {
-                        var rdata = response.data;
-                        if (rdata.code == 200) {
-                            this.$Message.success("修改成功");
-                            window.location.reload();
-                        } else {
-                            this.$Message.error("修改失败" + rdata.msg);
-                            this.submitDisabled = false;
-                        }
-                    })
-                 }else {
-                    let address = '';
-                    let addressCode = '';
-                    for(let i = 0; i != this.addressArray.length; i ++) {
-                        if(i != this.addressArray.length - 1) {
-                            address += this.addressArray[i].name + ",";
-                            addressCode += this.addressArray[i].code + ","
-                        }else {
-                            address += this.addressArray[i].name;
-                            addressCode += this.addressArray[i].code;
-                        }
+                }
+                this.shop.address = address;
+                this.shop.addressCode = addressCode;
+                this.shop.businessTime = this.businessTimeArray.join("-");
+                selfSaveQualityShop(this.shop).then(response => {
+                    var rdata = response.data;
+                    if (rdata.code == 200) {
+                        this.$Message.success("申请成功");
+                        window.location.href="http://manager.cheliangapp.com";
+                    } else {
+                        this.$Message.error("申请失败: " + rdata.msg + ",请重试");
+                        this.submitDisabled = false;
                     }
-                    this.shop.address = address;
-                    this.shop.addressCode = addressCode;
-                    this.shop.businessTime = this.businessTimeArray.join("-");
-                    saveQualityShop(this.shop).then(response => {
-                        var rdata = response.data;
-                        if (rdata.code == 200) {
-                            this.$Message.success("新增成功");
-                            window.location.reload();
-                        } else {
-                            this.$Message.error("新增失败" + rdata.msg);
-                            this.submitDisabled = false;
-                        }
-                    })
-                 }
+                })
             }
         });
     }

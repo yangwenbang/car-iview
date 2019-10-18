@@ -343,12 +343,28 @@
         </Row>
         <div class="text-center margin-top-10">
             <template v-if="shop.id">
+              <template v-if="shop.status == 1">
                 <Button
                 type="primary"
                 class="btn-common-width"
                 @click="save('shopform')"
                 :disabled="submitDisabled"
                 >修改</Button>
+              </template>
+              <template v-if="shop.status == 2">
+                <Button
+                type="primary"
+                class="btn-common-width"
+                @click="audit('1')"
+                :disabled="submitDisabled"
+                >通过</Button>
+                <Button
+                type="dashed"
+                class="btn-common-width"
+                @click="audit('0')"
+                :disabled="submitDisabled"
+                >不通过</Button>
+              </template>
             </template>
             <template v-else>
                 <Button type="primary" class="btn-common-width" @click="save('shopform')" :disabled="submitDisabled">新增</Button>
@@ -362,7 +378,7 @@
   </div>
 </template>
 <script>
-import { sendSms, queryQualityShop, saveQualityShop, updateQualityShop} from "@/api/shop";
+import { sendSms, queryQualityShop, saveQualityShop, updateQualityShop, auditeQualityShop} from "@/api/shop";
 import { formatSecondTime } from "@/libs/filters";
 export default {
   name: "Register",
@@ -392,7 +408,10 @@ export default {
         businessTime: '',
         expiresTime: '',
         verificationTelephone: '',
-        mobileVerificationCode: ''
+        mobileVerificationCode: '',
+        status: '',
+        auditStatus: '',
+        isSelfRegistration: 0
       },
       addressArray: [],
       businessTimeArray: [],
@@ -806,6 +825,39 @@ export default {
                         }
                     })
                  }
+            }
+        });
+    },
+
+    audit(auditStatus) {
+        this.$refs[name].validate(valid => {
+            if (valid) {
+              this.submitDisabled = true;
+              let address = '';
+              let addressCode = '';
+              for(let i = 0; i != this.addressArray.length; i ++) {
+                  if(i != this.addressArray.length - 1) {
+                      address += this.addressArray[i].name + ",";
+                      addressCode += this.addressArray[i].code + ","
+                  }else {
+                      address += this.addressArray[i].name;
+                      addressCode += this.addressArray[i].code + ","
+                  }
+              }
+              this.shop.address = address;
+              this.shop.addressCode = addressCode;
+              this.shop.businessTime = this.businessTimeArray.join("-");
+              this.shop.auditStatus = auditStatus;
+              auditeQualityShop(this.shop).then(response => {
+                  var rdata = response.data;
+                  if (rdata.code == 200) {
+                      this.$Message.success("审核成功");
+                      window.location.reload();
+                  } else {
+                      this.$Message.error("审核失败" + rdata.msg);
+                      this.submitDisabled = false;
+                  }
+              })
             }
         });
     }

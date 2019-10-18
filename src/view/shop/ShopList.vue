@@ -36,6 +36,20 @@
                         minWidth: 140
                     },
                     {
+                      title: "状态",
+                      key: "status",
+                      minWidth: 50,
+                      render: (h, data) => {
+                        if (data.row.status == "0") {
+                          return h("span", "已删除");
+                        } else if (data.row.status == "1") {
+                          return h("span", "已审核");
+                        }else if (data.row.status == "2") {
+                          return h("span", "待审核");
+                        }
+                      }
+                    },
+                    {
                         title: "负责人姓名",
                         key: "chargePerson",
                         minWidth: 140
@@ -115,10 +129,10 @@
         },
         methods: {
             pageChange: function(value) {
-                this.getCategoryList(value, this.pageSize);
+                this.getShopList(value, this.pageSize);
             },
             pageSizeChange: function(value) {
-                this.getCategoryList(this.pageNum, value);
+                this.getShopList(this.pageNum, value);
             },
             getShopList(pageNo, numPerPage) {
                 var that = this;

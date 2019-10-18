@@ -53,3 +53,21 @@ export const deleteQualityShop = (params) => {
         method: 'delete'
     })
 }
+
+// 商家申请入驻
+export const selfSaveQualityShop = (params) => {
+  return axios.request({
+    url: '/car/qualityshop/selfSaveQualityShop',
+    data: params,
+    method: 'post'
+  })
+}
+
+// 审核质检商家
+export const auditeQualityShop = (params) => {
+  return axios.request({
+    url: '/car/qualityshop/auditeQualityShop',
+    data: params,
+    method: 'post'
+  })
+}
