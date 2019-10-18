@@ -48,6 +48,8 @@ import {
 import { setPriority } from "os";
 import { setTimeout } from "timers";
 import { setToken } from "@/libs/util";
+import { encrypt, decrypt } from '@/libs/aes';
+
 export default {
   name: "User",
   props: {
@@ -141,11 +143,15 @@ export default {
     changePswFun() {
       this.$refs["formPswValidate"].validate(valid => {
         if (valid) {
-          var user = this.$store.state.user.token;
+          debugger
+          this.modalChangePsw = false;
+          var user = JSON.parse(this.$store.state.user.token);
           this.formPswValidate.userName = user.name;
+          this.formPswValidate.oldPassword =  encrypt(this.formPswValidate.oldPassword);
+          this.formPswValidate.newPassword =  encrypt(this.formPswValidate.newPassword);
+          this.formPswValidate.confirmPassword =  encrypt(this.formPswValidate.confirmPassword);
           updatePassword(this.formPswValidate).then(res => {
             if (res.data.code == "200") {
-              this.modalChangePsw = false;
               this.$Message.success({
                 content: "密码修改成功！",
                 duration: 1
