@@ -18,9 +18,9 @@ class HttpRequest {
   }
   interceptors (instance, url) {
     instance.interceptors.response.use(res => {
-      if(res.data.code == "600"){
+      if(res.data.code == "600") {
         setToken("");
-        alert("登录过期！");
+        alert("请重新登录！");
         setTimeout(() => {
           router.replace({
             name: 'login'
