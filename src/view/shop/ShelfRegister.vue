@@ -885,7 +885,7 @@ export default {
   padding: 5px 20px;
 }
 
- .ivu-col-span-12 {
+.ivu-col-span-12 {
    margin-bottom: 15px !important;
 }
 
