@@ -355,13 +355,14 @@
                 <Button
                 type="primary"
                 class="btn-common-width"
-                @click="audit('1')"
+                @click="audit(1, 'shopform')"
                 :disabled="submitDisabled"
                 >通过</Button>
                 <Button
-                type="dashed"
+                type="default"
                 class="btn-common-width"
-                @click="audit('0')"
+                style="color:#fff"
+                @click="audit(0, 'shopform')"
                 :disabled="submitDisabled"
                 >不通过</Button>
               </template>
@@ -410,7 +411,7 @@ export default {
         verificationTelephone: '',
         mobileVerificationCode: '',
         status: '',
-        auditStatus: '',
+        auditeStatus: '',
         isSelfRegistration: 0
       },
       addressArray: [],
@@ -829,7 +830,7 @@ export default {
         });
     },
 
-    audit(auditStatus) {
+    audit(auditeStatus, name) {
         this.$refs[name].validate(valid => {
             if (valid) {
               this.submitDisabled = true;
@@ -847,7 +848,7 @@ export default {
               this.shop.address = address;
               this.shop.addressCode = addressCode;
               this.shop.businessTime = this.businessTimeArray.join("-");
-              this.shop.auditStatus = auditStatus;
+              this.shop.auditeStatus = auditeStatus;
               auditeQualityShop(this.shop).then(response => {
                   var rdata = response.data;
                   if (rdata.code == 200) {
