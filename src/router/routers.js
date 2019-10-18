@@ -35,6 +35,16 @@ export default [{
             import ('@/view/login/login.vue')
     },
     {
+      path: '/ShopRegister',
+      name: 'ShopRegister',
+      meta: {
+          title: '商家注册',
+          hideInMenu: true
+      },
+      component: () =>
+          import ('@/view/shop/ShelfRegister.vue')
+    },
+    {
         path: '/',
         name: '_home',
         redirect: '/home',
