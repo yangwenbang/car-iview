@@ -15,7 +15,7 @@
         </FormItem>
         <div style="text-align: center;"><a href="" target="_blank">商家注册</a></div>
         <FormItem>
-            <div style="text-align: center;">建议使用chrome浏览器(<a href="https://www.google.cn/chrome/" target="_blank">点击下载</a>)</div>
+            <div style="text-align: center;">建议使用chrome浏览器 (<a href="https://www.google.cn/chrome/" target="_blank">点击下载</a>)</div>
         </FormItem>
       </Form>
       </Col>
