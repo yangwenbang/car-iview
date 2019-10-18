@@ -21,7 +21,6 @@ router.beforeEach((to, from, next) => {
   const token = getToken()
   if (!token && to.name !== LOGIN_PAGE_NAME) {
     // 跳转商家入驻页面
-    debugger
     if(to.name == 'ShopRegister') {
       next();
     }else {

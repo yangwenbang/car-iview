@@ -20,7 +20,7 @@
         <div class="table-title">商家入驻</div>
         <hr class="line">
         <Row type="flex" justify="space-between">
-          <Col :span="24">
+          <Col :span="12">
             <FormItem label="上传头像 :" required>
               <div class="clearfix">
                 <div class="demo-upload-list" v-for="item in uploadList">
@@ -55,7 +55,7 @@
               </div>
             </FormItem>
           </Col>
-          <Col :span="24">
+          <Col :span="12">
             <FormItem label="店面照片 :" required>
               <div class="clearfix">
                 <div class="demo-upload-list" v-for="item in uploadList1">
@@ -91,7 +91,7 @@
               </div>
             </FormItem>
           </Col>
-          <Col :span="24">
+          <Col :span="12">
             <FormItem label="上传营业执照 :" required>
               <div class="clearfix">
                 <div class="demo-upload-list" v-for="item in uploadList2">
@@ -126,7 +126,7 @@
               </div>
             </FormItem>
           </Col>
-           <Col :span="24">
+           <Col :span="12">
             <FormItem label="上传合同 :" required>
               <div class="clearfix">
                 <div class="demo-upload-list" v-for="item in uploadList4">
@@ -172,7 +172,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col :span="8">
+          <Col :span="12">
             <FormItem label="法人姓名:" prop="legalPerson">
               <Input
                 type="text"
@@ -183,7 +183,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col :span="16">
+          <Col :span="12">
             <FormItem label="法人身份证照片(正反面):" required>
               <div class="clearfix">
                 <div class="demo-upload-list" v-for="item in uploadList3">
@@ -218,7 +218,7 @@
               </div>
             </FormItem>
           </Col>
-          <Col span="8">
+          <Col span="12">
              <FormItem label="支付宝账号:" prop="alipayAccount">
               <Input
                 type="text"
@@ -228,7 +228,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="16">
+          <Col span="12">
              <FormItem label="支付宝账号真实姓名:" prop="realName">
               <Input
                 type="text"
@@ -238,7 +238,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="8">
+          <Col span="12">
              <FormItem label="负责人姓名:" prop="chargePerson">
               <Input
                 type="text"
@@ -248,7 +248,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="16">
+          <Col span="12">
              <FormItem label="负责人联系电话:" prop="chargePersonTelephone">
               <Input
                 type="text"
@@ -258,7 +258,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="8">
+          <Col span="12">
              <FormItem label="备用联系人:">
               <Input
                 type="text"
@@ -268,7 +268,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="16">
+          <Col span="12">
              <FormItem label="备用联系人联系电话:">
               <Input
                 type="text"
@@ -278,7 +278,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="8">
+          <Col span="12">
              <FormItem label="质检店面名称:" prop="shopName">
               <Input
                 type="text"
@@ -287,7 +287,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="16">
+          <Col span="12">
              <FormItem label="质检店面电话:" prop="shopTelephone">
               <Input
                 type="text"
@@ -301,14 +301,12 @@
               <al-cascader v-model="addressArray" level="2" style="width: 300px;"/>
             </FormItem>
           </Col>
-          <Col span="12"></Col>
           <Col span="12">
             <FormItem label="详细地址" prop="detailAddress">
               <Input v-model="shop.detailAddress" style="width: 300px;"></Input>
             </FormItem>
           </Col>
-          <Col span="12"></Col>
-          <Col :sm="8" :xs="24">
+          <Col span="12">
             <FormItem label="营业时间:" required>
               <TimePicker
                 v-model="businessTimeArray"
@@ -320,14 +318,12 @@
               ></TimePicker >
             </FormItem>
           </Col>
-          <Col span="12"></Col>
-          <Col :sm="8" :xs="24">
+          <Col span="12">
             <FormItem label="合同到期日期:" required>
               <DatePicker v-model="shop.expiresTime" type="date" format="yyyy-MM-dd"  @on-change="shop.expiresTime=$event" placeholder="请选择合同到期日期" style="width: 200px"></DatePicker>
             </FormItem>
           </Col>
-          <Col span="12"></Col>
-          <Col :sm="8" :xs="24">
+          <Col span="12">
             <FormItem label="输入手机号码:" prop="verificationTelephone" required>
               <Input v-model="shop.verificationTelephone" placeholder="请输入手机号码"></Input>
               <Input class="kaptcha" v-model="shop.mobileVerificationCode" placeholder="请输入验证码"></Input>
@@ -342,17 +338,7 @@
           </Col>
         </Row>
         <div class="text-center margin-top-10">
-            <template v-if="shop.id">
-                <Button
-                type="primary"
-                class="btn-common-width"
-                @click="save('shopform')"
-                :disabled="submitDisabled"
-                >修改</Button>
-            </template>
-            <template v-else>
-                <Button type="primary" class="btn-common-width" @click="save('shopform')" :disabled="submitDisabled">新增</Button>
-            </template>
+              <Button type="primary" class="btn-common-width" @click="save('shopform')" :disabled="submitDisabled">新增</Button>
         </div>
         <Modal title="图片预览" v-model="visible">
           <img :src="imgUrl" v-if="visible" style="width: 100%">
@@ -897,6 +883,10 @@ export default {
 
 .input-price /deep/ input {
   padding: 5px 20px;
+}
+
+ .ivu-col-span-12 {
+   margin-bottom: 15px !important;
 }
 
 .table-title {
