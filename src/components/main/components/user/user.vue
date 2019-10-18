@@ -143,7 +143,6 @@ export default {
     changePswFun() {
       this.$refs["formPswValidate"].validate(valid => {
         if (valid) {
-          debugger
           this.modalChangePsw = false;
           var user = JSON.parse(this.$store.state.user.token);
           this.formPswValidate.userName = user.name;
