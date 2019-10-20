@@ -978,4 +978,8 @@ export default {
       background-color: #fbc647;
       border-color: #fbc647;
   }
+
+  .ivu-col {
+   margin-bottom: 15px !important;
+}
 </style>
