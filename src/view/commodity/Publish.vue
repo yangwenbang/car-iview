@@ -38,12 +38,14 @@
           <Col :span="24">
             <FormItem label="上传图片 :">
               <div class="clearfix">
-                <div class="demo-upload-list" v-for="item in uploadList">
+                <div class="demo-upload-list" v-for="(item,index) in uploadList">
                   <template v-if="item.status === 'finished'">
                     <img :src="item.url">
                     <div class="demo-upload-list-cover">
+                      <Icon type="md-arrow-back"  @click.native="moveLeft(index)"></Icon>
                       <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
                       <Icon type="ios-trash-outline" @click.native="handleRemove(item)"></Icon>
+                      <Icon type="md-arrow-forward" @click.native="moveRight(index)"></Icon>
                     </div>
                   </template>
                   <template v-else>
@@ -360,17 +362,6 @@ export default {
       }
       var that = this;
       that.uploadList.push(file);
-      if (that.uploadList != null && that.uploadList.length > 0) {
-        var urls = "";
-        for (var i = 0; i < that.uploadList.length; i++) {
-          if (i != that.uploadList.length - 1) {
-            urls += that.uploadList[i].url + ",";
-          } else {
-            urls += that.uploadList[i].url;
-          }
-        }
-        that.commodity.commodityPicture = urls;
-      }
     },
     handleSuccess1(res, file) {
       if (res.code == "200") {
@@ -676,7 +667,18 @@ export default {
               }
             }
             this.commodity.commidityAttributeDetail.push(attributeDetail);
-          }
+          };
+          if (this.uploadList != null && this.uploadList.length > 0) {
+            let urls = "";
+            for (var i = 0; i < this.uploadList.length; i++) {
+                if (i != this.uploadList.length - 1) {
+                    urls += this.uploadList[i].url + ",";
+                } else {
+                    urls += this.uploadList[i].url;
+                }
+            }
+            this.commodity.commodityPicture = urls;
+          };
           auditCommodity(this.commodity).then(response => {
             var rdata = response.data;
             if (rdata.code == 200) {
@@ -710,6 +712,22 @@ export default {
           this.brandList = rdata.data;
         }
       });
+    },
+
+    moveLeft(index) {
+        if(index != 0){
+            this.uploadList[index] = this.uploadList.splice(index - 1, 1, this.uploadList[index])[0];
+        } else{
+            this.uploadList.push(this.uploadList.shift());
+        }
+    },
+
+    moveRight(index) {
+        if(index != this.uploadList.length - 1){
+            this.uploadList[index] = this.uploadList.splice(index + 1, 1, this.uploadList[index])[0];
+        } else{
+            this.uploadList.unshift(this.uploadList.splice(index,1)[0]);
+        }
     }
   }
 };
