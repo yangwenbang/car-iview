@@ -35,14 +35,14 @@ export default [{
             import ('@/view/login/login.vue')
     },
     {
-      path: '/ShopRegister',
-      name: 'ShopRegister',
-      meta: {
-          title: '商家注册',
-          hideInMenu: true
-      },
-      component: () =>
-          import ('@/view/shop/ShelfRegister.vue')
+        path: '/ShopRegister',
+        name: 'ShopRegister',
+        meta: {
+            title: '商家注册',
+            hideInMenu: true
+        },
+        component: () =>
+            import ('@/view/shop/ShelfRegister.vue')
     },
     {
         path: '/',
@@ -80,7 +80,8 @@ export default [{
                 name: 'register',
                 meta: {
                     title: '商家入驻',
-                    pageTitle: '商家入驻'
+                    pageTitle: '商家入驻',
+                    hideInMenu: hideMenu
                 },
                 component: () =>
                     import ('@/view/shop/Register.vue')
@@ -90,7 +91,8 @@ export default [{
                 name: 'shopList',
                 meta: {
                     title: '商家列表',
-                    pageTitle: '商家列表'
+                    pageTitle: '商家列表',
+                    hideInMenu: hideMenu
                 },
                 component: () =>
                     import ('@/view/shop/ShopList.vue')
@@ -202,45 +204,48 @@ export default [{
         },
         component: Main,
         children: [{
-          path: 'ShopAccount',
-          name: 'ShopAccount',
-          meta: {
-              title: '商家账号',
-              pageTitle: '商家账号'
-          },
-          component: () =>
-              import ('@/view/account/ShopAccount.vue')
-        },
-        {
-          path: 'UserList',
-          name: 'UserList',
-          meta: {
-              title: '用户列表',
-              pageTitle: '用户列表'
-          },
-          component: () =>
-              import ('@/view/account/UserList.vue')
-        }]
+                path: 'ShopAccount',
+                name: 'ShopAccount',
+                meta: {
+                    title: '商家账号',
+                    pageTitle: '商家账号',
+                    hideInMenu: hideMenu
+                },
+                component: () =>
+                    import ('@/view/account/ShopAccount.vue')
+            },
+            {
+                path: 'UserList',
+                name: 'UserList',
+                meta: {
+                    title: '用户列表',
+                    pageTitle: '用户列表',
+                    hideInMenu: hideMenu
+                },
+                component: () =>
+                    import ('@/view/account/UserList.vue')
+            }
+        ]
     },
     {
-      path: '/post',
-      name: 'post',
-      meta: {
-          icon: 'ios-create-outline',
-          title: '发帖管理',
-          hideInMenu: hideMenu
-      },
-      component: Main,
-      children: [{
-        path: 'PostList',
-        name: 'PostList',
+        path: '/post',
+        name: 'post',
         meta: {
-            title: '发帖列表',
-            pageTitle: '发帖列表'
+            icon: 'ios-create-outline',
+            title: '发帖管理',
+            hideInMenu: hideMenu
         },
-        component: () =>
-            import ('@/view/post/PostList.vue')
-      }]
+        component: Main,
+        children: [{
+            path: 'PostList',
+            name: 'PostList',
+            meta: {
+                title: '发帖列表',
+                pageTitle: '发帖列表'
+            },
+            component: () =>
+                import ('@/view/post/PostList.vue')
+        }]
     },
     {
         path: '/error_401',

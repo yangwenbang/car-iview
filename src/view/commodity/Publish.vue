@@ -339,17 +339,6 @@ export default {
     },
     handleRemove(file) {
       this.uploadList.splice(this.uploadList.indexOf(file), 1);
-      if (this.uploadList != null && this.uploadList.length > 0) {
-        var urls = "";
-        for (var i = 0; i < this.uploadList.length; i++) {
-          if (i != this.uploadList.length - 1) {
-            urls += this.uploadList[i].url + ",";
-          } else {
-            urls += this.uploadList[i].url;
-          }
-        }
-        this.commodity.commodityPicture = urls;
-      }
     },
     handleRemove1(file) {
       this.uploadList1.splice(this.uploadList1.indexOf(file), 1);
@@ -360,8 +349,11 @@ export default {
       } else {
         this.$Message.error(res.msg);
       }
-      var that = this;
-      that.uploadList.push(file);
+      if(this.uploadList.length >= 8) {
+          this.$Message.error("发布商品图片最多上传八张!");
+          return;
+      }
+      this.uploadList.push(file);
     },
     handleSuccess1(res, file) {
       if (res.code == "200") {
@@ -369,8 +361,7 @@ export default {
       } else {
         this.$Message.error(res.msg);
       }
-      var that = this;
-      that.uploadList1.push(file);
+      this.uploadList1.push(file);
     },
     handleFormatError(file) {
       this.$Notice.warning({
@@ -388,10 +379,10 @@ export default {
       });
     },
     handleBeforeUpload() {
-      const check = this.uploadList.length < 5;
+      const check = this.uploadList.length < 8;
       if (!check) {
         this.$Notice.warning({
-          title: "最多上次5张图片."
+          title: "最多上次8张图片."
         });
       }
       return check;
