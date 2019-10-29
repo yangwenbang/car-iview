@@ -127,7 +127,7 @@
             </FormItem>
           </Col>
            <Col :span="24">
-            <FormItem label="上传合同 :" required>
+            <FormItem label="上传合同 :">
               <div class="clearfix">
                 <div class="demo-upload-list" v-for="item in uploadList4">
                   <template v-if="item.status === 'finished'">
@@ -322,24 +322,26 @@
           </Col>
           <Col span="12"></Col>
           <Col :sm="8" :xs="24">
-            <FormItem label="合同到期日期:" required>
+            <FormItem label="合同到期日期:">
               <DatePicker v-model="shop.expiresTime" type="date" format="yyyy-MM-dd"  @on-change="shop.expiresTime=$event" placeholder="请选择合同到期日期" style="width: 200px"></DatePicker>
             </FormItem>
           </Col>
           <Col span="12"></Col>
-          <Col :sm="8" :xs="24">
-            <FormItem label="输入手机号码:" prop="verificationTelephone" required>
-              <Input v-model="shop.verificationTelephone" placeholder="请输入手机号码"></Input>
-              <Input class="kaptcha" v-model="shop.mobileVerificationCode" placeholder="请输入验证码"></Input>
-              <span class="star-red">*</span>
-              <Button
-              type="primary"
-              class="input-button"
-              @click="getkaptcha"
-              :disabled="buttonDisabled"
-              >{{buttonMsg}}</Button>
-            </FormItem>
-          </Col>
+          <template v-if="shop.status == '' || shop.status != 2">
+            <Col :sm="8" :xs="24">
+              <FormItem label="输入手机号码:" prop="verificationTelephone" required>
+                <Input v-model="shop.verificationTelephone" placeholder="请输入手机号码"></Input>
+                <Input class="kaptcha" v-model="shop.mobileVerificationCode" placeholder="请输入验证码"></Input>
+                <span class="star-red">*</span>
+                <Button
+                type="primary"
+                class="input-button"
+                @click="getkaptcha"
+                :disabled="buttonDisabled"
+                >{{buttonMsg}}</Button>
+              </FormItem>
+            </Col>
+          </template>
         </Row>
         <div class="text-center margin-top-10">
             <template v-if="shop.id">

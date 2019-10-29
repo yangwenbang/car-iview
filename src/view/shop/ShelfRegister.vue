@@ -126,41 +126,6 @@
               </div>
             </FormItem>
           </Col>
-           <!-- <Col :span="12">
-            <FormItem label="上传合同 :" required>
-              <div class="clearfix">
-                <div class="demo-upload-list" v-for="item in uploadList4">
-                  <template v-if="item.status === 'finished'">
-                    <img :src="item.url">
-                    <div class="demo-upload-list-cover">
-                      <Icon type="ios-eye-outline" @click.native="handleView(item)"></Icon>
-                      <Icon type="ios-trash-outline" @click.native="handleRemove4(item)"></Icon>
-                    </div>
-                  </template>
-                  <template v-else>
-                    <Progress v-if="item.showProgress" :percent="item.percentage" hide-info></Progress>
-                  </template>
-                </div>
-                <Upload
-                  ref="upload4"
-                  :show-upload-list="false"
-                  :on-success="handleSuccess4"
-                  :format="['jpg','jpeg','png']"
-                  :max-size="8*1024"
-                  :on-format-error="handleFormatError"
-                  :on-exceeded-size="handleMaxSize"
-                  :before-upload="handleBeforeUpload4"
-                  type="drag"
-                  action="/car/qualityshop/uploadPicture"
-                  style="display: inline-block;width:100px;"
-                >
-                  <div style="width: 100px;height:100px;line-height: 100px;">
-                    <Icon type="ios-camera" size="20"></Icon>
-                  </div>
-                </Upload>
-              </div>
-            </FormItem>
-          </Col> -->
           <Col :span="24">
             <FormItem label="公司名称:" prop="companyName">
               <Input
@@ -318,11 +283,6 @@
               ></TimePicker >
             </FormItem>
           </Col>
-          <!-- <Col span="12">
-            <FormItem label="合同到期日期:" required>
-              <DatePicker v-model="shop.expiresTime" type="date" format="yyyy-MM-dd"  @on-change="shop.expiresTime=$event" placeholder="请选择合同到期日期" style="width: 200px"></DatePicker>
-            </FormItem>
-          </Col> -->
           <Col span="12">
             <FormItem label="输入手机号码:" prop="verificationTelephone" required>
               <Input v-model="shop.verificationTelephone" placeholder="请输入手机号码"></Input>
@@ -338,7 +298,7 @@
           </Col>
         </Row>
         <div class="text-center margin-top-10">
-              <Button type="primary" class="btn-common-width" @click="save('shopform')" :disabled="submitDisabled">注册</Button>
+            <Button type="primary" class="btn-common-width" @click="save('shopform')" :disabled="submitDisabled">注册</Button>
         </div>
         <Modal title="图片预览" v-model="visible">
           <img :src="imgUrl" v-if="visible" style="width: 100%">
