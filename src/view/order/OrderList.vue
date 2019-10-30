@@ -230,7 +230,7 @@ export default {
         {
           title: "订单状态",
           key: "payStatus",
-          minWidth: 80,
+          minWidth: 100,
           render: (h, data) => {
             let statusText = "", statusClass="";
             switch(data.row.payStatus) {

@@ -47,15 +47,15 @@ module.exports = {
     // 这里写你调用接口的基础路径，来解决跨域，如果设置了代理，那你本地开发环境的axios的baseUrl要写为 '' ，即空字符串
     devServer: {
         disableHostCheck: true, // 不检查hostname
-        host: 'dev.cheliang.com',
+        host: 'manager.cheliangapp.com',
         port: 8081,
         proxy: {
             '/': {
                 ws: false,
-                target: 'http://cheliang.com:8080/',
+                target: 'http://manager.cheliangapp.com:8080/',
                 changeOrigin: true, // 开启代理：在本地会创建一个虚拟服务端，然后发送请求的数据，并同时接收请求的数据，这样服务端和服务端进行数据的交互就不会有跨域问题
                 pathRewrite: {
-                  '^/': '/'
+                    '^/': '/'
                 }
             }
         }

@@ -19,6 +19,10 @@ export const setCookie = (key, value) => {
     Cookies.set(key, value, { expires: config.cookieExpires || 1 })
 }
 
+export const delCookie = (key) => {
+    Cookies.set(key, "", -1)
+}
+
 export const getCookie = (key) => {
     const val = Cookies.get(key)
     if (val) return val
@@ -432,7 +436,7 @@ export const formatSeconds = (value) => {
             seperator2 + Second;
         return dateTime;
     } else {
-      return ""
+        return ""
     }
 }
 
@@ -440,32 +444,32 @@ export const formatSeconds = (value) => {
  * 毫秒数转化为年月日时分格式
  */
 export const formatMinutes = (value) => {
-  if (value && (value != "-") && (value != "0")) {
-      var date = new Date(value);
-      var seperator1 = "-";
-      var seperator2 = ":";
-      var month = date.getMonth() + 1;
-      var strDate = date.getDate();
-      var Hour = date.getHours();
-      var Minute = date.getMinutes();
-      if (month >= 1 && month <= 9) {
-          month = "0" + month;
-      }
-      if (strDate >= 0 && strDate <= 9) {
-          strDate = "0" + strDate;
-      }
-      if (Hour >= 0 && Hour <= 9) {
-          Hour = "0" + Hour;
-      }
-      if (Minute >= 0 && Minute <= 9) {
-          Minute = "0" + Minute;
-      }
-      var dateTime = date.getFullYear() + seperator1 + month + seperator1 + strDate +
-          " " + Hour + seperator2 + Minute;
-      return dateTime;
-  } else {
-    return ""
-  }
+    if (value && (value != "-") && (value != "0")) {
+        var date = new Date(value);
+        var seperator1 = "-";
+        var seperator2 = ":";
+        var month = date.getMonth() + 1;
+        var strDate = date.getDate();
+        var Hour = date.getHours();
+        var Minute = date.getMinutes();
+        if (month >= 1 && month <= 9) {
+            month = "0" + month;
+        }
+        if (strDate >= 0 && strDate <= 9) {
+            strDate = "0" + strDate;
+        }
+        if (Hour >= 0 && Hour <= 9) {
+            Hour = "0" + Hour;
+        }
+        if (Minute >= 0 && Minute <= 9) {
+            Minute = "0" + Minute;
+        }
+        var dateTime = date.getFullYear() + seperator1 + month + seperator1 + strDate +
+            " " + Hour + seperator2 + Minute;
+        return dateTime;
+    } else {
+        return ""
+    }
 }
 
 /**
