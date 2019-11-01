@@ -168,11 +168,11 @@
                 v-model="shop.companyName"
                 :maxlength="50"
                 placeholder="请填写公司名称"
-                style="width: 500px"
+                style="max-width: 500px"
               ></Input>
             </FormItem>
           </Col>
-          <Col :span="8">
+          <Col :sm="8" :xs="24">
             <FormItem label="法人姓名:" prop="legalPerson">
               <Input
                 type="text"
@@ -183,7 +183,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col :span="16">
+          <Col :sm="16" :xs="24">
             <FormItem label="法人身份证照片(正反面):" required>
               <div class="clearfix">
                 <div class="demo-upload-list" v-for="item in uploadList3">
@@ -218,7 +218,7 @@
               </div>
             </FormItem>
           </Col>
-          <Col span="8">
+          <Col :sm="8" :xs="24">
              <FormItem label="支付宝账号:" prop="alipayAccount">
               <Input
                 type="text"
@@ -228,7 +228,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="16">
+          <Col :sm="16" :xs="24">
              <FormItem label="支付宝账号真实姓名:" prop="realName">
               <Input
                 type="text"
@@ -238,7 +238,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="8">
+          <Col :sm="8" :xs="24">
              <FormItem label="负责人姓名:" prop="chargePerson">
               <Input
                 type="text"
@@ -248,7 +248,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="16">
+          <Col :sm="16" :xs="24">
              <FormItem label="负责人联系电话:" prop="chargePersonTelephone">
               <Input
                 type="text"
@@ -258,7 +258,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="8">
+         <Col :sm="8" :xs="24">
              <FormItem label="备用联系人:">
               <Input
                 type="text"
@@ -268,7 +268,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="16">
+          <Col :sm="16" :xs="24">
              <FormItem label="备用联系人联系电话:">
               <Input
                 type="text"
@@ -278,21 +278,21 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="8">
+          <Col :sm="8" :xs="24">
              <FormItem label="质检店面名称:" prop="shopName">
               <Input
                 type="text"
                 v-model="shop.shopName"
-                style="width: 200px"
+                style="max-width: 200px"
               ></Input>
             </FormItem>
           </Col>
-          <Col span="16">
+          <Col :sm="16" :xs="24">
              <FormItem label="质检店面电话:" prop="shopTelephone">
               <Input
                 type="text"
                 v-model="shop.shopTelephone"
-                style="width: 200px"
+                style="max-width: 200px"
               ></Input>
             </FormItem>
           </Col>
@@ -304,7 +304,7 @@
           <Col span="12"></Col>
           <Col span="12">
             <FormItem label="详细地址" prop="detailAddress">
-              <Input v-model="shop.detailAddress" style="width: 300px;"></Input>
+              <Input v-model="shop.detailAddress" style="max-width: 300px;"></Input>
             </FormItem>
           </Col>
           <Col span="12"></Col>
@@ -330,16 +330,18 @@
           <template v-if="shop.status == '' || shop.status != 2">
             <Col :sm="8" :xs="24">
               <FormItem label="输入手机号码:" prop="verificationTelephone" required>
-                <Input v-model="shop.verificationTelephone" placeholder="请输入手机号码"></Input>
-                <Input class="kaptcha" v-model="shop.mobileVerificationCode" placeholder="请输入验证码"></Input>
+                <Input v-model="shop.verificationTelephone" placeholder="请输入手机号码" style="max-width: 150px;"></Input>
+                <Input class="kaptcha" v-model="shop.mobileVerificationCode" placeholder="请输入验证码" style="max-width: 100px;"></Input>
                 <span class="star-red">*</span>
+              </FormItem>
+            </Col>
+            <Col :sm="16" :xs="24">
                 <Button
                 type="primary"
                 class="input-button"
                 @click="getkaptcha"
                 :disabled="buttonDisabled"
                 >{{buttonMsg}}</Button>
-              </FormItem>
             </Col>
           </template>
         </Row>
@@ -957,7 +959,6 @@ export default {
   color: aliceblue;
   border-color: #fbc647;
   background-color: #fbc647;
-  margin-top: 10px;
 }
 
 .kaptcha {

@@ -20,7 +20,7 @@
         <div class="table-title">商家入驻</div>
         <hr class="line">
         <Row type="flex" justify="space-between">
-          <Col :span="12">
+          <Col :sm="12" :xs="24">
             <FormItem label="上传头像 :" required>
               <div class="clearfix">
                 <div class="demo-upload-list" v-for="item in uploadList">
@@ -55,7 +55,7 @@
               </div>
             </FormItem>
           </Col>
-          <Col :span="12">
+          <Col :sm="12" :xs="24">
             <FormItem label="店面照片 :" required>
               <div class="clearfix">
                 <div class="demo-upload-list" v-for="item in uploadList1">
@@ -91,7 +91,7 @@
               </div>
             </FormItem>
           </Col>
-          <Col :span="12">
+          <Col :sm="12" :xs="24">
             <FormItem label="上传营业执照 :" required>
               <div class="clearfix">
                 <div class="demo-upload-list" v-for="item in uploadList2">
@@ -133,22 +133,22 @@
                 v-model="shop.companyName"
                 :maxlength="50"
                 placeholder="请填写公司名称"
-                style="width: 500px"
+                style="max-width: 450px"
               ></Input>
             </FormItem>
           </Col>
-          <Col :span="12">
+          <Col :sm="12" :xs="24">
             <FormItem label="法人姓名:" prop="legalPerson">
               <Input
                 type="text"
                 v-model="shop.legalPerson"
                 :maxlength="10"
-                style="width: 200px"
+                style="max-width: 200px"
                 placeholder="请填写法人姓名"
               ></Input>
             </FormItem>
           </Col>
-          <Col :span="12">
+          <Col :sm="12" :xs="24">
             <FormItem label="法人身份证照片(正反面):" required>
               <div class="clearfix">
                 <div class="demo-upload-list" v-for="item in uploadList3">
@@ -183,7 +183,7 @@
               </div>
             </FormItem>
           </Col>
-          <Col span="12">
+          <Col :sm="12" :xs="24">
              <FormItem label="支付宝账号:" prop="alipayAccount">
               <Input
                 type="text"
@@ -193,7 +193,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="12">
+          <Col :sm="12" :xs="24">
              <FormItem label="支付宝账号真实姓名:" prop="realName">
               <Input
                 type="text"
@@ -203,7 +203,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="12">
+          <Col :sm="12" :xs="24">
              <FormItem label="负责人姓名:" prop="chargePerson">
               <Input
                 type="text"
@@ -213,7 +213,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="12">
+          <Col :sm="12" :xs="24">
              <FormItem label="负责人联系电话:" prop="chargePersonTelephone">
               <Input
                 type="text"
@@ -223,7 +223,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="12">
+          <Col :sm="12" :xs="24">
              <FormItem label="备用联系人:">
               <Input
                 type="text"
@@ -233,7 +233,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="12">
+          <Col :sm="12" :xs="24">
              <FormItem label="备用联系人联系电话:">
               <Input
                 type="text"
@@ -243,7 +243,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="12">
+          <Col :sm="12" :xs="24">
              <FormItem label="质检店面名称:" prop="shopName">
               <Input
                 type="text"
@@ -252,7 +252,7 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="12">
+          <Col :sm="12" :xs="24">
              <FormItem label="质检店面电话:" prop="shopTelephone">
               <Input
                 type="text"
@@ -261,17 +261,17 @@
               ></Input>
             </FormItem>
           </Col>
-          <Col span="12">
+          <Col :sm="12" :xs="24">
              <FormItem label="公司地址:" required>
               <al-cascader v-model="addressArray" level="2" style="width: 300px;"/>
             </FormItem>
           </Col>
-          <Col span="12">
+          <Col :sm="12" :xs="24">
             <FormItem label="详细地址" prop="detailAddress">
               <Input v-model="shop.detailAddress" style="width: 300px;"></Input>
             </FormItem>
           </Col>
-          <Col span="24">
+          <Col :sm="24" :xs="24">
             <FormItem label="营业时间:" required>
               <TimePicker
                 v-model="businessTimeArray"
@@ -283,18 +283,20 @@
               ></TimePicker >
             </FormItem>
           </Col>
-          <Col span="12">
+          <Col :sm="7" :xs="24">
             <FormItem label="输入手机号码:" prop="verificationTelephone" required>
-              <Input v-model="shop.verificationTelephone" placeholder="请输入手机号码"></Input>
-              <Input class="kaptcha" v-model="shop.mobileVerificationCode" placeholder="请输入验证码"></Input>
+              <Input v-model="shop.verificationTelephone" placeholder="请输入手机号码" style="max-width: 150px;"></Input>
+              <Input class="kaptcha" v-model="shop.mobileVerificationCode" placeholder="请输入验证码" style="max-width: 100px;"></Input>
               <span class="star-red">*</span>
-              <Button
+            </FormItem>
+          </Col>
+          <Col :sm="17" :xs="24">
+             <Button
               type="primary"
               class="input-button"
               @click="getkaptcha"
               :disabled="buttonDisabled"
               >{{buttonMsg}}</Button>
-            </FormItem>
           </Col>
         </Row>
         <div class="text-center margin-top-10">
@@ -769,7 +771,6 @@ export default {
   color: aliceblue;
   border-color: #fbc647;
   background-color: #fbc647;
-  margin-top: 10px;
 }
 
 .kaptcha {

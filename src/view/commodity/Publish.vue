@@ -79,7 +79,7 @@
               <Input
                 type="textarea"
                 :rows="4"
-                style="width: 500px"
+                style="max-width: 500px;"
                 placeholder="请输入商品描述"
                 v-model="commodity.description"
                 :maxlength="500"
@@ -211,7 +211,7 @@
               <Input
                 type="textarea"
                 :rows="4"
-                style="width: 500px"
+                style="max-width: 500px"
                 placeholder="请输入商家补充描述"
                 v-model="commodity.additionalDescription"
                 :maxlength="500"

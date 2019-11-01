@@ -1,6 +1,6 @@
 <template>
     <Layout style="height: 100%" class="main">
-        <div class="menu-collapsed-mb" :hidden="collapsed"></div>
+        <div class="menu-collapsed-mb" :hidden="collapsed" @click="collapse"></div>
         <Sider hide-trigger collapsible :width="220" :collapsed-width="60" v-model="collapsed" class="left-sider" :style="{overflow: 'hidden'}">
             <side-menu accordion ref="sideMenu" :active-name="$route.meta.activeName?$route.meta.activeName:$route.name" :collapsed="collapsed" @on-select="turnToPage" :menu-list="menuList">
                 <!-- 需要放在菜单上面的内容，如Logo，写在side-menu标签内部，如下 -->
@@ -153,6 +153,9 @@ export default {
         },
         handleClick(item) {
             this.turnToPage(item);
+        },
+        collapse(){
+          this.collapsed = true;
         }
     },
     watch: {
