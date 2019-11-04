@@ -298,6 +298,9 @@
               :disabled="buttonDisabled"
               >{{buttonMsg}}</Button>
           </Col>
+          <Col :sm="24" :xs="24" style="margin-top: 10px; text-align: center;">
+            <Checkbox v-model="check">点击注册表示已阅读并同意<a href="http://manager.cheliangapp.com/salerProtocol.htm" target="_blank" style="color: #fbc647;">商家协议</a></Checkbox>
+          </Col>
         </Row>
         <div class="text-center margin-top-10">
             <Button type="primary" class="btn-common-width" @click="save('shopform')" :disabled="submitDisabled">注册</Button>
@@ -318,6 +321,7 @@ export default {
   data() {
     return {
       submitDisabled: false,
+      check: true,
       shop: {
         id: '',
         headPortraitUrls: '',
@@ -637,35 +641,40 @@ export default {
     },
 
     save(name) {
-        this.$refs[name].validate(valid => {
-            if (valid) {
-                this.submitDisabled = true;
-                let address = '';
-                let addressCode = '';
-                for(let i = 0; i != this.addressArray.length; i ++) {
-                    if(i != this.addressArray.length - 1) {
-                        address += this.addressArray[i].name + ",";
-                        addressCode += this.addressArray[i].code + ","
-                    }else {
-                        address += this.addressArray[i].name;
-                        addressCode += this.addressArray[i].code;
-                    }
+      if(this.check) {
+          this.$refs[name].validate(valid => {
+          if (valid) {
+            this.submitDisabled = true;
+            let address = '';
+            let addressCode = '';
+            for(let i = 0; i != this.addressArray.length; i ++) {
+                if(i != this.addressArray.length - 1) {
+                    address += this.addressArray[i].name + ",";
+                    addressCode += this.addressArray[i].code + ","
+                }else {
+                    address += this.addressArray[i].name;
+                    addressCode += this.addressArray[i].code;
                 }
-                this.shop.address = address;
-                this.shop.addressCode = addressCode;
-                this.shop.businessTime = this.businessTimeArray.join("-");
-                selfSaveQualityShop(this.shop).then(response => {
-                    var rdata = response.data;
-                    if (rdata.code == 200) {
-                        this.$Message.success("申请成功");
-                        window.location.href="http://manager.cheliangapp.com";
-                    } else {
-                        this.$Message.error("申请失败: " + rdata.msg + ",请重试");
-                        this.submitDisabled = false;
-                    }
-                })
             }
+            this.shop.address = address;
+            this.shop.addressCode = addressCode;
+            this.shop.businessTime = this.businessTimeArray.join("-");
+            selfSaveQualityShop(this.shop).then(response => {
+                var rdata = response.data;
+                if (rdata.code == 200) {
+                    this.$Message.success("申请成功");
+                    window.location.href="http://manager.cheliangapp.com";
+                } else {
+                    this.$Message.error("申请失败: " + rdata.msg + ",请重试");
+                    this.submitDisabled = false;
+                }
+            })
+          }
         });
+      }else {
+        this.$Message.warning("注册车两商家须同意商家协议!");
+        return;
+      }
     }
   }
 };
@@ -793,4 +802,9 @@ export default {
       background-color: #fbc647;
       border-color: #fbc647;
   }
+
+  .search-form /deep/ .ivu-checkbox-checked .ivu-checkbox-inner {
+    border-color: #fbc647 !important;
+    background-color: #fbc647 !important;
+}
 </style>
