@@ -46,8 +46,11 @@
               <Option :value="2">苹果企业版</Option>
             </Select>
           </FormItem>
-          <FormItem label="设备版本:">
+          <FormItem label="版本号:">
             <Input v-model="changeForm.equipmentVersion"></Input>
+          </FormItem>
+           <FormItem label="版本号代码:">
+            <Input v-model="changeForm.versionCode"></Input>
           </FormItem>
            <FormItem label="设备地址:">
             <Input v-model="changeForm.equipmentPath"></Input>
@@ -95,6 +98,7 @@ export default {
         id: "",
         equipmentType : "",
         equipmentVersion : "",
+        versionCode: "",
         equipmentPath : "",
         isForceUpdate : "",
         updateContent : ""
@@ -116,8 +120,13 @@ export default {
           }
         },
         {
-          title: "设备版本",
+          title: "版本号",
           key: "equipmentVersion",
+          minWidth: 50
+        },
+         {
+          title: "版本号代码",
+          key: "versionCode",
           minWidth: 50
         },
         {
@@ -164,6 +173,7 @@ export default {
                     this.changeForm.id = data.row.id;
                     this.changeForm.equipmentType = data.row.equipmentType;
                     this.changeForm.equipmentVersion = data.row.equipmentVersion;
+                    this.changeForm.versionCode = data.row.versionCode;
                     this.changeForm.equipmentPath = data.row.equipmentPath;
                     this.changeForm.isForceUpdate = data.row.isForceUpdate;
                     this.changeForm.updateContent = data.row.updateContent;
@@ -201,6 +211,7 @@ export default {
       this.changeForm.id = "";
       this.changeForm.equipmentType = "";
       this.changeForm.equipmentVersion = "";
+      this.changeForm.versionCode = "";
       this.changeForm.equipmentPath = "";
       this.changeForm.isForceUpdate = 0;
       this.changeForm.updateContent = "";
