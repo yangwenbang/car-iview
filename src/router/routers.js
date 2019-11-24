@@ -248,6 +248,26 @@ export default [{
         }]
     },
     {
+        path: '/equipment',
+        name: 'equipment',
+        meta: {
+            icon: 'md-tablet-portrait',
+            title: '设备管理',
+            hideInMenu: hideMenu
+        },
+        component: Main,
+        children: [{
+            path: 'EquipmentList',
+            name: 'EquipmentList',
+            meta: {
+                title: '设备列表',
+                pageTitle: '设备列表'
+            },
+            component: () =>
+                import ('@/view/equipment/EquipmentList.vue')
+        }]
+    },
+    {
         path: '/error_401',
         name: 'error_401',
         component: Main,
