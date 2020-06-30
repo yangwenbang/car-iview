@@ -45,6 +45,16 @@ export default [{
             import ('@/view/shop/ShelfRegister.vue')
     },
     {
+        path: '/PublishMobile',
+        name: 'PublishMobile',
+        meta: {
+            title: '商品详情',
+            pageTitle: '商品详情'
+        },
+        component: () =>
+            import ('@/view/commodity/PublishMobile.vue')
+    },
+    {
         path: '/',
         name: '_home',
         redirect: '/home',
