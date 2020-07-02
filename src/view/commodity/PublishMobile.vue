@@ -224,16 +224,16 @@
             <Button
               type="primary"
               class="btn-common-width"
-              @click="save('commodityform', 1)"
+              @click="save(1)"
               :disabled="submitDisabled"
             >上架</Button>
-            <Button type="dashed" class="btn-common-width" @click="save('commodityform', 2)">下架</Button>
+            <Button type="dashed" class="btn-common-width" @click="save(2)">下架</Button>
           </template>
           <template v-else>
             <Button
               type="primary"
               class="btn-common-width"
-              @click="save('commodityform', 1)"
+              onclick="window.jscallapp(1)"
               :disabled="submitDisabled"
             >完成</Button>
           </template>
@@ -328,9 +328,11 @@ export default {
     };
   },
   created() {
+    window.jscallapp = this.save;
     this.getCategoryList();
   },
-  mounted() {},
+  mounted() {
+  },
   methods: {
     handleView(item) {
       this.imgName = item.name;
@@ -547,7 +549,7 @@ export default {
       });
     },
 
-    save(name, status) {
+    save(status) {
         this.commodity.auditStatus = status;
         this.submitDisabled = true;
         this.categoryAttributeList.forEach(item => {
