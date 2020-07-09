@@ -26,7 +26,7 @@
                 type="text"
                 v-model="commodity.commodityCode"
                 :maxlength="30"
-                @on-enter="queryCommodityCode"
+                @on-enter="queryCommodity"
               ></Input>
             </FormItem>
           </Col> -->
@@ -220,23 +220,12 @@
           </Col> -->
         </Row>
         <div class="text-center margin-top-10">
-          <template v-if="commodity.commodityCode">
             <Button
               type="primary"
               class="btn-common-width"
               @click="save(1)"
               :disabled="submitDisabled"
-            >上架</Button>
-            <Button type="dashed" class="btn-common-width" @click="save(2)">下架</Button>
-          </template>
-          <template v-else>
-            <Button
-              type="primary"
-              class="btn-common-width"
-              onclick="window.jscallapp(1)"
-              :disabled="submitDisabled"
             >完成</Button>
-          </template>
         </div>
         <Modal title="图片预览" v-model="visible">
           <img :src="imgUrl" v-if="visible" style="width: 100%">
@@ -328,7 +317,6 @@ export default {
     };
   },
   created() {
-    window.jscallapp = this.save;
     this.getCategoryList();
   },
   mounted() {
@@ -412,13 +400,15 @@ export default {
         if (rdata.code == 200) {
           that.categoryList = rdata.data.recordList;
           let commodityCode = that.$route.query.commodityCode;
-          let commodityType = that.$route.query.commodityType;
+          let commodityType = that.$route.query.commodityType ? that.$route.query.commodityType : 0;
           let commodityCategoryId = that.$route.query.commodityCategoryId;
-          if (commodityCode) {
+          let commodityId = that.$route.query.commodityId;
+          if (commodityId) {
+            that.commodity.id = commodityId;
             that.commodity.commodityCode = commodityCode;
             that.commodity.commodityType = commodityType;
             that.commodity.commodityCategoryId = commodityCategoryId;
-            that.queryCommodityCode();
+            that.queryCommodity();
           } else {
             that.commodity.commodityCategoryId = that.categoryList[0].id;
             var param = {
@@ -492,18 +482,20 @@ export default {
       });
     },
 
-    queryCommodityCode() {
+    queryCommodity() {
       let that = this;
       let params = {};
       if (that.commodity.commodityType == 1) {
         params = {
           id: that.commodity.commodityCategoryId,
+          commodityId: that.commodity.commodityId,
           commodityCode: that.commodity.commodityCode,
           attributeType: that.commodity.commodityType
         };
       } else {
         params = {
           id: that.commodity.commodityCategoryId,
+          commodityId: that.commodity.commodityId,
           commodityCode: that.commodity.commodityCode,
           attributeType: that.commodity.commodityType,
           attributeFirstWord: that.attributeFirstWord
@@ -660,27 +652,43 @@ export default {
         this.commodity.commidityAttributeDetail.push(attributeDetail);
         };
         if (this.uploadList != null && this.uploadList.length > 0) {
-        let urls = "";
-        for (var i = 0; i < this.uploadList.length; i++) {
-            if (i != this.uploadList.length - 1) {
-                urls += this.uploadList[i].url + ",";
-            } else {
-                urls += this.uploadList[i].url;
+            let urls = "";
+            for (var i = 0; i < this.uploadList.length; i++) {
+                if (i != this.uploadList.length - 1) {
+                    urls += this.uploadList[i].url + ",";
+                } else {
+                    urls += this.uploadList[i].url;
+                }
             }
-        }
-        this.commodity.commodityPicture = urls;
+            this.commodity.commodityPicture = urls;
         };
+
         window.localStorage.setItem("commodity", JSON.stringify(this.commodity));
-        // auditCommodity(this.commodity).then(response => {
-        // var rdata = response.data;
-        // if (rdata.code == 200) {
-        //     this.$Message.success("保存成功");
-        //     window.location.reload();
-        // } else {
-        //     this.$Message.error("保存失败" + rdata.msg);
-        //     this.submitDisabled = false;
-        // }
-        // });
+        
+    //     const u = window.navigator.userAgent;
+
+    //     const isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+    //     if (isiOS) {
+    //         //vue调用iOS方法，且传值给iOS （iOS 方法名为 onItemClick）
+    //         window.webkit.messageHandlers.onItemClick.postMessage(
+    //           this.commodity
+    //         );
+    //       } else {
+    //         //vue调用Android方法，且传值给Android （Android方法名为 onItemClick）
+    //         window.$App.onItemClick(
+    //          this.commodity
+    //         );
+    //       }
+        auditCommodity(this.commodity).then(response => {
+        var rdata = response.data;
+        if (rdata.code == 200) {
+            this.$Message.success("保存成功");
+            window.location.reload();
+        } else {
+            this.$Message.error("保存失败" + rdata.msg);
+            this.submitDisabled = false;
+        }
+        });
     },
 
     selectChange(option, index) {
