@@ -1,14 +1,5 @@
 <template>
-  <div style="height: 100%" class="main">
-    <div class="header">
-      <div style="display: inline-block;height: 118px;vertical-align: middle;">
-        <img src="../../assets/images/v2_pvwezc.png" width="118px" height="118px">
-      </div>
-      <span class="header-item">&nbsp;•&nbsp;商家版</span>
-    </div>
-    <div class="header-logo">
-      <img src="../../assets/images/v2_pvwxm2.png" width="484px" height="488px">
-    </div>
+  <div class="main">
     <div class="content">
       <Form
         :label-width="200"
@@ -17,7 +8,7 @@
         :model="commodity"
         :rules="ruleValidate"
       >
-        <div class="table-title">商品详情</div>
+        <div class="table-title">产品数据详情</div>
         <hr class="line">
         <Row type="flex" justify="space-between">
           <!-- <Col :sm="12" :xs="24">
@@ -731,9 +722,11 @@ export default {
 </script>
 <style lang="less" scoped>
 .main {
-    height: calc(100% - 80px);
+    overflow-x: hidden;
+    height:100%;
     overflow: auto;
     padding: 15px;
+    width: 100%;
   }
 
 .header {
