@@ -49,7 +49,7 @@ export default [{
         name: 'PublishMobile',
         meta: {
             title: '商品详情',
-            pageTitle: '商品详情'
+            hideInMenu: true
         },
         component: () =>
             import ('@/view/commodity/PublishMobile.vue')
