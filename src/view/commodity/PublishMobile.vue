@@ -77,7 +77,7 @@
               ></Input>
             </FormItem>
           </Col> -->
-          <Col :span="24" style="margin-bottom: 10px;">
+          <!-- <Col :span="24" style="margin-bottom: 10px;">
             <FormItem label="产品分类:">
               <RadioGroup v-model="commodity.commodityCategoryId" @on-change="categoryChange">
                 <Radio
@@ -87,7 +87,7 @@
                 >{{category.categoryName}}</Radio>
               </RadioGroup>
             </FormItem>
-          </Col>
+          </Col> -->
           <!-- <Col :sm="12" :xs="24">
             <FormItem label="一口价:" prop="price">
               <div class="input-price">
@@ -101,8 +101,12 @@
               <RadioGroup v-model="commodity.commodityType" @on-change="typeChange">
                 <Radio :label="0">原厂</Radio>
                 <Radio :label="1">非原厂</Radio>
-              </RadioGroup>
-              <template v-if="commodity.commodityType == 0">
+              </RadioGroup> 
+            </FormItem>
+          </Col>
+          <Col :sm="12" :xs="24">
+            <FormItem>
+             <template v-if="commodity.commodityType == 0">
                 <Input
                   style="width: 50px;"
                   v-model="attributeFirstWord"
@@ -671,14 +675,14 @@ export default {
     //         );
     //       }
         auditCommodity(this.commodity).then(response => {
-        var rdata = response.data;
-        if (rdata.code == 200) {
-            this.$Message.success("保存成功");
-            window.location.reload();
-        } else {
-            this.$Message.error("保存失败" + rdata.msg);
-            this.submitDisabled = false;
-        }
+          var rdata = response.data;
+          if (rdata.code == 200) {
+              this.$Message.success("保存成功");
+              window.location.reload();
+          } else {
+              this.$Message.error("保存失败" + rdata.msg);
+              this.submitDisabled = false;
+          }
         });
     },
 
