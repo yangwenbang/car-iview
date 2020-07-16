@@ -101,7 +101,7 @@
               <RadioGroup v-model="commodity.commodityType" @on-change="typeChange">
                 <Radio :label="0">原厂</Radio>
                 <Radio :label="1">非原厂</Radio>
-              </RadioGroup> 
+              </RadioGroup>
             </FormItem>
           </Col>
           <Col :sm="12" :xs="24">
@@ -235,33 +235,33 @@ import {
   queryCategoryAttribute,
   auditCommodity,
   queryFactoryBrand
-} from "@/api/commodity";
+} from '@/api/commodity'
 
 export default {
-  name: "Publish",
+  name: 'Publish',
   components: {},
-  data() {
+  data () {
     return {
       submitDisabled: false,
       commodity: {
-        id: "",
-        commodityCode: "",
-        auditStatus: "",
-        commodityName: "",
+        id: '',
+        commodityCode: '',
+        auditStatus: '',
+        commodityName: '',
         commodityType: 1,
-        commodityPicture: "",
-        description: "",
-        additionalDescription: "",
-        commodityCategoryId: "",
-        price: "",
+        commodityPicture: '',
+        description: '',
+        additionalDescription: '',
+        commodityCategoryId: '',
+        price: '',
         freightType: 0,
         commidityAttributeDetail: []
       },
       // 原厂属性首字母
-      attributeFirstWord: "A",
+      attributeFirstWord: 'A',
       categoryList: [],
       categoryAttributeList: [],
-      commodityCategoryId: "",
+      commodityCategoryId: '',
       defaultList: [
         // {
         //   name: "a42bdcc1178e62b4694c830f028db5c0",
@@ -276,8 +276,8 @@ export default {
       ],
       brandList: [],
       brandValue: [],
-      imgName: "",
-      imgUrl: "",
+      imgName: '',
+      imgUrl: '',
       visible: false,
       uploadList: [],
       uploadList1: [],
@@ -309,184 +309,184 @@ export default {
         //  {required: true, message: "请输入一口价"},
         // ]
       }
-    };
+    }
   },
-  created() {
-    this.getCategoryList();
+  created () {
+    this.getCategoryList()
   },
-  mounted() {
+  mounted () {
   },
   methods: {
-    handleView(item) {
-      this.imgName = item.name;
-      this.imgUrl = item.url;
-      this.visible = true;
+    handleView (item) {
+      this.imgName = item.name
+      this.imgUrl = item.url
+      this.visible = true
     },
-    handleRemove(file) {
-      this.uploadList.splice(this.uploadList.indexOf(file), 1);
+    handleRemove (file) {
+      this.uploadList.splice(this.uploadList.indexOf(file), 1)
     },
-    handleRemove1(file) {
-      this.uploadList1.splice(this.uploadList1.indexOf(file), 1);
+    handleRemove1 (file) {
+      this.uploadList1.splice(this.uploadList1.indexOf(file), 1)
     },
-    handleSuccess(res, file) {
-      if (res.code == "200") {
-        file.url = "http://" + res.data;
+    handleSuccess (res, file) {
+      if (res.code == '200') {
+        file.url = 'http://' + res.data
       } else {
-        this.$Message.error(res.msg);
+        this.$Message.error(res.msg)
       }
-      if(this.uploadList.length >= 8) {
-          this.$Message.error("发布商品图片最多上传八张!");
-          return;
+      if (this.uploadList.length >= 8) {
+        this.$Message.error('发布商品图片最多上传八张!')
+        return
       }
-      this.uploadList.push(file);
+      this.uploadList.push(file)
     },
-    handleSuccess1(res, file) {
-      if (res.code == "200") {
-        file.url = "http://" + res.data;
+    handleSuccess1 (res, file) {
+      if (res.code == '200') {
+        file.url = 'http://' + res.data
       } else {
-        this.$Message.error(res.msg);
+        this.$Message.error(res.msg)
       }
-      this.uploadList1.push(file);
+      this.uploadList1.push(file)
     },
-    handleFormatError(file) {
+    handleFormatError (file) {
       this.$Notice.warning({
-        title: "文件格式不正确",
+        title: '文件格式不正确',
         desc:
-          "文件格式 " +
+          '文件格式 ' +
           file.name +
-          " 不正确, 请选择 jpg or png文件."
-      });
+          ' 不正确, 请选择 jpg or png文件.'
+      })
     },
-    handleMaxSize(file) {
+    handleMaxSize (file) {
       this.$Notice.warning({
-        title: "文件大小超限",
-        desc: "文件  " + file.name + " 太大，上传文件大小不能超过50M."
-      });
+        title: '文件大小超限',
+        desc: '文件  ' + file.name + ' 太大，上传文件大小不能超过50M.'
+      })
     },
-    handleBeforeUpload() {
-      const check = this.uploadList.length < 8;
+    handleBeforeUpload () {
+      const check = this.uploadList.length < 8
       if (!check) {
         this.$Notice.warning({
-          title: "最多上次8张图片."
-        });
+          title: '最多上次8张图片.'
+        })
       }
-      return check;
+      return check
     },
-    handleBeforeUpload1() {
-      const check = this.uploadList1.length < 5;
+    handleBeforeUpload1 () {
+      const check = this.uploadList1.length < 5
       if (!check) {
         this.$Notice.warning({
-          title: "最多上次5张图片."
-        });
+          title: '最多上次5张图片.'
+        })
       }
-      return check;
+      return check
     },
 
-    getCategoryList() {
-      var that = this;
+    getCategoryList () {
+      var that = this
       let params = {
         pageNo: 1,
         numPerPage: 10,
         // 是否分页，0-不分页 1-分页
         isPage: 0
-      };
+      }
       queryCategory(params).then(response => {
-        let rdata = response.data;
+        let rdata = response.data
         if (rdata.code == 200) {
-          that.categoryList = rdata.data.recordList;
-          let commodityCode = that.$route.query.commodityCode;
-          let commodityType = that.$route.query.commodityType ? that.$route.query.commodityType : 0;
-          let commodityCategoryId = that.$route.query.commodityCategoryId;
-          let commodityId = that.$route.query.commodityId;
+          that.categoryList = rdata.data.recordList
+          let commodityCode = that.$route.query.commodityCode
+          let commodityType = that.$route.query.commodityType ? that.$route.query.commodityType : 0
+          let commodityCategoryId = that.$route.query.commodityCategoryId
+          let commodityId = that.$route.query.commodityId
           if (commodityId) {
-            that.commodity.id = commodityId;
-            that.commodity.commodityCode = commodityCode;
-            that.commodity.commodityType = commodityType;
-            that.commodity.commodityCategoryId = commodityCategoryId;
-            that.queryCommodity();
+            that.commodity.id = commodityId
+            that.commodity.commodityCode = commodityCode
+            that.commodity.commodityType = commodityType
+            that.commodity.commodityCategoryId = commodityCategoryId
+            that.queryCommodity()
           } else {
-            that.commodity.commodityCategoryId = that.categoryList[0].id;
+            that.commodity.commodityCategoryId = that.categoryList[0].id
             var param = {
               id: that.commodity.commodityCategoryId,
               attributeType: that.commodity.commodityType
-            };
+            }
             queryCategoryAttribute(param).then(response => {
-              let rdata = response.data;
+              let rdata = response.data
               if (rdata.code == 200) {
                 that.categoryAttributeList = Object.assign([], rdata.data.commidityAttributeDetail)
               }
-            });
-            that.queryFactoryBrand();
+            })
+            that.queryFactoryBrand()
           }
         } else {
-          this.$Message.error("查询分类失败" + rdata.msg);
+          this.$Message.error('查询分类失败' + rdata.msg)
         }
-      });
+      })
     },
 
-    typeChange() {
-      let that = this;
-      that.categoryAttributeList = [];
-      let params = {};
+    typeChange () {
+      let that = this
+      that.categoryAttributeList = []
+      let params = {}
       if (that.commodity.commodityType == 1) {
         params = {
           id: that.commodity.commodityCategoryId,
           attributeType: that.commodity.commodityType
-        };
+        }
       } else {
         params = {
           id: that.commodity.commodityCategoryId,
           attributeType: that.commodity.commodityType,
           attributeFirstWord: that.attributeFirstWord
-        };
+        }
       }
       queryCategoryAttribute(params).then(response => {
-        var rdata = response.data;
+        var rdata = response.data
         if (rdata.code == 200) {
-          that.categoryAttributeList = rdata.data.commidityAttributeDetail;
+          that.categoryAttributeList = rdata.data.commidityAttributeDetail
         }
-      });
-      this.queryFactoryBrand();
+      })
+      this.queryFactoryBrand()
     },
 
-    categoryChange() {
-      let that = this;
-      let params = {};
+    categoryChange () {
+      let that = this
+      let params = {}
       if (that.commodityCategoryId == that.commodity.commodityCategoryId) {
         params = {
           id: that.commodity.commodityCategoryId,
           commodityCode: that.commodity.commodityCode,
           attributeType: that.commodity.commodityType,
           attributeFirstWord: that.attributeFirstWord
-        };
+        }
       } else {
         params = {
           id: that.commodity.commodityCategoryId,
           attributeType: that.commodity.commodityType,
           attributeFirstWord: that.attributeFirstWord
-        };
+        }
       }
       queryCategoryAttribute(params).then(response => {
-        var rdata = response.data;
+        var rdata = response.data
         if (rdata.code == 200) {
-          that.categoryAttributeList = rdata.data.commidityAttributeDetail;
+          that.categoryAttributeList = rdata.data.commidityAttributeDetail
           if (rdata.data.commodityType) {
-            that.commodity.commodityType = rdata.data.commodityType;
+            that.commodity.commodityType = rdata.data.commodityType
           }
         }
-      });
+      })
     },
 
-    queryCommodity() {
-      let that = this;
-      let params = {};
+    queryCommodity () {
+      let that = this
+      let params = {}
       if (that.commodity.commodityType == 1) {
         params = {
           id: that.commodity.commodityCategoryId,
           commodityId: that.commodity.commodityId,
           commodityCode: that.commodity.commodityCode,
           attributeType: that.commodity.commodityType
-        };
+        }
       } else {
         params = {
           id: that.commodity.commodityCategoryId,
@@ -494,60 +494,60 @@ export default {
           commodityCode: that.commodity.commodityCode,
           attributeType: that.commodity.commodityType,
           attributeFirstWord: that.attributeFirstWord
-        };
+        }
       }
       queryCategoryAttribute(params).then(response => {
-        var rdata = response.data;
+        var rdata = response.data
         if (rdata.code == 200) {
-          that.commodity.id = rdata.data.id;
-          that.categoryAttributeList = rdata.data.commidityAttributeDetail;
+          that.commodity.id = rdata.data.id
+          that.categoryAttributeList = rdata.data.commidityAttributeDetail
           that.categoryAttributeList.forEach(item => {
-            if(item.attributeName.indexOf('划痕') > -1 && item.pictureUrls != null) {
-              let imgUrls = item.pictureUrls.split(',');
+            if (item.attributeName.indexOf('划痕') > -1 && item.pictureUrls != null) {
+              let imgUrls = item.pictureUrls.split(',')
               imgUrls.map(url => {
-                that.uploadList1.push({ url: url, status: "finished" });
-              });
+                that.uploadList1.push({ url: url, status: 'finished' })
+              })
             }
-          });
-          that.commodity.commodityCategoryId = rdata.data.commodityCategoryId;
-          that.commodityCategoryId = rdata.data.commodityCategoryId;
-          that.commodity.commodityType = rdata.data.commodityType;
-          that.commodity.commodityName = rdata.data.commodityName;
-          that.commodity.freightType = rdata.data.freightType;
-          that.commodity.description = rdata.data.description;
-          that.commodity.additionalDescription = rdata.data.additionalDescription;
-          that.commodity.price = rdata.data.price;
-          that.commodity.commodityPicture = rdata.data.commodityPicture;
+          })
+          that.commodity.commodityCategoryId = rdata.data.commodityCategoryId
+          that.commodityCategoryId = rdata.data.commodityCategoryId
+          that.commodity.commodityType = rdata.data.commodityType
+          that.commodity.commodityName = rdata.data.commodityName
+          that.commodity.freightType = rdata.data.freightType
+          that.commodity.description = rdata.data.description
+          that.commodity.additionalDescription = rdata.data.additionalDescription
+          that.commodity.price = rdata.data.price
+          that.commodity.commodityPicture = rdata.data.commodityPicture
           // 非原厂回显车型
           if (that.commodity.commodityType == 1) {
-              that.brandValue = rdata.data.noFactoryCarBrands;
-              that.attributeFirstWord = rdata.data.noFactoryCarBrandsFirstWord;
+            that.brandValue = rdata.data.noFactoryCarBrands
+            that.attributeFirstWord = rdata.data.noFactoryCarBrandsFirstWord
           }
           // 图片回显
-          that.uploadList = [];
+          that.uploadList = []
           if (rdata.data.commodityPicture) {
-            let pictures = rdata.data.commodityPicture.split(",");
+            let pictures = rdata.data.commodityPicture.split(',')
             pictures.map(item => {
-              that.uploadList.push({ url: item, status: "finished" });
-            });
+              that.uploadList.push({ url: item, status: 'finished' })
+            })
           };
-          that.queryFactoryBrand();
+          that.queryFactoryBrand()
         }
-      });
+      })
     },
 
-    save(status) {
-        this.commodity.auditStatus = status;
-        this.submitDisabled = true;
-        this.categoryAttributeList.forEach(item => {
+    save (status) {
+      this.commodity.auditStatus = status
+      this.submitDisabled = true
+      this.categoryAttributeList.forEach(item => {
         if (item.isManualInput == 0) {
-            if (item.selectId) {
+          if (item.selectId) {
             let selectItem = item.childAttribute.filter(attribute => {
-                return attribute.id == item.selectId;
-            });
-            let attributeDetail = {};
-            if (selectItem[0].attributeName == "其他" || selectItem[0].attributeName == "其它") {
-                attributeDetail = {
+              return attribute.id == item.selectId
+            })
+            let attributeDetail = {}
+            if (selectItem[0].attributeName == '其他' || selectItem[0].attributeName == '其它') {
+              attributeDetail = {
                 attributeName: selectItem[0].attributeName,
                 attributeType: selectItem[0].attributeType,
                 isAuditType: selectItem[0].isAuditType,
@@ -556,173 +556,176 @@ export default {
                 categoryAttributeId: selectItem[0].id,
                 inputContext: item.inputContext,
                 isCarBrand: 0
-                };
+              }
             } else {
-                // 判断属性是否包含有划痕
-                if(item.attributeName.indexOf('划痕') > -1) {
-                let pictureUrls = '';
+              // 判断属性是否包含有划痕
+              if (item.attributeName.indexOf('划痕') > -1) {
+                let pictureUrls = ''
                 if (this.uploadList1 != null && this.uploadList1.length > 0) {
-                    for (var i = 0; i < this.uploadList1.length; i++) {
+                  for (var i = 0; i < this.uploadList1.length; i++) {
                     if (i != this.uploadList1.length - 1) {
-                        pictureUrls += this.uploadList1[i].url + ",";
+                      pictureUrls += this.uploadList1[i].url + ','
                     } else {
-                        pictureUrls += this.uploadList1[i].url;
+                      pictureUrls += this.uploadList1[i].url
                     }
-                    }
+                  }
                 }
                 attributeDetail = {
-                    attributeName: selectItem[0].attributeName,
-                    attributeType: selectItem[0].attributeType,
-                    isAuditType: selectItem[0].isAuditType,
-                    parentAttributeId: item.id,
-                    parentAttributeName: selectItem[0].parentAttributeName,
-                    categoryAttributeId: selectItem[0].id,
-                    pictureUrls: pictureUrls,
-                    isCarBrand: 0
+                  attributeName: selectItem[0].attributeName,
+                  attributeType: selectItem[0].attributeType,
+                  isAuditType: selectItem[0].isAuditType,
+                  parentAttributeId: item.id,
+                  parentAttributeName: selectItem[0].parentAttributeName,
+                  categoryAttributeId: selectItem[0].id,
+                  pictureUrls: pictureUrls,
+                  isCarBrand: 0
                 }
-                }else {
+              } else {
                 attributeDetail = {
-                    attributeName: selectItem[0].attributeName,
-                    attributeType: selectItem[0].attributeType,
-                    isAuditType: selectItem[0].isAuditType,
-                    parentAttributeId: item.id,
-                    parentAttributeName: selectItem[0].parentAttributeName,
-                    categoryAttributeId: selectItem[0].id,
-                    isCarBrand: 0
-                };
+                  attributeName: selectItem[0].attributeName,
+                  attributeType: selectItem[0].attributeType,
+                  isAuditType: selectItem[0].isAuditType,
+                  parentAttributeId: item.id,
+                  parentAttributeName: selectItem[0].parentAttributeName,
+                  categoryAttributeId: selectItem[0].id,
+                  isCarBrand: 0
                 }
+              }
             }
-            this.commodity.commidityAttributeDetail.push(attributeDetail);
-            }
+            this.commodity.commidityAttributeDetail.push(attributeDetail)
+          }
         } else if (item.isManualInput == 1) {
-            let attributeDetail = {
+          let attributeDetail = {
             attributeType: item.attributeType,
             isAuditType: item.isAuditType,
             parentAttributeId: item.id,
             parentAttributeName: item.attributeName,
             inputContext: item.inputContext,
             isCarBrand: 0
-            };
-            this.commodity.commidityAttributeDetail.push(attributeDetail);
-        }
-        });
-        // 保存适用车型
-        if(this.commodity.commodityType == 1 && this.brandValue.length > 0) {
-        let brand = {};
-        let child = {};
-        this.brandList.forEach(item => {
-            if(this.brandValue[0] == item.value) {
-                brand = item;
-            }
-        });
-        if(this.brandValue.length > 1) {
-            brand.children.forEach(item => {
-                if(this.brandValue[1] == item.value) {
-                    child = item;
-                }
-            });
-        }
-        let attributeDetail = {};
-        if(Object.keys(child).length != 0) {
-            attributeDetail = {
-                attributeName: child.label,
-                attributeType: "",
-                isAuditType: child.isAuditType,
-                parentAttributeId: child.parentId,
-                parentAttributeName: child.parentAttributeName,
-                categoryAttributeId: child.value,
-                isCarBrand: 1
-            }
-        }else {
-            attributeDetail = {
-                attributeName: brand.label,
-                attributeType: "",
-                isAuditType: brand.isAuditType,
-                parentAttributeId: brand.value,
-                parentAttributeName: brand.label,
-                categoryAttributeId: brand.value,
-                isCarBrand: 1
-            }
-        }
-        this.commodity.commidityAttributeDetail.push(attributeDetail);
-        };
-        if (this.uploadList != null && this.uploadList.length > 0) {
-            let urls = "";
-            for (var i = 0; i < this.uploadList.length; i++) {
-                if (i != this.uploadList.length - 1) {
-                    urls += this.uploadList[i].url + ",";
-                } else {
-                    urls += this.uploadList[i].url;
-                }
-            }
-            this.commodity.commodityPicture = urls;
-        };
-
-        window.localStorage.setItem("commodity", JSON.stringify(this.commodity));
-        
-    //     const u = window.navigator.userAgent;
-
-    //     const isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
-    //     if (isiOS) {
-    //         //vue调用iOS方法，且传值给iOS （iOS 方法名为 onItemClick）
-    //         window.webkit.messageHandlers.onItemClick.postMessage(
-    //           this.commodity
-    //         );
-    //       } else {
-    //         //vue调用Android方法，且传值给Android （Android方法名为 onItemClick）
-    //         window.$App.onItemClick(
-    //          this.commodity
-    //         );
-    //       }
-        auditCommodity(this.commodity).then(response => {
-          var rdata = response.data;
-          if (rdata.code == 200) {
-              this.$Message.success("保存成功");
-              window.location.reload();
-          } else {
-              this.$Message.error("保存失败" + rdata.msg);
-              this.submitDisabled = false;
           }
-        });
+          this.commodity.commidityAttributeDetail.push(attributeDetail)
+        }
+      })
+      // 保存适用车型
+      if (this.commodity.commodityType == 1 && this.brandValue.length > 0) {
+        let brand = {}
+        let child = {}
+        this.brandList.forEach(item => {
+          if (this.brandValue[0] == item.value) {
+            brand = item
+          }
+        })
+        if (this.brandValue.length > 1) {
+          brand.children.forEach(item => {
+            if (this.brandValue[1] == item.value) {
+              child = item
+            }
+          })
+        }
+        let attributeDetail = {}
+        if (Object.keys(child).length != 0) {
+          attributeDetail = {
+            attributeName: child.label,
+            attributeType: '',
+            isAuditType: child.isAuditType,
+            parentAttributeId: child.parentId,
+            parentAttributeName: child.parentAttributeName,
+            categoryAttributeId: child.value,
+            isCarBrand: 1
+          }
+        } else {
+          attributeDetail = {
+            attributeName: brand.label,
+            attributeType: '',
+            isAuditType: brand.isAuditType,
+            parentAttributeId: brand.value,
+            parentAttributeName: brand.label,
+            categoryAttributeId: brand.value,
+            isCarBrand: 1
+          }
+        }
+        this.commodity.commidityAttributeDetail.push(attributeDetail)
+      };
+      if (this.uploadList != null && this.uploadList.length > 0) {
+        let urls = ''
+        for (var i = 0; i < this.uploadList.length; i++) {
+          if (i != this.uploadList.length - 1) {
+            urls += this.uploadList[i].url + ','
+          } else {
+            urls += this.uploadList[i].url
+          }
+        }
+        this.commodity.commodityPicture = urls
+      };
+
+      window.localStorage.setItem('commodity', JSON.stringify(this.commodity))
+
+      //     const u = window.navigator.userAgent;
+
+      //     const isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/);
+      //     if (isiOS) {
+      //         //vue调用iOS方法，且传值给iOS （iOS 方法名为 onItemClick）
+      //         window.webkit.messageHandlers.onItemClick.postMessage(
+      //           this.commodity
+      //         );
+      //       } else {
+      //         //vue调用Android方法，且传值给Android （Android方法名为 onItemClick）
+      //         window.$App.onItemClick(
+      //          this.commodity
+      //         );
+      //       }
+      auditCommodity(this.commodity).then(response => {
+        var rdata = response.data
+        if (rdata.code == 200) {
+          window.alert('保存成功')
+          // this.$Message.success("保存成功");
+          // window.location.reload();
+        } else {
+          // window.alert("保存失败!");
+          this.$Message.error('保存失败' + rdata.msg)
+          // this.submitDisabled = false;
+          window.location.reload()
+        }
+      })
     },
 
-    selectChange(option, index) {
-      if (option.label != "其它" && option.label != "其他") {
-        this.categoryAttributeList[index].inputContext = null;
+    selectChange (option, index) {
+      if (option.label != '其它' && option.label != '其他') {
+        this.categoryAttributeList[index].inputContext = null
       } else {
-        this.categoryAttributeList[index].inputContext = "";
+        this.categoryAttributeList[index].inputContext = ''
       }
     },
 
-    queryFactoryBrand() {
+    queryFactoryBrand () {
       let params = {
         attributeFirstWord: this.attributeFirstWord
       }
       queryFactoryBrand(params).then(response => {
-        let rdata = response.data;
-        if(rdata.code = 200) {
-          this.brandList = rdata.data;
+        let rdata = response.data
+        if (rdata.code = 200) {
+          this.brandList = rdata.data
         }
-      });
+      })
     },
 
-    moveLeft(index) {
-        if(index != 0){
-            this.uploadList[index] = this.uploadList.splice(index - 1, 1, this.uploadList[index])[0];
-        } else{
-            this.uploadList.push(this.uploadList.shift());
-        }
+    moveLeft (index) {
+      if (index != 0) {
+        this.uploadList[index] = this.uploadList.splice(index - 1, 1, this.uploadList[index])[0]
+      } else {
+        this.uploadList.push(this.uploadList.shift())
+      }
     },
 
-    moveRight(index) {
-        if(index != this.uploadList.length - 1){
-            this.uploadList[index] = this.uploadList.splice(index + 1, 1, this.uploadList[index])[0];
-        } else{
-            this.uploadList.unshift(this.uploadList.splice(index,1)[0]);
-        }
+    moveRight (index) {
+      if (index != this.uploadList.length - 1) {
+        this.uploadList[index] = this.uploadList.splice(index + 1, 1, this.uploadList[index])[0]
+      } else {
+        this.uploadList.unshift(this.uploadList.splice(index, 1)[0])
+      }
     }
   }
-};
+}
 </script>
 <style lang="less" scoped>
 .main {
