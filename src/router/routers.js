@@ -19,316 +19,316 @@ import { setToken, getToken } from '@/libs/util'
  *  singleSubMenu: (false) 设为true后在左侧菜单会单独显示包含左侧的与一级菜单平级的菜单链接，出现该标签时，该条路由外层必须只能单独存在该条children
  * }
  */
-var hideMenu = true
+var hideMenu = true;
 if (getToken()) {
-  hideMenu = JSON.parse(getToken()).isAdmin != 1
+    hideMenu = JSON.parse(getToken()).isAdmin == 1 ? false : true;
 }
 
 export default [{
-  path: '/login',
-  name: 'login',
-  meta: {
-    title: '登录',
-    hideInMenu: true
-  },
-  component: () =>
+        path: '/login',
+        name: 'login',
+        meta: {
+            title: '登录',
+            hideInMenu: true
+        },
+        component: () =>
             import ('@/view/login/login.vue')
-},
-{
-  path: '/ShopRegister',
-  name: 'ShopRegister',
-  meta: {
-    title: '商家注册',
-    hideInMenu: true
-  },
-  component: () =>
+    },
+    {
+        path: '/ShopRegister',
+        name: 'ShopRegister',
+        meta: {
+            title: '商家注册',
+            hideInMenu: true
+        },
+        component: () =>
             import ('@/view/shop/ShelfRegister.vue')
-},
-{
-  path: '/PublishMobile',
-  name: 'PublishMobile',
-  meta: {
-    title: '商品详情',
-    hideInMenu: true
-  },
-  component: () =>
+    },
+    {
+        path: '/PublishMobile',
+        name: 'PublishMobile',
+        meta: {
+            title: '商品详情',
+            hideInMenu: true
+        },
+        component: () =>
             import ('@/view/commodity/PublishMobile.vue')
-},
-{
-  path: '/OfficialIndex',
-  name: 'OfficialIndex',
-  meta: {
-    title: '官网',
-    hideInMenu: true
-  },
-  component: () =>
+    },
+    {
+      path: '/OfficialIndex',
+      name: 'OfficialIndex',
+      meta: {
+          title: '官网',
+          hideInMenu: true
+      },
+      component: () =>
           import ('@/view/official/Index.vue')
-},
-{
-  path: '/',
-  name: '_home',
-  redirect: '/home',
-  component: Main,
-  meta: {
-    notCache: true,
-    icon: 'md-home'
-  },
-  children: [{
-    path: '/home',
-    name: 'home',
-    meta: {
-      title: '首页',
-      notCache: true,
-      icon: 'md-home',
-      singleSubMenu: true
     },
-    component: () =>
+    {
+        path: '/',
+        name: '_home',
+        redirect: '/home',
+        component: Main,
+        meta: {
+            notCache: true,
+            icon: 'md-home'
+        },
+        children: [{
+            path: '/home',
+            name: 'home',
+            meta: {
+                title: '首页',
+                notCache: true,
+                icon: 'md-home',
+                singleSubMenu: true
+            },
+            component: () =>
                 import ('@/view/home/home')
-  }]
-},
-{
-  path: '/qualityShop',
-  name: 'qualityShop',
-  meta: {
-    title: '质检商家',
-    icon: 'ios-speedometer-outline',
-    hideInMenu: hideMenu
-  },
-  component: Main,
-  children: [{
-    path: 'register',
-    name: 'register',
-    meta: {
-      title: '商家入驻',
-      pageTitle: '商家入驻',
-      hideInMenu: hideMenu
+        }]
     },
-    component: () =>
+    {
+        path: '/qualityShop',
+        name: 'qualityShop',
+        meta: {
+            title: '质检商家',
+            icon: 'ios-speedometer-outline',
+            hideInMenu: hideMenu
+        },
+        component: Main,
+        children: [{
+                path: 'register',
+                name: 'register',
+                meta: {
+                    title: '商家入驻',
+                    pageTitle: '商家入驻',
+                    hideInMenu: hideMenu
+                },
+                component: () =>
                     import ('@/view/shop/Register.vue')
-  },
-  {
-    path: 'shopList',
-    name: 'shopList',
-    meta: {
-      title: '商家列表',
-      pageTitle: '商家列表',
-      hideInMenu: hideMenu
-    },
-    component: () =>
+            },
+            {
+                path: 'shopList',
+                name: 'shopList',
+                meta: {
+                    title: '商家列表',
+                    pageTitle: '商家列表',
+                    hideInMenu: hideMenu
+                },
+                component: () =>
                     import ('@/view/shop/ShopList.vue')
-  }
-  ]
-},
-{
-  path: '/commodity',
-  name: 'commodity',
-  meta: {
-    icon: 'ios-car',
-    title: '商品管理'
-  },
-  component: Main,
-  children: [{
-    path: 'CommodityList',
-    name: 'CommodityList',
-    meta: {
-      title: '商品列表',
-      pageTitle: '商品列表'
+            }
+        ]
     },
-    component: () =>
+    {
+        path: '/commodity',
+        name: 'commodity',
+        meta: {
+            icon: 'ios-car',
+            title: '商品管理'
+        },
+        component: Main,
+        children: [{
+                path: 'CommodityList',
+                name: 'CommodityList',
+                meta: {
+                    title: '商品列表',
+                    pageTitle: '商品列表'
+                },
+                component: () =>
                     import ('@/view/commodity/CommodityList.vue')
-  },
-  {
-    path: 'CommodityAdd',
-    name: 'CommodityAdd',
-    meta: {
-      title: '发布商品',
-      pageTitle: '发布商品'
-    },
-    component: () =>
+            },
+            {
+                path: 'CommodityAdd',
+                name: 'CommodityAdd',
+                meta: {
+                    title: '发布商品',
+                    pageTitle: '发布商品'
+                },
+                component: () =>
                     import ('@/view/commodity/Publish.vue')
-  },
-  {
-    path: 'CategoryList',
-    name: 'CategoryList',
-    meta: {
-      title: '产品分类',
-      pageTitle: '产品分类',
-      hideInMenu: hideMenu
-    },
-    component: () =>
+            },
+            {
+                path: 'CategoryList',
+                name: 'CategoryList',
+                meta: {
+                    title: '产品分类',
+                    pageTitle: '产品分类',
+                    hideInMenu: hideMenu
+                },
+                component: () =>
                     import ('@/view/commodity/CategoryList.vue')
-  },
-  {
-    path: 'CategoryTree',
-    name: 'CategoryTree',
-    meta: {
-      title: '分类属性',
-      pageTitle: '分类属性',
-      hideInMenu: hideMenu
-    },
-    component: () =>
+            },
+            {
+                path: 'CategoryTree',
+                name: 'CategoryTree',
+                meta: {
+                    title: '分类属性',
+                    pageTitle: '分类属性',
+                    hideInMenu: hideMenu
+                },
+                component: () =>
                     import ('@/view/commodity/CategoryTree.vue')
-  }
-  ]
-},
-{
-  path: '/order',
-  name: 'order',
-  meta: {
-    icon: 'ios-list-box-outline',
-    title: '订单管理'
-  },
-  component: Main,
-  children: [{
-    path: 'OrderList',
-    name: 'OrderList',
-    meta: {
-      title: '订单列表',
-      pageTitle: '订单列表'
+            }
+        ]
     },
-    component: () =>
+    {
+        path: '/order',
+        name: 'order',
+        meta: {
+            icon: 'ios-list-box-outline',
+            title: '订单管理'
+        },
+        component: Main,
+        children: [{
+                path: 'OrderList',
+                name: 'OrderList',
+                meta: {
+                    title: '订单列表',
+                    pageTitle: '订单列表'
+                },
+                component: () =>
                     import ('@/view/order/OrderList.vue')
-  },
-  {
-    path: 'PaymentRecordList',
-    name: 'PaymentRecordList',
-    meta: {
-      title: '打款列表',
-      pageTitle: '打款列表',
-      hideInMenu: hideMenu
-    },
-    component: () =>
+            },
+            {
+                path: 'PaymentRecordList',
+                name: 'PaymentRecordList',
+                meta: {
+                    title: '打款列表',
+                    pageTitle: '打款列表',
+                    hideInMenu: hideMenu
+                },
+                component: () =>
                     import ('@/view/order/PaymentRecordList.vue')
-  },
-  {
-    path: 'RefundAudit',
-    name: 'RefundAudit',
-    meta: {
-      title: '退款审核',
-      pageTitle: '退款审核',
-      hideInMenu: true,
-      activeName: 'OrderList'
-    },
-    component: () =>
+            },
+            {
+                path: 'RefundAudit',
+                name: 'RefundAudit',
+                meta: {
+                    title: '退款审核',
+                    pageTitle: '退款审核',
+                    hideInMenu: true,
+                    activeName: 'OrderList'
+                },
+                component: () =>
                     import ('@/view/order/RefundAudit.vue')
-  }
-  ]
-},
-{
-  path: '/user',
-  name: 'user',
-  meta: {
-    icon: 'md-contacts',
-    title: '账号管理',
-    hideInMenu: hideMenu
-  },
-  component: Main,
-  children: [{
-    path: 'ShopAccount',
-    name: 'ShopAccount',
-    meta: {
-      title: '商家账号',
-      pageTitle: '商家账号',
-      hideInMenu: hideMenu
+            }
+        ]
     },
-    component: () =>
+    {
+        path: '/user',
+        name: 'user',
+        meta: {
+            icon: 'md-contacts',
+            title: '账号管理',
+            hideInMenu: hideMenu
+        },
+        component: Main,
+        children: [{
+                path: 'ShopAccount',
+                name: 'ShopAccount',
+                meta: {
+                    title: '商家账号',
+                    pageTitle: '商家账号',
+                    hideInMenu: hideMenu
+                },
+                component: () =>
                     import ('@/view/account/ShopAccount.vue')
-  },
-  {
-    path: 'UserList',
-    name: 'UserList',
-    meta: {
-      title: '用户列表',
-      pageTitle: '用户列表',
-      hideInMenu: hideMenu
-    },
-    component: () =>
+            },
+            {
+                path: 'UserList',
+                name: 'UserList',
+                meta: {
+                    title: '用户列表',
+                    pageTitle: '用户列表',
+                    hideInMenu: hideMenu
+                },
+                component: () =>
                     import ('@/view/account/UserList.vue')
-  }
-  ]
-},
-{
-  path: '/post',
-  name: 'post',
-  meta: {
-    icon: 'ios-create-outline',
-    title: '发帖管理',
-    hideInMenu: hideMenu
-  },
-  component: Main,
-  children: [{
-    path: 'PostList',
-    name: 'PostList',
-    meta: {
-      title: '发帖列表',
-      pageTitle: '发帖列表'
+            }
+        ]
     },
-    component: () =>
+    {
+        path: '/post',
+        name: 'post',
+        meta: {
+            icon: 'ios-create-outline',
+            title: '发帖管理',
+            hideInMenu: hideMenu
+        },
+        component: Main,
+        children: [{
+            path: 'PostList',
+            name: 'PostList',
+            meta: {
+                title: '发帖列表',
+                pageTitle: '发帖列表'
+            },
+            component: () =>
                 import ('@/view/post/PostList.vue')
-  }]
-},
-{
-  path: '/equipment',
-  name: 'equipment',
-  meta: {
-    icon: 'md-tablet-portrait',
-    title: '设备管理',
-    hideInMenu: hideMenu
-  },
-  component: Main,
-  children: [{
-    path: 'EquipmentList',
-    name: 'EquipmentList',
-    meta: {
-      title: '设备列表',
-      pageTitle: '设备列表'
+        }]
     },
-    component: () =>
+    {
+        path: '/equipment',
+        name: 'equipment',
+        meta: {
+            icon: 'md-tablet-portrait',
+            title: '设备管理',
+            hideInMenu: hideMenu
+        },
+        component: Main,
+        children: [{
+            path: 'EquipmentList',
+            name: 'EquipmentList',
+            meta: {
+                title: '设备列表',
+                pageTitle: '设备列表'
+            },
+            component: () =>
                 import ('@/view/equipment/EquipmentList.vue')
-  }]
-},
-{
-  path: '/error_401',
-  name: 'error_401',
-  component: Main,
-  meta: {
-    hideInMenu: true
-  },
-  children: [{
-    path: '/error_401',
-    name: 'error_401',
-    meta: {
-      title: '401'
+        }]
     },
-    component: () =>
+    {
+        path: '/error_401',
+        name: 'error_401',
+        component: Main,
+        meta: {
+            hideInMenu: true
+        },
+        children: [{
+            path: '/error_401',
+            name: 'error_401',
+            meta: {
+                title: '401',
+            },
+            component: () =>
                 import ('@/view/error-page/401.vue')
-  }]
-},
-{
-  path: '/error_404',
-  name: 'error_404',
-  meta: {
-    hideInMenu: true
-  },
-  component: () =>
-            import ('@/view/error-page/404.vue')
-},
-{
-  path: '/error_500',
-  name: 'Error_500',
-  component: Main,
-  meta: {
-    hideInMenu: true
-  },
-  children: [{
-    path: '/error_500',
-    name: 'error_500',
-    meta: {
-      title: '500'
+        }],
     },
-    component: () =>
+    {
+        path: '/error_404',
+        name: 'error_404',
+        meta: {
+            hideInMenu: true
+        },
+        component: () =>
+            import ('@/view/error-page/404.vue')
+    },
+    {
+        path: '/error_500',
+        name: 'Error_500',
+        component: Main,
+        meta: {
+            hideInMenu: true
+        },
+        children: [{
+            path: '/error_500',
+            name: 'error_500',
+            meta: {
+                title: '500',
+            },
+            component: () =>
                 import ('@/view/error-page/500.vue')
-  }]
-}
+        }]
+    },
 
 ]
