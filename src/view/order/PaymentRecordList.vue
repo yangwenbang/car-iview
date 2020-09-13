@@ -157,6 +157,18 @@ export default {
             }
           }
         },
+         {
+          title: "收款类型",
+          key: "paymentType",
+          minWidth: 50,
+          render: (h, data) => {
+            if (data.row.paymentType == "0") {
+              return h("span", "支付宝");
+            } else if (data.row.payeeType == "1") {
+              return h("span", "微信");
+            }
+          }
+        },
         {
           title: "付款人名称",
           key: "payerUserName",
@@ -168,8 +180,18 @@ export default {
           minWidth: 50
         },
         {
+          title: "收款人手机号",
+          key: "payeeMobile",
+          minWidth: 50
+        },
+        {
           title: "打款交易单号",
           key: "paymentNo",
+          minWidth: 140
+        },
+        {
+          title: "备注",
+          key: "remark",
           minWidth: 140
         },
         {
