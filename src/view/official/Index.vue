@@ -8,15 +8,17 @@
         <span style="margin-right: 50px;" class="top-title" @click="go(4)">联系/contact</span>
       </div>
       <div class="bg-img">
-        <div class="header-logo" v-if="type == 1">
+        <div v-if="type == 1">
+          <div class="main-body">
+            <img src="../../assets/images/official/9.jpg" class="img-body">
+          </div>
+        </div>
+        <div v-if="type == 2">
+        </div>
+        <div v-if="type == 3">
           <img src="../../assets/images/v2_pvwxm2.png" width="484px" height="488px">
         </div>
-        <div class="header-logo" v-if="type == 2">
-        </div>
-        <div class="header-logo" v-if="type == 3">
-          <img src="../../assets/images/v2_pvwxm2.png" width="484px" height="488px">
-        </div>
-        <div class="header-logo" v-if="type == 4">
+        <div v-if="type == 4">
           <img src="../../assets/images/v2_pvwxm2.png" width="484px" height="488px">
         </div>
       </div>
@@ -51,32 +53,39 @@ export default {
     overflow-x: hidden;
     height:100%;
     overflow: auto;
-    padding: 15px;
+    padding: 15px 0px;
     width: 100%;
 }
 .top-title:hover {
   color: blue !important;
   cursor: pointer;
 }
-.top-title a {
-  color:#000;  
+
+.bg-img {
+  position: absolute;
+  margin-top: 100px;
+  width: 100%;
+  height: 100%;
 }
 
-.login {
-    width: 100%;
-    height: 100%;
-    background-image: url('../../assets/images/v2_pvwxm2.png');
-    background-repeat: no-repeat;
-    background-position: center;
-    position: relative;
-    background-color:rgba(251, 198, 71, 1);
-    @media screen and (max-width: 600px) {
-        .top {
-            padding-top: 120px !important;
-        }
-    }
-    .top {
-        padding-top: 200px;
-    }
+.main-body {
+  position: absolute;
+  margin: 0px;
+  width: 100%;
+  height: 669px;
+  left: 0px;
+  top: 0px;
+  vertical-align: middle;
+  text-align: center;
 }
+
+.img-body {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left: 0px;
+  top: 0px;
+  background-size: cover;
+}
+
 </style>
