@@ -20,7 +20,6 @@ router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
   const token = getToken()
   if (!token && to.name !== LOGIN_PAGE_NAME) {
-    debugger
     // 跳转商家入驻页面
     if (to.name == 'ShopRegister' || to.name == 'PublishMobile' || to.name.indexOf('Official') >= 0) {
       next()
