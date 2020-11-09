@@ -12,14 +12,42 @@
           <div class="main-body">
             <img src="../../assets/images/official/9.jpg" class="img-body">
           </div>
+          <div class="second-body">
+            <img src="../../assets/images/official/10.jpg" class="img-body">
+          </div>
+          <div class="third-body">
+            <img src="../../assets/images/official/8-1.jpg" class="img-body">
+          </div> 
+          <div>
+            <img src="../../assets/images/official/11.jpg" class="img-body">
+          </div>
         </div>
         <div v-if="type == 2">
+          <div class="second-body-2">
+            <img src="../../assets/images/official/7-1.jpg" class="img-body">
+          </div>
+          <div class="second-body-2">
+            <img src="../../assets/images/official/12.jpg" class="img-body">
+          </div>
+          <div>
+            <img src="../../assets/images/official/11.jpg" class="img-body">
+          </div>
         </div>
         <div v-if="type == 3">
-          <img src="../../assets/images/v2_pvwxm2.png" width="484px" height="488px">
+          <div class="second-body-3">
+            <img src="../../assets/images/official/13.jpg" class="img-body">
+          </div>
+          <div>
+            <img src="../../assets/images/official/11.jpg" class="img-body">
+          </div>
         </div>
         <div v-if="type == 4">
-          <img src="../../assets/images/v2_pvwxm2.png" width="484px" height="488px">
+          <div class="second-body-3">
+            <img src="../../assets/images/official/14.jpg" class="img-body">
+          </div>
+          <div>
+            <img src="../../assets/images/official/11.jpg" class="img-body">
+          </div>
         </div>
       </div>
     </div>
@@ -50,9 +78,10 @@ export default {
 </script>
 <style lang="less" scoped>
 .main {
+  position: relative;
     overflow-x: hidden;
-    height:100%;
-    overflow: auto;
+    height:900px;
+    overflow-y: scroll;
     padding: 15px 0px;
     width: 100%;
 }
@@ -69,7 +98,7 @@ export default {
 }
 
 .main-body {
-  position: absolute;
+  position: relative;
   margin: 0px;
   width: 100%;
   height: 669px;
@@ -79,13 +108,53 @@ export default {
   text-align: center;
 }
 
-.img-body {
-  position: absolute;
+.second-body {
+  position: relative;
+  padding: 0px 200px 0px 200px;
   width: 100%;
-  height: 100%;
+  height: 600px;
   left: 0px;
   top: 0px;
-  background-size: cover;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.second-body-2 {
+  position: relative;
+  padding: 0px 300px 0px 300px;
+  width: 100%;
+  height: 500px;
+  left: 0px;
+  top: 0px;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.second-body-3 {
+  position: relative;
+  padding: 0px 300px 0px 300px;
+  width: 100%;
+  height: 767px;
+  left: 0px;
+  top: 0px;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.third-body {
+  position: relative;
+  margin: 0px;
+  width: 100%;
+  height: 800px;
+  left: 0px;
+  top: 0px;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.img-body {
+  width: 100%;
+  height: 100%;
 }
 
 </style>
